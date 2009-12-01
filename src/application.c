@@ -116,13 +116,13 @@ char* roxenlauncher_get_last_folder (void) {
 		char* _tmp1_;
 		_tmp0_ = gconf_client_get_string (cli, ROXENLAUNCHER_APP_GCONF_ROOT "properties/last-folder", &_inner_error_);
 		if (_inner_error_ != NULL) {
-			goto __catch1_g_error;
-			goto __finally1;
+			goto __catch11_g_error;
+			goto __finally11;
 		}
 		k = (_tmp1_ = g_strdup (_tmp0_), _g_free0 (k), _tmp1_);
 	}
-	goto __finally1;
-	__catch1_g_error:
+	goto __finally11;
+	__catch11_g_error:
 	{
 		GError * e;
 		e = _inner_error_;
@@ -132,7 +132,7 @@ char* roxenlauncher_get_last_folder (void) {
 			_g_error_free0 (e);
 		}
 	}
-	__finally1:
+	__finally11:
 	if (_inner_error_ != NULL) {
 		_g_object_unref0 (cli);
 		_g_free0 (k);
@@ -161,13 +161,13 @@ void roxenlauncher_set_last_folder (const char* path) {
 	{
 		gconf_client_set_string (cli, key, path, &_inner_error_);
 		if (_inner_error_ != NULL) {
-			goto __catch2_g_error;
-			goto __finally2;
+			goto __catch12_g_error;
+			goto __finally12;
 		}
 		g_message ("application.vala:41: Set last folder to: %s", path);
 	}
-	goto __finally2;
-	__catch2_g_error:
+	goto __finally12;
+	__catch12_g_error:
 	{
 		GError * e;
 		e = _inner_error_;
@@ -177,7 +177,7 @@ void roxenlauncher_set_last_folder (const char* path) {
 			_g_error_free0 (e);
 		}
 	}
-	__finally2:
+	__finally12:
 	if (_inner_error_ != NULL) {
 		_g_object_unref0 (cli);
 		_g_free0 (key);
@@ -244,14 +244,14 @@ void roxenlauncher_application_save_list (void) {
 		if (_inner_error_ != NULL) {
 			_g_object_unref0 (cli);
 			_g_free0 (key);
-			goto __catch3_g_error;
-			goto __finally3;
+			goto __catch13_g_error;
+			goto __finally13;
 		}
 		_g_object_unref0 (cli);
 		_g_free0 (key);
 	}
-	goto __finally3;
-	__catch3_g_error:
+	goto __finally13;
+	__catch13_g_error:
 	{
 		GError * e;
 		e = _inner_error_;
@@ -261,7 +261,7 @@ void roxenlauncher_application_save_list (void) {
 			_g_error_free0 (e);
 		}
 	}
-	__finally3:
+	__finally13:
 	if (_inner_error_ != NULL) {
 		__g_slist_free_g_free0 (list);
 		g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
@@ -358,13 +358,13 @@ void roxenlauncher_application_load_from_gconf (void) {
 		GSList* _tmp1_;
 		_tmp1_ = gconf_client_get_list (cli, key, GCONF_VALUE_STRING, &_inner_error_);
 		if (_inner_error_ != NULL) {
-			goto __catch4_g_error;
-			goto __finally4;
+			goto __catch14_g_error;
+			goto __finally14;
 		}
 		list = _tmp1_;
 	}
-	goto __finally4;
-	__catch4_g_error:
+	goto __finally14;
+	__catch14_g_error:
 	{
 		GError * e;
 		e = _inner_error_;
@@ -374,7 +374,7 @@ void roxenlauncher_application_load_from_gconf (void) {
 			_g_error_free0 (e);
 		}
 	}
-	__finally4:
+	__finally14:
 	if (_inner_error_ != NULL) {
 		_g_object_unref0 (cli);
 		_g_free0 (key);

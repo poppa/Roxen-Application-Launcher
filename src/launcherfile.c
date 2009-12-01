@@ -8,9 +8,10 @@
 #include <string.h>
 #include <gio/gio.h>
 #include <gee.h>
+#include <libsoup/soup.h>
+#include <glib/gstdio.h>
 #include <time.h>
 #include <math.h>
-#include <glib/gstdio.h>
 
 
 #define TYPE_LAUNCHER_FILE (launcher_file_get_type ())
@@ -58,6 +59,9 @@ typedef struct _RoxenlauncherApplicationClass RoxenlauncherApplicationClass;
 
 typedef struct _RoxenlauncherMainWindow RoxenlauncherMainWindow;
 typedef struct _RoxenlauncherMainWindowClass RoxenlauncherMainWindowClass;
+#define _soup_message_headers_free0(var) ((var == NULL) ? NULL : (var = (soup_message_headers_free (var), NULL)))
+#define _g_string_free0(var) ((var == NULL) ? NULL : (var = (g_string_free (var, TRUE), NULL)))
+typedef struct _Block1Data Block1Data;
 
 struct _LauncherFile {
 	GObject parent_instance;
@@ -107,6 +111,12 @@ typedef enum  {
 	ROXENLAUNCHER_ROXEN_ERROR_GENERIC
 } RoxenlauncherRoxenError;
 #define ROXENLAUNCHER_ROXEN_ERROR roxenlauncher_roxen_error_quark ()
+struct _Block1Data {
+	int _ref_count_;
+	LauncherFile * self;
+	GString* buffer;
+};
+
 
 static GeeArrayList* launcher_file_launcherfiles;
 static GeeArrayList* launcher_file_launcherfiles = NULL;
@@ -153,7 +163,7 @@ void launcher_file_load_existing (void);
 char** roxenlauncher_slice (char** s, int s_length1, guint from, guint to, int* result_length1, GError** error);
 char* roxenlauncher_implode (char** s, int s_length1, const char* glue);
 const char* launcher_file_get_rawdata (LauncherFile* self);
-void launcher_file_download (LauncherFile* self);
+void launcher_file_download (LauncherFile* self, gboolean do_launch_editor);
 LauncherFile* launcher_file_new (const char* data, GError** error);
 LauncherFile* launcher_file_construct (GType object_type, const char* data, GError** error);
 gboolean launcher_file_incomming (const char* data, LauncherFile** file, GError** error);
@@ -168,26 +178,39 @@ const char* launcher_file_get_host (LauncherFile* self);
 const char* launcher_file_get_port (LauncherFile* self);
 const char* launcher_file_get_path (LauncherFile* self);
 char* launcher_file_get_uri (LauncherFile* self);
+const char* launcher_file_get_auth_cookie (LauncherFile* self);
+const char* launcher_file_get_sb_params (LauncherFile* self);
+char* launcher_file_get_cookie (LauncherFile* self);
 static void launcher_file_set_application (LauncherFile* self, RoxenlauncherApplication* value);
 void launcher_file_unset_application (LauncherFile* self);
 const char* launcher_file_get_local_file (LauncherFile* self);
 const char* launcher_file_get_local_dir (LauncherFile* self);
 gboolean launcher_file_delete (LauncherFile* self);
 RoxenlauncherApplication* launcher_file_get_application (LauncherFile* self);
-const char* launcher_file_get_content_type (LauncherFile* self);
 RoxenlauncherApplication* roxenlauncher_application_get_for_mimetype (const char* mimetype);
+const char* launcher_file_get_content_type (LauncherFile* self);
 GType roxenlauncher_main_window_get_type (void);
 RoxenlauncherApplication* roxenlauncher_main_window_editor_dialog_new (RoxenlauncherMainWindow* self, const char* content_type);
+gboolean roxenlauncher_file_exists (const char* file);
 const char* roxenlauncher_application_get_name (RoxenlauncherApplication* self);
 const char* roxenlauncher_application_get_command (RoxenlauncherApplication* self);
 const char* roxenlauncher_application_get_arguments (RoxenlauncherApplication* self);
 static void launcher_file_on_file_changed (LauncherFile* self, GFile* f, GFile* other, GFileMonitorEvent e);
 static void _launcher_file_on_file_changed_g_file_monitor_changed (GFileMonitor* _sender, GFile* file, GFile* other_file, GFileMonitorEvent event_type, gpointer self);
 void launcher_file_launch_editor (LauncherFile* self);
+static void launcher_file_win_set_status (LauncherFile* self, gint st);
+static void _lambda6_ (SoupBuffer* chunk, Block1Data* _data1_);
+static void __lambda6__soup_message_got_chunk (SoupMessage* _sender, SoupBuffer* chunk, gpointer self);
+static void _lambda7_ (const char* name, const char* val, LauncherFile* self);
+static void __lambda7__soup_message_headers_foreach_func (const char* name, const char* value, gpointer self);
+static Block1Data* block1_data_ref (Block1Data* _data1_);
+static Block1Data* block1_data_unref (Block1Data* _data1_);
+static gboolean _lambda5_ (LauncherFile* self);
+static gboolean __lambda5__gsource_func (gpointer self);
 static void launcher_file_set_status (LauncherFile* self, gint value);
 void roxenlauncher_main_window_set_file_status (RoxenlauncherMainWindow* self, LauncherFile* lf, const char* status);
-static gboolean _lambda1_ (LauncherFile* self);
-static gboolean __lambda1__gsource_func (gpointer self);
+static gboolean _lambda3_ (LauncherFile* self);
+static gboolean __lambda3__gsource_func (gpointer self);
 static void launcher_file_set_schema (LauncherFile* self, const char* value);
 static void launcher_file_set_host (LauncherFile* self, const char* value);
 static void launcher_file_set_port (LauncherFile* self, const char* value);
@@ -204,17 +227,14 @@ const char* launcher_file_get_id (LauncherFile* self);
 static void launcher_file_set_local_dir (LauncherFile* self, const char* value);
 static void launcher_file_set_local_file (LauncherFile* self, const char* value);
 static void launcher_file_save (LauncherFile* self);
-gboolean roxenlauncher_file_exists (const char* file);
 RoxenlauncherDateTime* roxenlauncher_filemtime (const char* path);
 static void launcher_file_set_last_modified (LauncherFile* self, RoxenlauncherDateTime* value);
 RoxenlauncherDateTime* roxenlauncher_filectime (const char* path);
 static void launcher_file_set_age (LauncherFile* self, RoxenlauncherDateTime* value);
 char* roxenlauncher_trim (const char* s, const char* chars);
-static void _vala_array_add1 (char*** array, int* length, int* size, char* value);
+static void _vala_array_add2 (char*** array, int* length, int* size, char* value);
 static void launcher_file_create_dir (LauncherFile* self);
 char* roxenlauncher_file_get_contents (const char* file);
-const char* launcher_file_get_auth_cookie (LauncherFile* self);
-const char* launcher_file_get_sb_params (LauncherFile* self);
 gboolean launcher_file_get_is_downloading (LauncherFile* self);
 static void launcher_file_set_is_downloading (LauncherFile* self, gboolean value);
 gboolean launcher_file_get_is_uploading (LauncherFile* self);
@@ -283,8 +303,8 @@ void launcher_file_load_existing (void) {
 		GFileInfo* fi;
 		f = (_tmp2_ = g_file_enumerate_children (_tmp1_ = g_file_new_for_path (p), "standard::name", G_FILE_QUERY_INFO_NONE, NULL, &_inner_error_), _g_object_unref0 (_tmp1_), _tmp2_);
 		if (_inner_error_ != NULL) {
-			goto __catch5_g_error;
-			goto __finally5;
+			goto __catch6_g_error;
+			goto __finally6;
 		}
 		fi = NULL;
 		while (TRUE) {
@@ -295,8 +315,8 @@ void launcher_file_load_existing (void) {
 			if (_inner_error_ != NULL) {
 				_g_object_unref0 (f);
 				_g_object_unref0 (fi);
-				goto __catch5_g_error;
-				goto __finally5;
+				goto __catch6_g_error;
+				goto __finally6;
 			}
 			if (!((fi = (_tmp4_ = _tmp3_, _g_object_unref0 (fi), _tmp4_)) != NULL)) {
 				break;
@@ -305,8 +325,8 @@ void launcher_file_load_existing (void) {
 			if (_inner_error_ != NULL) {
 				_g_object_unref0 (f);
 				_g_object_unref0 (fi);
-				goto __catch5_g_error;
-				goto __finally5;
+				goto __catch6_g_error;
+				goto __finally6;
 			}
 			gee_abstract_collection_add ((GeeAbstractCollection*) launcher_file_launcherfiles, lf);
 			_g_object_unref0 (lf);
@@ -314,8 +334,8 @@ void launcher_file_load_existing (void) {
 		_g_object_unref0 (f);
 		_g_object_unref0 (fi);
 	}
-	goto __finally5;
-	__catch5_g_error:
+	goto __finally6;
+	__catch6_g_error:
 	{
 		GError * e;
 		e = _inner_error_;
@@ -325,7 +345,7 @@ void launcher_file_load_existing (void) {
 			_g_error_free0 (e);
 		}
 	}
-	__finally5:
+	__finally6:
 	if (_inner_error_ != NULL) {
 		_g_free0 (p);
 		g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
@@ -436,7 +456,7 @@ gboolean launcher_file_incomming (const char* data, LauncherFile** file, GError*
 			if (_vala_strcmp0 (raw, ss) == 0) {
 				LauncherFile* _tmp16_;
 				*file = (_tmp16_ = _g_object_ref0 (lf), _g_object_unref0 (*file), _tmp16_);
-				launcher_file_download (*file);
+				launcher_file_download (*file, TRUE);
 				result = FALSE;
 				_g_object_unref0 (lf);
 				_g_free0 (raw);
@@ -480,7 +500,7 @@ LauncherFile* launcher_file_construct (GType object_type, const char* data, GErr
 	g_return_val_if_fail (data != NULL, NULL);
 	_inner_error_ = NULL;
 	self = (LauncherFile*) g_object_new (object_type, NULL);
-	g_message ("launcherfile.vala:143: New incomming launcher file");
+	g_message ("launcherfile.vala:145: New incomming launcher file");
 	launcher_file_set_rawdata (self, data);
 	launcher_file_init (self, NULL, &_inner_error_);
 	if (_inner_error_ != NULL) {
@@ -637,9 +657,22 @@ char* launcher_file_get_uri (LauncherFile* self) {
 }
 
 
+char* launcher_file_get_cookie (LauncherFile* self) {
+	char* result;
+	char* _tmp3_;
+	char* _tmp2_;
+	char* _tmp1_;
+	char* _tmp0_;
+	char* _tmp4_;
+	g_return_val_if_fail (self != NULL, NULL);
+	result = (_tmp4_ = g_strconcat (_tmp3_ = g_strconcat (_tmp2_ = g_strconcat (_tmp1_ = g_strconcat (_tmp0_ = g_strconcat ("RoxenACauth=", self->priv->_auth_cookie, NULL), "; ", NULL), "RoxenALparams=\"", NULL), self->priv->_sb_params, NULL), "\"", NULL), _g_free0 (_tmp3_), _g_free0 (_tmp2_), _g_free0 (_tmp1_), _g_free0 (_tmp0_), _tmp4_);
+	return result;
+}
+
+
 void launcher_file_unset_application (LauncherFile* self) {
 	g_return_if_fail (self != NULL);
-	g_message ("launcherfile.vala:209: Unsetting application for launcher file");
+	g_message ("launcherfile.vala:219: Unsetting application for launcher file");
 	launcher_file_set_application (self, NULL);
 }
 
@@ -650,7 +683,7 @@ gboolean launcher_file_delete (LauncherFile* self) {
 	gboolean retval;
 	g_return_val_if_fail (self != NULL, FALSE);
 	_inner_error_ = NULL;
-	g_message ("launcherfile.vala:218: Delete laucher file: %s", self->priv->_local_file);
+	g_message ("launcherfile.vala:228: Delete laucher file: %s", self->priv->_local_file);
 	retval = TRUE;
 	{
 		GFile* _tmp0_;
@@ -664,8 +697,8 @@ gboolean launcher_file_delete (LauncherFile* self) {
 		}
 		dir = (_tmp1_ = g_file_enumerate_children (_tmp0_ = g_file_new_for_path (self->priv->_local_dir), "standard::name", 0, NULL, &_inner_error_), _g_object_unref0 (_tmp0_), _tmp1_);
 		if (_inner_error_ != NULL) {
-			goto __catch6_g_error;
-			goto __finally6;
+			goto __catch7_g_error;
+			goto __finally7;
 		}
 		fi = NULL;
 		fp = NULL;
@@ -679,21 +712,21 @@ gboolean launcher_file_delete (LauncherFile* self) {
 				_g_object_unref0 (dir);
 				_g_object_unref0 (fi);
 				_g_free0 (fp);
-				goto __catch6_g_error;
-				goto __finally6;
+				goto __catch7_g_error;
+				goto __finally7;
 			}
 			if (!((fi = (_tmp3_ = _tmp2_, _g_object_unref0 (fi), _tmp3_)) != NULL)) {
 				break;
 			}
 			fp = (_tmp4_ = g_build_filename (self->priv->_local_dir, g_file_info_get_name (fi), NULL), _g_free0 (fp), _tmp4_);
-			g_message ("launcherfile.vala:231: Deleting: %s", fp);
+			g_message ("launcherfile.vala:243: Deleting: %s", fp);
 			g_file_delete (_tmp5_ = g_file_new_for_path (fp), NULL, &_inner_error_);
 			if (_inner_error_ != NULL) {
 				_g_object_unref0 (dir);
 				_g_object_unref0 (fi);
 				_g_free0 (fp);
-				goto __catch6_g_error;
-				goto __finally6;
+				goto __catch7_g_error;
+				goto __finally7;
 			}
 			_g_object_unref0 (_tmp5_);
 		}
@@ -702,27 +735,27 @@ gboolean launcher_file_delete (LauncherFile* self) {
 			_g_object_unref0 (dir);
 			_g_object_unref0 (fi);
 			_g_free0 (fp);
-			goto __catch6_g_error;
-			goto __finally6;
+			goto __catch7_g_error;
+			goto __finally7;
 		}
 		_g_object_unref0 (_tmp6_);
 		_g_object_unref0 (dir);
 		_g_object_unref0 (fi);
 		_g_free0 (fp);
 	}
-	goto __finally6;
-	__catch6_g_error:
+	goto __finally7;
+	__catch7_g_error:
 	{
 		GError * e;
 		e = _inner_error_;
 		_inner_error_ = NULL;
 		{
-			g_warning ("launcherfile.vala:237: Failed to delete launcher file: %s!", e->message);
+			g_warning ("launcherfile.vala:251: Failed to delete launcher file: %s!", e->message);
 			retval = FALSE;
 			_g_error_free0 (e);
 		}
 	}
-	__finally6:
+	__finally7:
 	if (_inner_error_ != NULL) {
 		g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
 		g_clear_error (&_inner_error_);
@@ -755,10 +788,10 @@ void launcher_file_launch_editor (LauncherFile* self) {
 	char* _tmp4_;
 	g_return_if_fail (self != NULL);
 	_inner_error_ = NULL;
-	g_message ("launcherfile.vala:250: Launch editor for: %s", self->priv->_local_file);
+	g_message ("launcherfile.vala:265: Launch editor for: %s", self->priv->_local_file);
 	if (self->priv->_application == NULL) {
 		RoxenlauncherApplication* app;
-		g_message ("launcherfile.vala:253: No application set for %s", self->priv->_content_type);
+		g_message ("launcherfile.vala:269: No application set for %s", self->priv->_local_file);
 		app = roxenlauncher_application_get_for_mimetype (self->priv->_content_type);
 		if (app == NULL) {
 			RoxenlauncherApplication* _tmp0_;
@@ -773,7 +806,11 @@ void launcher_file_launch_editor (LauncherFile* self) {
 		}
 		_g_object_unref0 (app);
 	}
-	g_message ("launcherfile.vala:264: Application to launch: %s", roxenlauncher_application_get_name (self->priv->_application));
+	if (!roxenlauncher_file_exists (self->priv->_local_file)) {
+		launcher_file_download (self, TRUE);
+		return;
+	}
+	g_message ("launcherfile.vala:286: Application to launch: %s", roxenlauncher_application_get_name (self->priv->_application));
 	cmd = g_strdup (roxenlauncher_application_get_command (self->priv->_application));
 	if (roxenlauncher_application_get_arguments (self->priv->_application) != NULL) {
 		_tmp1_ = string_get_length (roxenlauncher_application_get_arguments (self->priv->_application)) > 0;
@@ -800,32 +837,32 @@ void launcher_file_launch_editor (LauncherFile* self) {
 		_tmp7_ = g_file_monitor_file (f, G_FILE_MONITOR_NONE, NULL, &_inner_error_);
 		if (_inner_error_ != NULL) {
 			_g_object_unref0 (f);
-			goto __catch7_g_error;
-			goto __finally7;
+			goto __catch8_g_error;
+			goto __finally8;
 		}
 		self->priv->monitor = (_tmp8_ = _tmp7_, _g_object_unref0 (self->priv->monitor), _tmp8_);
 		g_signal_connect_object (self->priv->monitor, "changed", (GCallback) _launcher_file_on_file_changed_g_file_monitor_changed, self, 0);
 		g_spawn_command_line_async (cmd, &_inner_error_);
 		if (_inner_error_ != NULL) {
 			_g_object_unref0 (f);
-			goto __catch7_g_error;
-			goto __finally7;
+			goto __catch8_g_error;
+			goto __finally8;
 		}
-		g_message ("launcherfile.vala:281: Spawned command");
+		g_message ("launcherfile.vala:304: Spawned command");
 		_g_object_unref0 (f);
 	}
-	goto __finally7;
-	__catch7_g_error:
+	goto __finally8;
+	__catch8_g_error:
 	{
 		GError * e;
 		e = _inner_error_;
 		_inner_error_ = NULL;
 		{
-			g_warning ("launcherfile.vala:284: Error starting application: %s", e->message);
+			g_warning ("launcherfile.vala:307: Error starting application: %s", e->message);
 			_g_error_free0 (e);
 		}
 	}
-	__finally7:
+	__finally8:
 	if (_inner_error_ != NULL) {
 		_g_free0 (cmd);
 		g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
@@ -836,26 +873,189 @@ void launcher_file_launch_editor (LauncherFile* self) {
 }
 
 
-static gboolean _lambda1_ (LauncherFile* self) {
+static void _lambda6_ (SoupBuffer* chunk, Block1Data* _data1_) {
+	LauncherFile * self;
+	self = _data1_->self;
+	g_return_if_fail (chunk != NULL);
+	g_message ("launcherfile.vala:341:  >>> Chunk: %s", chunk->data);
+	g_string_append (_data1_->buffer, chunk->data);
+}
+
+
+static void __lambda6__soup_message_got_chunk (SoupMessage* _sender, SoupBuffer* chunk, gpointer self) {
+	_lambda6_ (chunk, self);
+}
+
+
+static void _lambda7_ (const char* name, const char* val, LauncherFile* self) {
+	g_return_if_fail (name != NULL);
+	g_return_if_fail (val != NULL);
+	g_message ("launcherfile.vala:359:  ¤¤¤ %s: %s", name, val);
+}
+
+
+static void __lambda7__soup_message_headers_foreach_func (const char* name, const char* value, gpointer self) {
+	_lambda7_ (name, value, self);
+}
+
+
+static Block1Data* block1_data_ref (Block1Data* _data1_) {
+	++_data1_->_ref_count_;
+	return _data1_;
+}
+
+
+static Block1Data* block1_data_unref (Block1Data* _data1_) {
+	if ((--_data1_->_ref_count_) == 0) {
+		_g_object_unref0 (_data1_->self);
+		_g_string_free0 (_data1_->buffer);
+		g_slice_free (Block1Data, _data1_);
+	}
+}
+
+
+static gboolean _lambda5_ (LauncherFile* self) {
 	gboolean result;
+	GError * _inner_error_;
+	Block1Data* _data1_;
+	SoupSessionAsync* session;
 	char* _tmp0_;
-	roxenlauncher_main_window_set_file_status (win, self, _tmp0_ = launcher_file_status_as_string (self));
+	SoupMessage* _tmp1_;
+	SoupMessage* msg;
+	SoupMessageHeaders* headers;
+	char* _tmp2_;
+	char* _tmp3_;
+	guint _tmp4_;
+	guint len;
+	guint rlen;
+	guint _tmp5_;
+	GString* _tmp7_;
+	_inner_error_ = NULL;
+	_data1_ = g_slice_new0 (Block1Data);
+	_data1_->_ref_count_ = 1;
+	_data1_->self = g_object_ref (self);
+	session = (SoupSessionAsync*) soup_session_async_new ();
+	msg = (_tmp1_ = soup_message_new ("GET", _tmp0_ = launcher_file_get_uri (self)), _g_free0 (_tmp0_), _tmp1_);
+	headers = soup_message_headers_new (SOUP_MESSAGE_HEADERS_REQUEST);
+	soup_message_headers_append (headers, "User-Agent", "Roxen Application Launcher (Linux)");
+	soup_message_headers_append (headers, "Translate", "f");
+	soup_message_headers_append (headers, "Cookie", _tmp2_ = launcher_file_get_cookie (self));
+	_g_free0 (_tmp2_);
+	soup_message_headers_append (headers, "Connection", "close");
+	msg->request_headers = headers;
+	soup_message_body_set_accumulate (msg->response_body, FALSE);
+	_data1_->buffer = g_string_new ("");
+	g_signal_connect_data (msg, "got-chunk", (GCallback) __lambda6__soup_message_got_chunk, _data1_, (GClosureNotify) NULL, 0);
+	g_message ("launcherfile.vala:346:  # Sending request: %s", _tmp3_ = launcher_file_get_uri (self));
+	_g_free0 (_tmp3_);
+	soup_session_send_message ((SoupSession*) session, msg);
+	g_message ("launcherfile.vala:352:  # Got status: %ld", (glong) (g_object_get (msg, "status-code", &_tmp4_, NULL), _tmp4_));
+	len = (guint) msg->response_body->length;
+	rlen = (guint) _data1_->buffer->len;
+	if (len != rlen) {
+		g_message ("launcherfile.vala:356: Downloaded data id truncated: %ld != %ld", (glong) len, (glong) rlen);
+	}
+	soup_message_headers_foreach (msg->response_headers, __lambda7__soup_message_headers_foreach_func, _data1_);
+	if ((g_object_get (msg, "status-code", &_tmp5_, NULL), _tmp5_) != 200) {
+		guint _tmp6_;
+		g_warning ("launcherfile.vala:364: Bad status in download: %ld", (glong) (g_object_get (msg, "status-code", &_tmp6_, NULL), _tmp6_));
+		launcher_file_win_set_status (self, (gint) LAUNCHER_FILE_STATUSES_NOT_DOWNLOADED);
+		result = FALSE;
+		_g_object_unref0 (session);
+		_g_object_unref0 (msg);
+		_soup_message_headers_free0 (headers);
+		block1_data_unref (_data1_);
+		return result;
+	}
+	if (roxenlauncher_file_exists (self->priv->_local_file)) {
+		g_message ("launcherfile.vala:370: @@@ Local file exists overwrite!");
+	} else {
+		g_message ("launcherfile.vala:373: +++ Local file doesn't exists...create!");
+		{
+			g_file_set_contents (self->priv->_local_file, _data1_->buffer->str, -1, &_inner_error_);
+			if (_inner_error_ != NULL) {
+				goto __catch9_g_error;
+				goto __finally9;
+			}
+		}
+		goto __finally9;
+		__catch9_g_error:
+		{
+			GError * e;
+			e = _inner_error_;
+			_inner_error_ = NULL;
+			{
+				g_warning ("launcherfile.vala:378: Error writing file: %s", e->message);
+				_g_error_free0 (e);
+			}
+		}
+		__finally9:
+		if (_inner_error_ != NULL) {
+			_g_object_unref0 (session);
+			_g_object_unref0 (msg);
+			_soup_message_headers_free0 (headers);
+			block1_data_unref (_data1_);
+			g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
+			g_clear_error (&_inner_error_);
+			return FALSE;
+		}
+	}
+	_data1_->buffer = (_tmp7_ = NULL, _g_string_free0 (_data1_->buffer), _tmp7_);
+	launcher_file_win_set_status (self, (gint) LAUNCHER_FILE_STATUSES_NOT_UPLOADED);
+	launcher_file_launch_editor (self);
+	result = FALSE;
+	_g_object_unref0 (session);
+	_g_object_unref0 (msg);
+	_soup_message_headers_free0 (headers);
+	block1_data_unref (_data1_);
+	return result;
+}
+
+
+static gboolean __lambda5__gsource_func (gpointer self) {
+	return _lambda5_ (self);
+}
+
+
+void launcher_file_download (LauncherFile* self, gboolean do_launch_editor) {
+	char* _tmp0_;
+	g_return_if_fail (self != NULL);
+	if (self->priv->_status == LAUNCHER_FILE_STATUSES_DOWNLOADING) {
+		g_message ("launcherfile.vala:317: === File under downloading ===");
+		return;
+	}
+	g_message ("launcherfile.vala:322:  *** download(%s)", _tmp0_ = launcher_file_get_uri (self));
 	_g_free0 (_tmp0_);
+	launcher_file_win_set_status (self, (gint) LAUNCHER_FILE_STATUSES_DOWNLOADING);
+	g_idle_add_full (G_PRIORITY_DEFAULT_IDLE, __lambda5__gsource_func, g_object_ref (self), g_object_unref);
+	g_message ("launcherfile.vala:392:  --- Post invoke download()");
+}
+
+
+static gboolean _lambda3_ (LauncherFile* self) {
+	gboolean result;
+	char* _tmp1_;
+	char* _tmp0_;
+	char* _tmp2_;
+	g_message ("launcherfile.vala:407:  o win_set_status(%s, %s)", _tmp0_ = launcher_file_get_uri (self), _tmp1_ = launcher_file_status_as_string (self));
+	_g_free0 (_tmp1_);
+	_g_free0 (_tmp0_);
+	roxenlauncher_main_window_set_file_status (win, self, _tmp2_ = launcher_file_status_as_string (self));
+	_g_free0 (_tmp2_);
 	result = FALSE;
 	return result;
 }
 
 
-static gboolean __lambda1__gsource_func (gpointer self) {
-	return _lambda1_ (self);
+static gboolean __lambda3__gsource_func (gpointer self) {
+	return _lambda3_ (self);
 }
 
 
-void launcher_file_download (LauncherFile* self) {
+static void launcher_file_win_set_status (LauncherFile* self, gint st) {
 	g_return_if_fail (self != NULL);
-	g_message ("launcherfile.vala:293: *** Do download...");
-	launcher_file_set_status (self, (gint) LAUNCHER_FILE_STATUSES_DOWNLOADING);
-	g_idle_add_full (G_PRIORITY_DEFAULT_IDLE, __lambda1__gsource_func, g_object_ref (self), g_object_unref);
+	launcher_file_set_status (self, st);
+	g_idle_add_full (G_PRIORITY_DEFAULT_IDLE, __lambda3__gsource_func, g_object_ref (self), g_object_unref);
 }
 
 
@@ -943,13 +1143,13 @@ static void launcher_file_init (LauncherFile* self, const char* _id, GError** er
 	launcher_file_set_local_file (self, _tmp9_ = g_build_filename (self->priv->_local_dir, p[p_length1 - 1], NULL));
 	_g_free0 (_tmp9_);
 	if (_id == NULL) {
-		g_message ("launcherfile.vala:345: First creation");
+		g_message ("launcherfile.vala:461: First creation");
 		launcher_file_save (self);
-		launcher_file_download (self);
+		launcher_file_download (self, TRUE);
 	} else {
 		RoxenlauncherDateTime* lm;
 		if (!roxenlauncher_file_exists (self->priv->_local_file)) {
-			launcher_file_download (self);
+			launcher_file_download (self, TRUE);
 		}
 		lm = roxenlauncher_filemtime (self->priv->_local_file);
 		if (lm != NULL) {
@@ -961,14 +1161,14 @@ static void launcher_file_init (LauncherFile* self, const char* _id, GError** er
 	if (_age != NULL) {
 		launcher_file_set_age (self, _age);
 	}
-	g_message ("launcherfile.vala:362: End of LauncherFile.init()");
+	g_message ("launcherfile.vala:480: End of LauncherFile.init()");
 	a = (_vala_array_free (a, a_length1, (GDestroyNotify) g_free), NULL);
 	p = (_vala_array_free (p, p_length1, (GDestroyNotify) g_free), NULL);
 	_g_object_unref0 (_age);
 }
 
 
-static void _vala_array_add1 (char*** array, int* length, int* size, char* value) {
+static void _vala_array_add2 (char*** array, int* length, int* size, char* value) {
 	if ((*length) == (*size)) {
 		*size = (*size) ? (2 * (*size)) : 4;
 		*array = g_renew (char*, *array, (*size) + 1);
@@ -1034,7 +1234,7 @@ static void launcher_file_randid (LauncherFile* self) {
 				if (!(i < (paths_length1 - 1))) {
 					break;
 				}
-				_vala_array_add1 (&npaths, &npaths_length1, &npaths_size, g_strdup (paths[i]));
+				_vala_array_add2 (&npaths, &npaths_length1, &npaths_size, g_strdup (paths[i]));
 			}
 		}
 	}
@@ -1042,7 +1242,7 @@ static void launcher_file_randid (LauncherFile* self) {
 	_g_free0 (_tmp10_);
 	_g_free0 (_tmp9_);
 	_g_free0 (_tmp8_);
-	g_message ("launcherfile.vala:387: New ID created: %s", self->priv->_id);
+	g_message ("launcherfile.vala:507: New ID created: %s", self->priv->_id);
 	_g_free0 (sb);
 	_g_free0 (p);
 	paths = (_vala_array_free (paths, paths_length1, (GDestroyNotify) g_free), NULL);
@@ -1058,7 +1258,7 @@ static void launcher_file_create_dir (LauncherFile* self) {
 	p = (_tmp1_ = g_build_filename (_tmp0_ = roxenlauncher_getdir ("files"), self->priv->_id, NULL), _g_free0 (_tmp0_), _tmp1_);
 	if (!g_file_test (p, G_FILE_TEST_EXISTS)) {
 		if (g_mkdir_with_parents (p, 0750) == (-1)) {
-			g_error ("launcherfile.vala:398: Unable to create directory for launcher file!");
+			g_error ("launcherfile.vala:519: Unable to create directory for launcher file!");
 		}
 	}
 	_g_free0 (p);
@@ -1098,24 +1298,24 @@ static void launcher_file_save (LauncherFile* self) {
 		g_file_set_contents (f, _tmp4_ = roxenlauncher_implode (data, data_length1, "\r\n"), -1, &_inner_error_);
 		if (_inner_error_ != NULL) {
 			_g_free0 (f);
-			goto __catch8_g_error;
-			goto __finally8;
+			goto __catch10_g_error;
+			goto __finally10;
 		}
 		_g_free0 (_tmp4_);
 		_g_free0 (f);
 	}
-	goto __finally8;
-	__catch8_g_error:
+	goto __finally10;
+	__catch10_g_error:
 	{
 		GError * e;
 		e = _inner_error_;
 		_inner_error_ = NULL;
 		{
-			g_warning ("launcherfile.vala:447: Failed to write stub file to local directory: %s", e->message);
+			g_warning ("launcherfile.vala:568: Failed to write stub file to local directory: %s", e->message);
 			_g_error_free0 (e);
 		}
 	}
-	__finally8:
+	__finally10:
 	if (_inner_error_ != NULL) {
 		data = (_vala_array_free (data, data_length1, (GDestroyNotify) g_free), NULL);
 		g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
@@ -1129,46 +1329,49 @@ static void launcher_file_save (LauncherFile* self) {
 static void launcher_file_on_file_changed (LauncherFile* self, GFile* f, GFile* other, GFileMonitorEvent e) {
 	g_return_if_fail (self != NULL);
 	g_return_if_fail (f != NULL);
-	g_message ("launcherfile.vala:460: *** Changed...%d", (gint) e);
+	g_message ("launcherfile.vala:581: *** Changed...%d", (gint) e);
 	switch (e) {
 		case G_FILE_MONITOR_EVENT_ATTRIBUTE_CHANGED:
 		{
-			g_message ("launcherfile.vala:464: Attribute changed");
+			g_message ("launcherfile.vala:585: Attribute changed");
 			break;
 		}
 		case G_FILE_MONITOR_EVENT_CHANGED:
 		{
-			g_message ("launcherfile.vala:468: File changed");
+			g_message ("launcherfile.vala:589: File changed");
 			break;
 		}
 		case G_FILE_MONITOR_EVENT_CHANGES_DONE_HINT:
 		{
-			g_message ("launcherfile.vala:472: Changes done hint");
+			g_message ("launcherfile.vala:593: Changes done hint");
 			break;
 		}
 		case G_FILE_MONITOR_EVENT_CREATED:
 		{
-			g_message ("launcherfile.vala:476: File created");
+			g_message ("launcherfile.vala:597: File created");
 			break;
 		}
 		case G_FILE_MONITOR_EVENT_DELETED:
 		{
-			g_message ("launcherfile.vala:480: File deleted");
+			g_message ("launcherfile.vala:601: File deleted");
+			if (self->priv->monitor != NULL) {
+				g_file_monitor_cancel (self->priv->monitor);
+			}
 			break;
 		}
 		case G_FILE_MONITOR_EVENT_PRE_UNMOUNT:
 		{
-			g_message ("launcherfile.vala:484: Pre unmounted");
+			g_message ("launcherfile.vala:607: Pre unmounted");
 			break;
 		}
 		case G_FILE_MONITOR_EVENT_UNMOUNTED:
 		{
-			g_message ("launcherfile.vala:488: Unmounted");
+			g_message ("launcherfile.vala:611: Unmounted");
 			break;
 		}
 		default:
 		{
-			g_message ("launcherfile.vala:492: Why???");
+			g_message ("launcherfile.vala:615: Why???");
 			break;
 		}
 	}
@@ -1518,7 +1721,7 @@ static void launcher_file_finalize (GObject* obj) {
 	LauncherFile * self;
 	self = LAUNCHER_FILE (obj);
 	{
-		g_message ("launcherfile.vala:499: Destructor called on launcher file");
+		g_message ("launcherfile.vala:622: Destructor called on launcher file");
 		if (self->priv->monitor != NULL) {
 			g_file_monitor_cancel (self->priv->monitor);
 		}

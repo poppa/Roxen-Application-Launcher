@@ -231,23 +231,19 @@ namespace Roxenlauncher
      */
     public void set_file_status(LauncherFile lf, string status)
     {
-      message("Set file status");
+      //message("Set file status");
 
       ls_files.foreach((model, path, iter) => {
-        message("File...");
-        Value v; 
+        Value v;
         model.get_value(iter, 3, out v);
-        
         LauncherFile f = (LauncherFile)v;
-
-        if (lf != null) { 
-          if (lf.id == f.id) {
-            ls_files.set(iter, 1, status);
-            return true;
-          }
-          else
-            message("This isn't the file!");
+        if (f != null && lf.id == f.id) {
+          ls_files.set(iter, 1, status);
+          return true;
         }
+
+        v.unset();
+        return false;
       });
     }
 
@@ -326,7 +322,8 @@ namespace Roxenlauncher
 
       if (lf != null) {
         message("Got row...%s", lf.get_uri());
-        lf.launch_editor();
+        //lf.launch_editor();
+        lf.download();
       }
     }
     

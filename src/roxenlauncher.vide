@@ -13,29 +13,29 @@ builder-options: !NativeBuilderOptions
   disable-non-null: false
   save-temps: true
   quiet: false
-  other: 
+  other: -D DEBUG
 executable-options:
   program: 
   arguments: 
   working-dir: /home/pontus/Vala/roxenlauncher
   environment: []
 files:
-- path: gui/application-form.vala
-- path: tools.vala
-- path: main.vala
-- path: vapi/config.vapi
-- path: launcherfile.vala
-- path: application.vala
 - path: gui/mainwindow.vala
+- path: application.vala
+- path: launcherfile.vala
+- path: vapi/config.vapi
+- path: main.vala
+- path: tools.vala
+- path: gui/application-form.vala
 packages:
-- name: libgnome-2.0
-- name: gee-1.0
-- name: gio-2.0
-- name: gtk+-2.0
-- name: libsoup-2.4
-- name: unique-1.0
-- name: gconf-2.0
-- name: gdk-2.0
 - name: config
+- name: gdk-2.0
+- name: gconf-2.0
+- name: unique-1.0
+- name: libsoup-2.4
+- name: gtk+-2.0
+- name: gio-2.0
+- name: gee-1.0
+- name: libgnome-2.0
 vapi_dir:
 - path: /home/pontus/Vala/roxenlauncher/src/vapi

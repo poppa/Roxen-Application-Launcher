@@ -120,7 +120,7 @@ GQuark roxenlauncher_roxen_error_quark (void);
 char* roxenlauncher_file_get_contents (const char* file);
 gboolean roxenlauncher_file_exists (const char* file);
 char* roxenlauncher_implode (char** s, int s_length1, const char* glue);
-static void _vala_array_add2 (char*** array, int* length, int* size, char* value);
+static void _vala_array_add1 (char*** array, int* length, int* size, char* value);
 char** roxenlauncher_slice (char** s, int s_length1, guint from, guint to, int* result_length1, GError** error);
 char* roxenlauncher_rtrim (const char* s, const char* tail);
 char* roxenlauncher_ltrim (const char* s, const char* head);
@@ -231,12 +231,12 @@ char* roxenlauncher_file_get_contents (const char* file) {
 		output = (_tmp2_ = _tmp0_, _g_free0 (output), _tmp2_);
 		_tmp1_;
 		if (_inner_error_ != NULL) {
-			goto __catch10_g_error;
-			goto __finally10;
+			goto __catch1_g_error;
+			goto __finally1;
 		}
 	}
-	goto __finally10;
-	__catch10_g_error:
+	goto __finally1;
+	__catch1_g_error:
 	{
 		GError * e;
 		e = _inner_error_;
@@ -246,7 +246,7 @@ char* roxenlauncher_file_get_contents (const char* file) {
 			_g_error_free0 (e);
 		}
 	}
-	__finally10:
+	__finally1:
 	if (_inner_error_ != NULL) {
 		_g_free0 (output);
 		g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
@@ -301,7 +301,7 @@ char* roxenlauncher_implode (char** s, int s_length1, const char* glue) {
 }
 
 
-static void _vala_array_add2 (char*** array, int* length, int* size, char* value) {
+static void _vala_array_add1 (char*** array, int* length, int* size, char* value) {
 	if ((*length) == (*size)) {
 		*size = (*size) ? (2 * (*size)) : 4;
 		*array = g_renew (char*, *array, (*size) + 1);
@@ -354,7 +354,7 @@ char** roxenlauncher_slice (char** s, int s_length1, guint from, guint to, int* 
 				if (!(i < limit)) {
 					break;
 				}
-				_vala_array_add2 (&ss, &ss_length1, &ss_size, g_strdup (s[i]));
+				_vala_array_add1 (&ss, &ss_length1, &ss_size, g_strdup (s[i]));
 			}
 		}
 	}
@@ -504,8 +504,8 @@ RoxenlauncherDateTime* roxenlauncher_filemtime (const char* path) {
 			fi = g_file_query_info (f, G_FILE_ATTRIBUTE_TIME_MODIFIED, G_FILE_QUERY_INFO_NONE, NULL, &_inner_error_);
 			if (_inner_error_ != NULL) {
 				_g_object_unref0 (f);
-				goto __catch11_g_error;
-				goto __finally11;
+				goto __catch2_g_error;
+				goto __finally2;
 			}
 			g_file_info_get_modification_time (fi, &tv);
 			result = roxenlauncher_date_time_timeval (&tv);
@@ -515,8 +515,8 @@ RoxenlauncherDateTime* roxenlauncher_filemtime (const char* path) {
 		}
 		_g_object_unref0 (f);
 	}
-	goto __finally11;
-	__catch11_g_error:
+	goto __finally2;
+	__catch2_g_error:
 	{
 		GError * e;
 		e = _inner_error_;
@@ -526,7 +526,7 @@ RoxenlauncherDateTime* roxenlauncher_filemtime (const char* path) {
 			_g_error_free0 (e);
 		}
 	}
-	__finally11:
+	__finally2:
 	if (_inner_error_ != NULL) {
 		g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
 		g_clear_error (&_inner_error_);
@@ -551,8 +551,8 @@ RoxenlauncherDateTime* roxenlauncher_filectime (const char* path) {
 			fi = g_file_query_info (f, G_FILE_ATTRIBUTE_TIME_CREATED, G_FILE_QUERY_INFO_NONE, NULL, &_inner_error_);
 			if (_inner_error_ != NULL) {
 				_g_object_unref0 (f);
-				goto __catch12_g_error;
-				goto __finally12;
+				goto __catch3_g_error;
+				goto __finally3;
 			}
 			ts = g_file_info_get_attribute_uint64 (fi, G_FILE_ATTRIBUTE_TIME_CREATED);
 			result = roxenlauncher_date_time_unixtime ((time_t) ts);
@@ -562,8 +562,8 @@ RoxenlauncherDateTime* roxenlauncher_filectime (const char* path) {
 		}
 		_g_object_unref0 (f);
 	}
-	goto __finally12;
-	__catch12_g_error:
+	goto __finally3;
+	__catch3_g_error:
 	{
 		GError * e;
 		e = _inner_error_;
@@ -573,7 +573,7 @@ RoxenlauncherDateTime* roxenlauncher_filectime (const char* path) {
 			_g_error_free0 (e);
 		}
 	}
-	__finally12:
+	__finally3:
 	if (_inner_error_ != NULL) {
 		g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
 		g_clear_error (&_inner_error_);
@@ -692,24 +692,24 @@ static char* string_replace (const char* self, const char* old, const char* repl
 		regex = (_tmp1_ = g_regex_new (_tmp0_ = g_regex_escape_string (old, -1), 0, 0, &_inner_error_), _g_free0 (_tmp0_), _tmp1_);
 		if (_inner_error_ != NULL) {
 			if (_inner_error_->domain == G_REGEX_ERROR) {
-				goto __catch13_g_regex_error;
+				goto __catch4_g_regex_error;
 			}
-			goto __finally13;
+			goto __finally4;
 		}
 		_tmp2_ = g_regex_replace_literal (regex, self, (glong) (-1), 0, replacement, 0, &_inner_error_);
 		if (_inner_error_ != NULL) {
 			_g_regex_unref0 (regex);
 			if (_inner_error_->domain == G_REGEX_ERROR) {
-				goto __catch13_g_regex_error;
+				goto __catch4_g_regex_error;
 			}
-			goto __finally13;
+			goto __finally4;
 		}
 		result = _tmp2_;
 		_g_regex_unref0 (regex);
 		return result;
 	}
-	goto __finally13;
-	__catch13_g_regex_error:
+	goto __finally4;
+	__catch4_g_regex_error:
 	{
 		GError * e;
 		e = _inner_error_;
@@ -719,7 +719,7 @@ static char* string_replace (const char* self, const char* old, const char* repl
 			_g_error_free0 (e);
 		}
 	}
-	__finally13:
+	__finally4:
 	if (_inner_error_ != NULL) {
 		g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
 		g_clear_error (&_inner_error_);

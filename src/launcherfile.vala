@@ -67,7 +67,7 @@ public class LauncherFile : Object
    * @param file
    *  
    * @return
-   *  True if successful, false otherwise
+   *  false if the file already exists, true otherwise 
    */
   public static bool incomming(string data, out LauncherFile file) 
     throws RoxenError
@@ -140,7 +140,11 @@ public class LauncherFile : Object
    */
   public LauncherFile(string data) throws RoxenError
   {
+
+#if DEBUG
     message("New incomming launcher file");
+#endif
+
     rawdata = data;
     init(null); 
   }
@@ -201,6 +205,12 @@ public class LauncherFile : Object
     return s;
   }
   
+  public string get_cookie()
+  {
+    return "RoxenACauth=" + auth_cookie + "; " +
+           "RoxenALparams=\"" + sb_params + "\"";
+  }
+  
   /**
    * Unset the application
    */
@@ -228,7 +238,11 @@ public class LauncherFile : Object
       string fp;
       while ((fi = dir.next_file(null)) != null) {
         fp = Path.build_filename(local_dir, fi.get_name());
+
+#if DEBUG
         message("Deleting: %s", fp);
+#endif
+
         File.new_for_path(fp).delete(null);
       }
       File.new_for_path(local_dir).delete(null);
@@ -247,10 +261,12 @@ public class LauncherFile : Object
    */ 
   public void launch_editor()
   {
+#if DEBUG
     message("Launch editor for: %s", local_file);
+#endif
 
     if (application == null) {
-      message("No application set for %s", content_type);
+      message("No application set for %s", local_file);
       var app = Application.get_for_mimetype(content_type);
       if (app == null) {
         application = win.editor_dialog_new(content_type);
@@ -260,8 +276,15 @@ public class LauncherFile : Object
       else
         application = app;
     }
-    
+
+    if (!file_exists(local_file)) {
+      download();
+      return;
+    }
+
+#if DEBUG
     message("Application to launch: %s", application.name);
+#endif
 
     var cmd = application.command;
     if (application.arguments != null && application.arguments.length > 0)
@@ -284,17 +307,108 @@ public class LauncherFile : Object
       warning("Error starting application: %s", e.message); 
     }
   }
-  
+
   /**
    * Download the file from the remote host
    */
-  public void download()
+  public void download(bool do_launch_editor=true)
   {
-    message("*** Do download...");
-    status = Statuses.DOWNLOADING;
-    Idle.add(() => { 
+    if (status == Statuses.DOWNLOADING) {
+      message("=== File under downloading ===");
+      return;
+    }
+
+#if DEBUG
+    message(" *** download(%s)", get_uri());
+#endif
+
+    win_set_status(Statuses.DOWNLOADING);
+
+    Idle.add(() => {
+      var session = new Soup.SessionAsync();
+      var msg     = new Soup.Message("GET", get_uri());
+      var headers = new Soup.MessageHeaders(Soup.MessageHeadersType.REQUEST);
+      headers.append("User-Agent", "Roxen Application Launcher (Linux)");
+      headers.append("Translate", "f");
+      headers.append("Cookie", get_cookie());
+      headers.append("Connection", "close");
+      msg.request_headers = headers;
+      msg.response_body.set_accumulate(false);
+      
+      StringBuilder buffer = new StringBuilder();
+      
+      msg.got_chunk += (chunk) => {
+        message(" >>> Chunk: %s", chunk.data);
+        buffer.append(chunk.data);
+      };
+
+#if DEBUG
+      message(" # Sending request: %s", get_uri());
+#endif
+      
+      session.send_message(msg);
+
+#if DEBUG
+      message(" # Got status: %ld", msg.status_code);
+      uint len = (uint)msg.response_body.length;
+      uint rlen = (uint)buffer.len;
+      if (len != rlen)
+        message("Downloaded data id truncated: %ld != %ld", len, rlen);
+      
+      msg.response_headers.foreach((name, val) => {
+        message(" ¤¤¤ %s: %s", name, val);
+      });
+#endif
+
+      if (msg.status_code != 200) {
+        warning("Bad status in download: %ld", msg.status_code);
+        win_set_status(Statuses.NOT_DOWNLOADED);
+        return false;
+      }
+
+      if (file_exists(local_file)) {
+        message("@@@ Local file exists overwrite!");
+      }
+      else {
+        message("+++ Local file doesn't exists...create!");
+        try {
+          FileUtils.set_contents(local_file, buffer.str);
+        }
+        catch (Error e) {
+          warning("Error writing file: %s", e.message);
+        }
+      }
+      
+      buffer = null;
+      
+      win_set_status(Statuses.NOT_UPLOADED);
+
+      launch_editor();
+
+      return false;
+    });
+
+#if DEBUG
+    message(" --- Post invoke download()");
+#endif
+  }
+
+  /**
+   * Set status for the file in the treeview
+   *
+   * @param st
+   */
+  private void  win_set_status(int st)
+  {
+    status = st;
+    Idle.add(() => {
+
+#if DEBUG
+      message(" o win_set_status(%s, %s)", get_uri(), status_as_string());
+#endif
+
       win.set_file_status(this, status_as_string());
-      return false; 
+      return false;
     });
   }
 
@@ -342,7 +456,11 @@ public class LauncherFile : Object
     local_file = Path.build_filename(local_dir, p[p.length-1]);
 
     if (_id == null) {
+
+#if DEBUG
       message("First creation");
+#endif
+
       save();
       download();
     }
@@ -358,8 +476,9 @@ public class LauncherFile : Object
     var _age = filectime(local_dir);
     if (_age != null)
       age = _age;
-      
+#if DEBUG
     message("End of LauncherFile.init()");
+#endif
   }
 
   /**
@@ -383,8 +502,10 @@ public class LauncherFile : Object
       npaths += paths[i];
 
     id = sb + "_" + implode(npaths, "_");
-    
+
+#if DEBUG
     message("New ID created: %s", id);
+#endif
   }
 
   /**
@@ -478,6 +599,8 @@ public class LauncherFile : Object
 		
 		  case FileMonitorEvent.DELETED:
 			  message("File deleted");
+			  if (monitor != null)
+			    monitor.cancel();
 			  break;
 			
 		  case FileMonitorEvent.PRE_UNMOUNT:

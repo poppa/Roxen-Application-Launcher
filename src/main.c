@@ -149,13 +149,13 @@ gint application_launcher_run (ApplicationLauncher* self, char** args, int args_
 		char** _tmp6_;
 		_tmp4_ = (_tmp5_ = roxenlauncher_slice (args, args_length1, (guint) 1, 0, &_tmp3_, &_inner_error_), _tmp4__length1 = _tmp3_, _tmp4__size = _tmp4__length1, _tmp5_);
 		if (_inner_error_ != NULL) {
-			goto __catch9_g_error;
-			goto __finally9;
+			goto __catch5_g_error;
+			goto __finally5;
 		}
 		argslist = (_tmp6_ = _tmp4_, argslist = (_vala_array_free (argslist, argslist_length1, (GDestroyNotify) g_free), NULL), argslist_length1 = _tmp4__length1, argslist_size = argslist_length1, _tmp6_);
 	}
-	goto __finally9;
-	__catch9_g_error:
+	goto __finally5;
+	__catch5_g_error:
 	{
 		GError * e;
 		e = _inner_error_;
@@ -165,7 +165,7 @@ gint application_launcher_run (ApplicationLauncher* self, char** args, int args_
 			_g_error_free0 (e);
 		}
 	}
-	__finally9:
+	__finally5:
 	if (_inner_error_ != NULL) {
 		argslist = (_vala_array_free (argslist, argslist_length1, (GDestroyNotify) g_free), NULL);
 		g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
@@ -244,7 +244,7 @@ static void application_launcher_handle_incomming_file (ApplicationLauncher* sel
 		if (_tmp3_) {
 			g_message ("main.vala:64: Incomming file is new...%s", launcher_file_get_path (lf));
 		} else {
-			g_message ("main.vala:67: Incomming file exists locally...re-download!");
+			g_message ("main.vala:67: Incomming file exists locally!");
 		}
 		_g_object_unref0 (lf);
 	}

@@ -64,7 +64,7 @@ public class ApplicationLauncher : Object
         message("Incomming file is new...%s", lf.path);
       }
       else {
-        message("Incomming file exists locally...re-download!");
+        message("Incomming file exists locally!");
       } 
     }
   }

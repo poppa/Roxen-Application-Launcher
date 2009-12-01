@@ -102,8 +102,8 @@ static void _roxenlauncher_application_form_on_quit_gtk_object_destroy (GtkObjec
 RoxenlauncherFileDialog* roxenlauncher_file_dialog_new (void);
 RoxenlauncherFileDialog* roxenlauncher_file_dialog_construct (GType object_type);
 GType roxenlauncher_file_dialog_get_type (void);
-static void _lambda3_ (RoxenlauncherApplicationForm* self);
-static void __lambda3__gtk_button_clicked (GtkButton* _sender, gpointer self);
+static void _lambda0_ (RoxenlauncherApplicationForm* self);
+static void __lambda0__gtk_button_clicked (GtkButton* _sender, gpointer self);
 void roxenlauncher_application_form_run (RoxenlauncherApplicationForm* self);
 static void roxenlauncher_application_form_set_response (RoxenlauncherApplicationForm* self, gboolean value);
 RoxenlauncherApplicationForm* roxenlauncher_application_form_new (void);
@@ -125,8 +125,8 @@ enum  {
 	ROXENLAUNCHER_FILE_DIALOG_DUMMY_PROPERTY
 };
 char* roxenlauncher_get_last_folder (void);
-static void _lambda4_ (RoxenlauncherFileDialog* self);
-static void __lambda4__gtk_object_destroy (GtkObject* _sender, gpointer self);
+static void _lambda1_ (RoxenlauncherFileDialog* self);
+static void __lambda1__gtk_object_destroy (GtkObject* _sender, gpointer self);
 void roxenlauncher_set_last_folder (const char* path);
 static void roxenlauncher_file_dialog_real_response (GtkDialog* base, gint type);
 static void roxenlauncher_file_dialog_finalize (GObject* obj);
@@ -162,7 +162,7 @@ static void _roxenlauncher_application_form_on_quit_gtk_object_destroy (GtkObjec
 }
 
 
-static void _lambda3_ (RoxenlauncherApplicationForm* self) {
+static void _lambda0_ (RoxenlauncherApplicationForm* self) {
 	RoxenlauncherFileDialog* fd;
 	gint res;
 	fd = g_object_ref_sink (roxenlauncher_file_dialog_new ());
@@ -190,8 +190,8 @@ static void _lambda3_ (RoxenlauncherApplicationForm* self) {
 }
 
 
-static void __lambda3__gtk_button_clicked (GtkButton* _sender, gpointer self) {
-	_lambda3_ (self);
+static void __lambda0__gtk_button_clicked (GtkButton* _sender, gpointer self) {
+	_lambda0_ (self);
 }
 
 
@@ -236,13 +236,13 @@ void roxenlauncher_application_form_run (RoxenlauncherApplicationForm* self) {
 						gtk_builder_set_translation_domain (self->priv->builder, "roxenlauncher");
 						gtk_builder_add_from_file (self->priv->builder, filename, &_inner_error_);
 						if (_inner_error_ != NULL) {
-							goto __catch14_g_error;
-							goto __finally14;
+							goto __catch0_g_error;
+							goto __finally0;
 						}
 						gui_loaded = TRUE;
 					}
-					goto __finally14;
-					__catch14_g_error:
+					goto __finally0;
+					__catch0_g_error:
 					{
 						GError * e;
 						e = _inner_error_;
@@ -252,7 +252,7 @@ void roxenlauncher_application_form_run (RoxenlauncherApplicationForm* self) {
 							_g_error_free0 (e);
 						}
 					}
-					__finally14:
+					__finally0:
 					if (_inner_error_ != NULL) {
 						_g_free0 (path);
 						_g_free0 (filename);
@@ -290,7 +290,7 @@ void roxenlauncher_application_form_run (RoxenlauncherApplicationForm* self) {
 	g_signal_connect_object (self->priv->btn_cancel, "clicked", (GCallback) _roxenlauncher_application_form_on_btn_cancel_clicked_gtk_button_clicked, self, 0);
 	g_signal_connect_object (self->priv->btn_ok, "clicked", (GCallback) _roxenlauncher_application_form_on_btn_ok_clicked_gtk_button_clicked, self, 0);
 	g_signal_connect_object ((GtkObject*) self->priv->dialog, "destroy", (GCallback) _roxenlauncher_application_form_on_quit_gtk_object_destroy, self, 0);
-	g_signal_connect_object (self->priv->btn_browse, "clicked", (GCallback) __lambda3__gtk_button_clicked, self, 0);
+	g_signal_connect_object (self->priv->btn_browse, "clicked", (GCallback) __lambda0__gtk_button_clicked, self, 0);
 	gtk_dialog_run (self->priv->dialog);
 	gtk_object_destroy ((GtkObject*) self->priv->dialog);
 	ui_paths = (_vala_array_free (ui_paths, ui_paths_length1, (GDestroyNotify) g_free), NULL);
@@ -559,13 +559,13 @@ static void roxenlauncher_application_form_set_property (GObject * object, guint
 }
 
 
-static void _lambda4_ (RoxenlauncherFileDialog* self) {
+static void _lambda1_ (RoxenlauncherFileDialog* self) {
 	gtk_object_destroy ((GtkObject*) self);
 }
 
 
-static void __lambda4__gtk_object_destroy (GtkObject* _sender, gpointer self) {
-	_lambda4_ (self);
+static void __lambda1__gtk_object_destroy (GtkObject* _sender, gpointer self) {
+	_lambda1_ (self);
 }
 
 
@@ -580,7 +580,7 @@ RoxenlauncherFileDialog* roxenlauncher_file_dialog_construct (GType object_type)
 	gtk_dialog_add_button ((GtkDialog*) self, GTK_STOCK_OPEN, (gint) GTK_RESPONSE_ACCEPT);
 	gtk_dialog_set_default_response ((GtkDialog*) self, (gint) GTK_RESPONSE_ACCEPT);
 	gtk_file_chooser_set_current_folder ((GtkFileChooser*) self, self->priv->last_folder);
-	g_signal_connect_object ((GtkObject*) self, "destroy", (GCallback) __lambda4__gtk_object_destroy, self, 0);
+	g_signal_connect_object ((GtkObject*) self, "destroy", (GCallback) __lambda1__gtk_object_destroy, self, 0);
 	return self;
 }
 
