@@ -113,14 +113,16 @@ namespace Roxenlauncher
         cl.set_expand(true);
         tv_files.insert_column(cl, -1);
       }
+      
+      var dummy_date = new DateTime().to_unixtime();
 
       foreach (LauncherFile lf in LauncherFile.get_files()) {
         Gtk.TreeIter iter;
         ls_files.append(out iter);
 
         string last_upload = "";
-        if (lf.status == 0)
-          last_upload = lf.last_upload.to_string();
+        if (lf.last_upload.to_unixtime() > dummy_date)
+          last_upload = lf.last_upload.format(App.DATE_FORMAT);
 
         ls_files.set(iter, 0, lf.get_uri(), 1, lf.status_as_string(),
                            2, last_upload, 3, lf, -1);        
@@ -240,6 +242,8 @@ namespace Roxenlauncher
         LauncherFile f = (LauncherFile)v;
         if (f != null && lf.id == f.id) {
           ls_files.set(iter, 1, status);
+          if (f.last_upload.to_unixtime() > (new DateTime().to_unixtime()))
+            ls_files.set(iter, 2, f.last_upload.format(App.DATE_FORMAT));
           return true;
         }
 

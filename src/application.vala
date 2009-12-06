@@ -14,6 +14,7 @@ namespace Roxenlauncher
     public const string EDITOR_UI_FILENAME = "application-form.ui";
     public const string UI_PATH = "gui:"+Config.DATADIR+"/roxenlauncher/ui";
     public const string GCONF_ROOT = "/apps/roxenlauncher/";
+    public const string DATE_FORMAT = "%Y-%m-%d %H:%M";
     public const string USER_AGENT = "Roxen Application Launcher for Linux (" + 
                                      VERSION + ")";
     

@@ -105,9 +105,10 @@ public class LauncherFile : Object
   }
 
   enum Statuses {
+    DUMMY_STATUS,
+    NOT_DOWNLOADED,
     DOWNLOADED,
     UPLOADED,
-    NOT_DOWNLOADED,
     NOT_UPLOADED,
     DOWNLOADING,
     UPLOADING,
@@ -153,7 +154,6 @@ public class LauncherFile : Object
 #if DEBUG
     message("New incomming launcher file");
 #endif
-
     rawdata = data;
     init(null); 
   }
@@ -183,14 +183,14 @@ public class LauncherFile : Object
     string s;
     switch (status)
     {
-      case 0:  s = "Downloaded";     break;
-      case 1:  s = "Uploaded";       break;
-      case 2:  s = "Not downloaded"; break;
-      case 3:  s = "Not uploaded";   break;
-      case 4:  s = "Downloading..."; break;
-      case 5:  s = "Uploading...";   break;
-      case 6:  s = "Not changed";    break;
-      default: s = "Unknown";        break;
+      case 1:  s = "Not downloaded"; break;
+      case 2:  s = "Downloaded";     break;
+      case 3:  s = "Uploaded";       break;
+      case 4:  s = "Not uploaded";   break;
+      case 5:  s = "Downloading..."; break;
+      case 6:  s = "Uploading...";   break;
+      case 7:  s = "Not changed";    break;
+      default: s = "";               break;
     }
 
     return s;
@@ -228,7 +228,6 @@ public class LauncherFile : Object
    */
   public void unset_application()
   {
-    message("Unsetting application for launcher file");
     application = null;
   }
   
@@ -237,7 +236,6 @@ public class LauncherFile : Object
    */
   public bool @delete()
   {
-    message("Delete laucher file: %s", local_file);
     bool retval = true;
     
     try {
@@ -250,11 +248,6 @@ public class LauncherFile : Object
       string fp;
       while ((fi = dir.next_file(null)) != null) {
         fp = Path.build_filename(local_dir, fi.get_name());
-
-#if DEBUG
-        message("Deleting: %s", fp);
-#endif
-
         File.new_for_path(fp).delete(null);
       }
       File.new_for_path(local_dir).delete(null);
@@ -273,10 +266,6 @@ public class LauncherFile : Object
    */ 
   public void launch_editor()
   {
-#if DEBUG
-    message("Launch editor for: %s", local_file);
-#endif
-
     if (application == null) {
       message("No application set for %s", local_file);
       var app = Application.get_for_mimetype(content_type);
@@ -293,10 +282,6 @@ public class LauncherFile : Object
       download();
       return;
     }
-
-#if DEBUG
-    message("Application to launch: %s", application.name);
-#endif
 
     var cmd = application.command;
     if (application.arguments != null && application.arguments.length > 0)
@@ -344,20 +329,10 @@ public class LauncherFile : Object
       return;
     }
 
-#if DEBUG
-    message(" *** download(%s)", get_uri());
-#endif
-
     win_set_status(Statuses.DOWNLOADING);
 
     Idle.add(() => {
-      HTTP.Request req = new HTTP.Request(get_uri());
-      req.headers["User-Agent"] = App.USER_AGENT;
-      req.headers["Translate"] = "f";
-      req.headers["Cookie"] = get_cookie();
-      req.keep_alive = false;
-      
-      HTTP.Response response = req.do_method("GET", null);  
+      HTTP.Response response = get_http_client().do_method("GET", null);  
 
       if (response.status_code != 200) {
         warning("Bad status in download: %ld", response.status_code);
@@ -371,12 +346,8 @@ public class LauncherFile : Object
 
       return false;
     });
-
-#if DEBUG
-    message(" --- Post invoke download()");
-#endif
   }
-  
+
   /**
    * Upload the file to the remote server
    */
@@ -388,8 +359,24 @@ public class LauncherFile : Object
       message("=== File under up/donwloading ===");
       return;
     }
-    
-    message("Do upload file...");
+
+    win_set_status(Statuses.UPLOADING);
+
+    message("> Do upload file...");
+
+    Idle.add(() => {
+      HTTP.Response response = get_http_client().do_method("PUT", file_get_contents(local_file));
+      message("> File uploaded");
+      if (response.status_code != 200) {
+        message("> Bad status code (%d) in upload response!", response.status_code);
+        win_set_status(Statuses.NOT_UPLOADED);
+        return false;
+      }
+      last_upload = DateTime.now();
+      win_set_status(Statuses.UPLOADED);
+      save();
+      return  false;
+    });
   }
   
   /**
@@ -432,13 +419,24 @@ public class LauncherFile : Object
   {
     status = st;
     Idle.add(() => {
-#if DEBUG
-      message(" o win_set_status(%s, %s)", get_uri(), status_as_string());
-#endif
-
       win.set_file_status(this, status_as_string());
       return false;
     });
+  }
+  
+  private HTTP.Request get_http_client()
+  {
+    HTTP.Request req = new HTTP.Request(get_uri());
+    req.headers["User-Agent"] = App.USER_AGENT;
+    req.headers["Translate"]  = "f";
+    req.headers["Cookie"]     = get_cookie();
+    req.keep_alive            = false;
+
+#if DEBUG
+    req.trace = true;
+#endif
+
+    return req;
   }
 
   /**
@@ -661,7 +659,6 @@ public class LauncherFile : Object
   ~LauncherFile()
   {
     message("Destructor called on launcher file");
-    
     if (monitor != null)
       monitor.cancel();
   }

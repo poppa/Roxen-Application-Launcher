@@ -8,6 +8,8 @@ namespace Roxenlauncher
     const string VERSION_1_0 = "1.0";
     const string VERSION_1_1 = "1.1";
 
+    private bool do_trace = false;
+
     /**
      * Class for making simple HTTP requests
      */
@@ -48,6 +50,14 @@ namespace Roxenlauncher
        * Getter/setter for keep alive
        */
       public bool keep_alive { get; set; default = true; }
+      
+      /**
+       * Set to true to output traces
+       */
+      public bool trace { 
+        get { return do_trace; }
+        set { do_trace = value; }
+      }
 
       /**
        * Creates a new Request object from a string uri
@@ -80,13 +90,10 @@ namespace Roxenlauncher
        * @return
        *  Returns a Response object
        */
-      public Response? do_method(owned string method, owned char[]? data)
+      public Response? do_method(owned string method, string? data)
       {
         method = method.up();
-        if (data == null)
-          data = new char[0];
-
-        var content_len = data.length;
+        var content_len = data != null ? data.length : 0;
 
         _headers["Host"] = uri.host;
         _headers["Connection"] = keep_alive ? "keep-alive" : "close";
@@ -109,7 +116,15 @@ namespace Roxenlauncher
 
         var req = "%s %s HTTP/%s\r\n".printf(method, uri.path, http_version);
         req += headers_to_string() + "\r\n";
-        
+
+        if (data != null)
+          req += data;
+
+        if (do_trace) {
+          foreach (string tmp in req.split("\r\n"))
+            stderr.printf("> %s\n", tmp);
+        }
+
         var resolver = Resolver.get_default();
         unowned GLib.List<InetAddress> addresses;
         try {
