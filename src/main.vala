@@ -16,6 +16,7 @@ public class ApplicationLauncher : Object
 
   public int run(string[] args)
   {
+    message("User agent: %s", App.USER_AGENT);
     win = new MainWindow();
     Gtk.init (ref args);
     instance = new Unique.App(App.LIB_UNIQUE_PATH, null);
@@ -60,12 +61,17 @@ public class ApplicationLauncher : Object
     var d = file_get_contents(path);
     if (d != null) {
       LauncherFile lf;
-      if (LauncherFile.incomming(d, out lf)) {
-        message("Incomming file is new...%s", lf.path);
+      try {
+        if (LauncherFile.incomming(d, out lf)) {
+          message("Incomming file is new...%s", lf.path);
+        }
+        else {
+          message("Incomming file exists locally!");
+        } 
       }
-      else {
-        message("Incomming file exists locally!");
-      } 
+      catch (Error e) {
+        message("Failed to handle incomming file: %s", e.message);
+      }
     }
   }
 

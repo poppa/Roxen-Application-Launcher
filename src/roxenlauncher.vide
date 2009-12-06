@@ -11,7 +11,7 @@ builder-options: !NativeBuilderOptions
   disable-assert: false
   disable-checking: false
   disable-non-null: false
-  save-temps: true
+  save-temps: false
   quiet: false
   other: -D DEBUG
 executable-options:
@@ -20,6 +20,7 @@ executable-options:
   working-dir: /home/pontus/Vala/roxenlauncher
   environment: []
 files:
+- path: http-client.vala
 - path: gui/mainwindow.vala
 - path: application.vala
 - path: launcherfile.vala

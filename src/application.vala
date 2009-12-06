@@ -5,6 +5,7 @@ namespace Roxenlauncher
 {
   namespace App
   {
+    public const string VERSION = "0.1";
     public const string NAME = "Roxen Application Launcher";
     public const string LIB_UNIQUE_PATH = "com.roxen.launcher";
     public const string DIR = ".roxenlauncher";
@@ -13,6 +14,8 @@ namespace Roxenlauncher
     public const string EDITOR_UI_FILENAME = "application-form.ui";
     public const string UI_PATH = "gui:"+Config.DATADIR+"/roxenlauncher/ui";
     public const string GCONF_ROOT = "/apps/roxenlauncher/";
+    public const string USER_AGENT = "Roxen Application Launcher for Linux (" + 
+                                     VERSION + ")";
     
     public const string LAST_FOLDER = "~/";
   }

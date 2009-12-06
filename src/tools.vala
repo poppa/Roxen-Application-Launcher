@@ -300,13 +300,19 @@ namespace Roxenlauncher
 		public SimpleURI(string uri)
 		{
 			if (re == null) {
-			  re = new Regex("([-+a-zA-Z0-9]+)://" + // Scheme
-		                   "((.[^:]*):?(.*)?@)?" + // Userinfo
-		                   "(.[^:/]*)"           + // Host
-		                   ":?([0-9]{1,6})?"     + // Port
-		                   "(/.[^?#]*)"          + // Path
-		                   "[?]?(.[^#]*)?"       + // Query
-		                   "#?(.*)?");             // Extra
+			  try {
+			    re = new Regex("([-+a-zA-Z0-9]+)://" + // Scheme
+		                     "((.[^:]*):?(.*)?@)?" + // Userinfo
+		                     "(.[^:/]*)"           + // Host
+		                     ":?([0-9]{1,6})?"     + // Port
+		                     "(/.[^?#]*)"          + // Path
+		                     "[?]?(.[^#]*)?"       + // Query
+		                     "#?(.*)?");             // Extra
+        }
+        catch (Error e) {
+          warning("Regex error: %s", e.message);
+          return;
+        }
 			}
 
 			MatchInfo m;

@@ -88,8 +88,9 @@ namespace Roxenlauncher
       cb_logging.toggled += () => { 
         fc_logfile.sensitive = cb_logging.active;
       };
+      btn_edit_file.clicked   += on_btn_edit_file_clicked;
       btn_finish_file.clicked += on_btn_finish_file_clicked;
-      btn_finish_all.clicked += on_btn_finish_all_clicked;
+      btn_finish_all.clicked  += on_btn_finish_all_clicked;
 
       // Quit item in menu
       ((Gtk.ImageMenuItem)gtkobj("im_quit")).activate += on_window_destroy;
@@ -246,6 +247,28 @@ namespace Roxenlauncher
         return false;
       });
     }
+    
+    /**
+     * Add a launcher file to the treeview
+     *
+     * @param lf
+     */
+    public void add_launcher_file(LauncherFile lf)
+    {
+#if DEBUG
+      message("Add launcher file: %s", lf.get_uri());
+#endif
+      LauncherFile.add_file(lf);
+      Gtk.TreeIter iter;
+      ls_files.append(out iter);
+
+      string last_upload = "";
+      if (lf.status == 0)
+        last_upload = lf.last_upload.to_string();
+
+      ls_files.set(iter, 0, lf.get_uri(), 1, lf.status_as_string(),
+                         2, last_upload, 3, lf, -1);  
+    }
 
     /**
      * Shortcut for getting a Gtk object fron the Glade file
@@ -266,13 +289,21 @@ namespace Roxenlauncher
     {
       editor_dialog_edit();
     }
-    
+
     /**
      * Callback for the remove application button
      */
     void on_btn_remove_app_clicked()
     {
       remove_application();
+    }
+    
+    /**
+     * Callback for the edit file button
+     */
+    void on_btn_edit_file_clicked()
+    {
+      begin_edit_file();
     }
     
     /**
@@ -316,20 +347,12 @@ namespace Roxenlauncher
      */
     void on_tv_files_activated(Gtk.TreePath path, Gtk.TreeViewColumn col)
     {
-      Gtk.TreeModel a;
-      Gtk.TreeIter b;
-      var lf = get_selected_file(out a, out b);
-
-      if (lf != null) {
-        message("Got row...%s", lf.get_uri());
-        //lf.launch_editor();
-        lf.download();
-      }
+      begin_edit_file();
     }
     
     /**
      * Callback for when an app in the treeview is activated (double clicked,
-     * enter i pressed...).
+     * enter is pressed...).
      *
      * @param path
      * @param col
@@ -490,6 +513,23 @@ namespace Roxenlauncher
         }
         Application.remove_application(app);
         ls_apps.remove(iter);
+      }
+    }
+    
+    /**
+     * Downloads the currently selected file and launches the corresponding
+     * editor.
+     */
+    void begin_edit_file()
+    {
+      Gtk.TreeModel a;
+      Gtk.TreeIter b;
+      var lf = get_selected_file(out a, out b);
+
+      if (lf != null) {
+        message("Begin edit file...%s", lf.get_uri());
+        //lf.launch_editor();
+        lf.download();
       }
     }
 

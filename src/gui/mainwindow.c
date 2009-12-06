@@ -66,7 +66,7 @@ typedef struct _RoxenlauncherApplicationClass RoxenlauncherApplicationClass;
 
 typedef struct _RoxenlauncherApplicationForm RoxenlauncherApplicationForm;
 typedef struct _RoxenlauncherApplicationFormClass RoxenlauncherApplicationFormClass;
-typedef struct _Block2Data Block2Data;
+typedef struct _Block1Data Block1Data;
 
 struct _RoxenlauncherMainWindow {
 	GObject parent_instance;
@@ -96,7 +96,7 @@ struct _RoxenlauncherMainWindowPrivate {
 	GtkStatusbar* statusbar;
 };
 
-struct _Block2Data {
+struct _Block1Data {
 	int _ref_count_;
 	RoxenlauncherMainWindow * self;
 	LauncherFile* lf;
@@ -116,8 +116,8 @@ enum  {
 static GObject* roxenlauncher_main_window_gtkobj (RoxenlauncherMainWindow* self, const char* name);
 static void roxenlauncher_main_window_on_window_destroy (RoxenlauncherMainWindow* self);
 static void _roxenlauncher_main_window_on_window_destroy_gtk_object_destroy (GtkWindow* _sender, gpointer self);
-static void _lambda2_ (RoxenlauncherMainWindow* self);
-static void __lambda2__gtk_toggle_button_toggled (GtkCheckButton* _sender, gpointer self);
+static void _lambda0_ (RoxenlauncherMainWindow* self);
+static void __lambda0__gtk_toggle_button_toggled (GtkCheckButton* _sender, gpointer self);
 static void roxenlauncher_main_window_on_btn_finish_file_clicked (RoxenlauncherMainWindow* self);
 static void _roxenlauncher_main_window_on_btn_finish_file_clicked_gtk_button_clicked (GtkButton* _sender, gpointer self);
 static void roxenlauncher_main_window_on_btn_finish_all_clicked (RoxenlauncherMainWindow* self);
@@ -147,8 +147,8 @@ static void _roxenlauncher_main_window_on_tv_apps_activated_gtk_tree_view_row_ac
 static void roxenlauncher_main_window_on_tv_apps_selection_changed (RoxenlauncherMainWindow* self);
 static void _roxenlauncher_main_window_on_tv_apps_selection_changed_gtk_tree_selection_changed (GtkTreeSelection* _sender, gpointer self);
 RoxenlauncherApplication* roxenlauncher_main_window_editor_dialog_new (RoxenlauncherMainWindow* self, const char* content_type);
-static void _lambda8_ (RoxenlauncherMainWindow* self);
-static void __lambda8__gtk_button_clicked (GtkButton* _sender, gpointer self);
+static void _lambda6_ (RoxenlauncherMainWindow* self);
+static void __lambda6__gtk_button_clicked (GtkButton* _sender, gpointer self);
 static void roxenlauncher_main_window_on_btn_edit_app_clicked (RoxenlauncherMainWindow* self);
 static void _roxenlauncher_main_window_on_btn_edit_app_clicked_gtk_button_clicked (GtkButton* _sender, gpointer self);
 static void roxenlauncher_main_window_on_btn_remove_app_clicked (RoxenlauncherMainWindow* self);
@@ -182,10 +182,10 @@ void roxenlauncher_application_set_arguments (RoxenlauncherApplication* self, co
 void roxenlauncher_application_save_list (void);
 void roxenlauncher_main_window_editor_dialog_edit (RoxenlauncherMainWindow* self);
 const char* launcher_file_get_id (LauncherFile* self);
-static gboolean _lambda4_ (GtkTreeModel* model, GtkTreePath* path, GtkTreeIter* iter, Block2Data* _data2_);
-static gboolean __lambda4__gtk_tree_model_foreach_func (GtkTreeModel* model, GtkTreePath* path, GtkTreeIter* iter, gpointer self);
-static Block2Data* block2_data_ref (Block2Data* _data2_);
-static Block2Data* block2_data_unref (Block2Data* _data2_);
+static gboolean _lambda2_ (GtkTreeModel* model, GtkTreePath* path, GtkTreeIter* iter, Block1Data* _data1_);
+static gboolean __lambda2__gtk_tree_model_foreach_func (GtkTreeModel* model, GtkTreePath* path, GtkTreeIter* iter, gpointer self);
+static Block1Data* block1_data_ref (Block1Data* _data1_);
+static void block1_data_unref (Block1Data* _data1_);
 void roxenlauncher_main_window_set_file_status (RoxenlauncherMainWindow* self, LauncherFile* lf, const char* status);
 static void roxenlauncher_main_window_remove_application (RoxenlauncherMainWindow* self);
 static void roxenlauncher_main_window_finish_file (RoxenlauncherMainWindow* self);
@@ -217,13 +217,13 @@ static void _roxenlauncher_main_window_on_window_destroy_gtk_object_destroy (Gtk
 }
 
 
-static void _lambda2_ (RoxenlauncherMainWindow* self) {
-	g_object_set ((GtkWidget*) self->priv->fc_logfile, "sensitive", gtk_toggle_button_get_active ((GtkToggleButton*) self->priv->cb_logging), NULL);
+static void _lambda0_ (RoxenlauncherMainWindow* self) {
+	gtk_widget_set_sensitive ((GtkWidget*) self->priv->fc_logfile, gtk_toggle_button_get_active ((GtkToggleButton*) self->priv->cb_logging));
 }
 
 
-static void __lambda2__gtk_toggle_button_toggled (GtkCheckButton* _sender, gpointer self) {
-	_lambda2_ (self);
+static void __lambda0__gtk_toggle_button_toggled (GtkCheckButton* _sender, gpointer self) {
+	_lambda0_ (self);
 }
 
 
@@ -267,15 +267,15 @@ static void _roxenlauncher_main_window_on_tv_apps_selection_changed_gtk_tree_sel
 }
 
 
-static void _lambda8_ (RoxenlauncherMainWindow* self) {
+static void _lambda6_ (RoxenlauncherMainWindow* self) {
 	RoxenlauncherApplication* _tmp0_;
 	_tmp0_ = roxenlauncher_main_window_editor_dialog_new (self, "");
 	_g_object_unref0 (_tmp0_);
 }
 
 
-static void __lambda8__gtk_button_clicked (GtkButton* _sender, gpointer self) {
-	_lambda8_ (self);
+static void __lambda6__gtk_button_clicked (GtkButton* _sender, gpointer self) {
+	_lambda6_ (self);
 }
 
 
@@ -360,13 +360,13 @@ void roxenlauncher_main_window_init (RoxenlauncherMainWindow* self) {
 						gtk_builder_set_translation_domain (self->priv->builder, "roxenlauncher");
 						gtk_builder_add_from_file (self->priv->builder, filename, &_inner_error_);
 						if (_inner_error_ != NULL) {
-							goto __catch15_g_error;
-							goto __finally15;
+							goto __catch4_g_error;
+							goto __finally4;
 						}
 						gui_loaded = TRUE;
 					}
-					goto __finally15;
-					__catch15_g_error:
+					goto __finally4;
+					__catch4_g_error:
 					{
 						GError * e;
 						e = _inner_error_;
@@ -376,7 +376,7 @@ void roxenlauncher_main_window_init (RoxenlauncherMainWindow* self) {
 							_g_error_free0 (e);
 						}
 					}
-					__finally15:
+					__finally4:
 					if (_inner_error_ != NULL) {
 						_g_free0 (path);
 						_g_free0 (filename);
@@ -411,7 +411,7 @@ void roxenlauncher_main_window_init (RoxenlauncherMainWindow* self) {
 	self->priv->ls_apps = (_tmp19_ = GTK_LIST_STORE (roxenlauncher_main_window_gtkobj (self, "ls_apps")), _g_object_unref0 (self->priv->ls_apps), _tmp19_);
 	self->priv->statusbar = (_tmp20_ = GTK_STATUSBAR (roxenlauncher_main_window_gtkobj (self, "statusbar1")), _g_object_unref0 (self->priv->statusbar), _tmp20_);
 	g_signal_connect_object ((GtkObject*) self->priv->win, "destroy", (GCallback) _roxenlauncher_main_window_on_window_destroy_gtk_object_destroy, self, 0);
-	g_signal_connect_object ((GtkToggleButton*) self->priv->cb_logging, "toggled", (GCallback) __lambda2__gtk_toggle_button_toggled, self, 0);
+	g_signal_connect_object ((GtkToggleButton*) self->priv->cb_logging, "toggled", (GCallback) __lambda0__gtk_toggle_button_toggled, self, 0);
 	g_signal_connect_object (self->priv->btn_finish_file, "clicked", (GCallback) _roxenlauncher_main_window_on_btn_finish_file_clicked_gtk_button_clicked, self, 0);
 	g_signal_connect_object (self->priv->btn_finish_all, "clicked", (GCallback) _roxenlauncher_main_window_on_btn_finish_all_clicked_gtk_button_clicked, self, 0);
 	g_signal_connect_object ((GtkMenuItem*) (_tmp21_ = GTK_IMAGE_MENU_ITEM (roxenlauncher_main_window_gtkobj (self, "im_quit"))), "activate", (GCallback) _roxenlauncher_main_window_on_window_destroy_gtk_menu_item_activate, self, 0);
@@ -476,7 +476,7 @@ void roxenlauncher_main_window_init (RoxenlauncherMainWindow* self) {
 		_g_object_unref0 (_lf_it);
 	}
 	if ((_tmp32_ = gee_collection_get_size ((GeeCollection*) (_tmp31_ = launcher_file_get_files ())) > 0, _g_object_unref0 (_tmp31_), _tmp32_)) {
-		g_object_set ((GtkWidget*) self->priv->btn_finish_all, "sensitive", TRUE, NULL);
+		gtk_widget_set_sensitive ((GtkWidget*) self->priv->btn_finish_all, TRUE);
 	}
 	roxenlauncher_main_window_set_file_count (self);
 	g_signal_connect_object (gtk_tree_view_get_selection (self->priv->tv_files), "changed", (GCallback) _roxenlauncher_main_window_on_tv_files_selection_changed_gtk_tree_selection_changed, self, 0);
@@ -529,7 +529,7 @@ void roxenlauncher_main_window_init (RoxenlauncherMainWindow* self) {
 	}
 	g_signal_connect_object (self->priv->tv_apps, "row-activated", (GCallback) _roxenlauncher_main_window_on_tv_apps_activated_gtk_tree_view_row_activated, self, 0);
 	g_signal_connect_object (gtk_tree_view_get_selection (self->priv->tv_apps), "changed", (GCallback) _roxenlauncher_main_window_on_tv_apps_selection_changed_gtk_tree_selection_changed, self, 0);
-	g_signal_connect_object (self->priv->btn_add_app, "clicked", (GCallback) __lambda8__gtk_button_clicked, self, 0);
+	g_signal_connect_object (self->priv->btn_add_app, "clicked", (GCallback) __lambda6__gtk_button_clicked, self, 0);
 	g_signal_connect_object (self->priv->btn_edit_app, "clicked", (GCallback) _roxenlauncher_main_window_on_btn_edit_app_clicked_gtk_button_clicked, self, 0);
 	g_signal_connect_object (self->priv->btn_remove_app, "clicked", (GCallback) _roxenlauncher_main_window_on_btn_remove_app_clicked_gtk_button_clicked, self, 0);
 	g_signal_connect_object ((GtkWidget*) self->priv->tv_apps, "key-release-event", (GCallback) _roxenlauncher_main_window_on_tv_apps_key_release_event_gtk_widget_key_release_event, self, 0);
@@ -608,7 +608,7 @@ static gpointer _g_object_ref0 (gpointer self) {
 }
 
 
-static gboolean _lambda4_ (GtkTreeModel* model, GtkTreePath* path, GtkTreeIter* iter, Block2Data* _data2_) {
+static gboolean _lambda2_ (GtkTreeModel* model, GtkTreePath* path, GtkTreeIter* iter, Block1Data* _data1_) {
 	RoxenlauncherMainWindow * self;
 	gboolean result;
 	GValue v = {0};
@@ -616,19 +616,19 @@ static gboolean _lambda4_ (GtkTreeModel* model, GtkTreePath* path, GtkTreeIter* 
 	GValue _tmp0_ = {0};
 	LauncherFile* f;
 	gboolean _tmp2_ = FALSE;
-	self = _data2_->self;
+	self = _data1_->self;
 	g_return_val_if_fail (model != NULL, FALSE);
 	g_return_val_if_fail (path != NULL, FALSE);
 	gtk_tree_model_get_value (model, iter, 3, &_tmp0_);
 	v = (_tmp1_ = _tmp0_, G_IS_VALUE (&v) ? (g_value_unset (&v), NULL) : NULL, _tmp1_);
 	f = _g_object_ref0 (g_value_get_object (&v));
 	if (f != NULL) {
-		_tmp2_ = _vala_strcmp0 (launcher_file_get_id (_data2_->lf), launcher_file_get_id (f)) == 0;
+		_tmp2_ = _vala_strcmp0 (launcher_file_get_id (_data1_->lf), launcher_file_get_id (f)) == 0;
 	} else {
 		_tmp2_ = FALSE;
 	}
 	if (_tmp2_) {
-		gtk_list_store_set (self->priv->ls_files, iter, 1, _data2_->status, -1);
+		gtk_list_store_set (self->priv->ls_files, iter, 1, _data1_->status, -1);
 		result = TRUE;
 		G_IS_VALUE (&v) ? (g_value_unset (&v), NULL) : NULL;
 		_g_object_unref0 (f);
@@ -642,39 +642,39 @@ static gboolean _lambda4_ (GtkTreeModel* model, GtkTreePath* path, GtkTreeIter* 
 }
 
 
-static gboolean __lambda4__gtk_tree_model_foreach_func (GtkTreeModel* model, GtkTreePath* path, GtkTreeIter* iter, gpointer self) {
-	return _lambda4_ (model, path, iter, self);
+static gboolean __lambda2__gtk_tree_model_foreach_func (GtkTreeModel* model, GtkTreePath* path, GtkTreeIter* iter, gpointer self) {
+	return _lambda2_ (model, path, iter, self);
 }
 
 
-static Block2Data* block2_data_ref (Block2Data* _data2_) {
-	++_data2_->_ref_count_;
-	return _data2_;
+static Block1Data* block1_data_ref (Block1Data* _data1_) {
+	++_data1_->_ref_count_;
+	return _data1_;
 }
 
 
-static Block2Data* block2_data_unref (Block2Data* _data2_) {
-	if ((--_data2_->_ref_count_) == 0) {
-		_g_object_unref0 (_data2_->self);
-		_g_object_unref0 (_data2_->lf);
-		_g_free0 (_data2_->status);
-		g_slice_free (Block2Data, _data2_);
+static void block1_data_unref (Block1Data* _data1_) {
+	if ((--_data1_->_ref_count_) == 0) {
+		_g_object_unref0 (_data1_->self);
+		_g_object_unref0 (_data1_->lf);
+		_g_free0 (_data1_->status);
+		g_slice_free (Block1Data, _data1_);
 	}
 }
 
 
 void roxenlauncher_main_window_set_file_status (RoxenlauncherMainWindow* self, LauncherFile* lf, const char* status) {
-	Block2Data* _data2_;
+	Block1Data* _data1_;
 	g_return_if_fail (self != NULL);
 	g_return_if_fail (lf != NULL);
 	g_return_if_fail (status != NULL);
-	_data2_ = g_slice_new0 (Block2Data);
-	_data2_->_ref_count_ = 1;
-	_data2_->self = g_object_ref (self);
-	_data2_->lf = _g_object_ref0 (lf);
-	_data2_->status = g_strdup (status);
-	gtk_tree_model_foreach ((GtkTreeModel*) self->priv->ls_files, __lambda4__gtk_tree_model_foreach_func, _data2_);
-	block2_data_unref (_data2_);
+	_data1_ = g_slice_new0 (Block1Data);
+	_data1_->_ref_count_ = 1;
+	_data1_->self = g_object_ref (self);
+	_data1_->lf = _g_object_ref0 (lf);
+	_data1_->status = g_strdup (status);
+	gtk_tree_model_foreach ((GtkTreeModel*) self->priv->ls_files, __lambda2__gtk_tree_model_foreach_func, _data1_);
+	block1_data_unref (_data1_);
 }
 
 
@@ -872,8 +872,8 @@ static void roxenlauncher_main_window_set_app_buttons_sensitivity (Roxenlauncher
 	sel = _g_object_ref0 (gtk_tree_view_get_selection (self->priv->tv_apps));
 	model = NULL;
 	is_active = (_tmp1_ = gtk_tree_selection_get_selected (sel, &_tmp0_, &iter), model = (_tmp2_ = _g_object_ref0 (_tmp0_), _g_object_unref0 (model), _tmp2_), _tmp1_);
-	g_object_set ((GtkWidget*) self->priv->btn_edit_app, "sensitive", is_active, NULL);
-	g_object_set ((GtkWidget*) self->priv->btn_remove_app, "sensitive", is_active, NULL);
+	gtk_widget_set_sensitive ((GtkWidget*) self->priv->btn_edit_app, is_active);
+	gtk_widget_set_sensitive ((GtkWidget*) self->priv->btn_remove_app, is_active);
 	_g_object_unref0 (sel);
 	_g_object_unref0 (model);
 }
@@ -892,9 +892,9 @@ static void roxenlauncher_main_window_set_buttons_sensitivity (RoxenlauncherMain
 	sel = _g_object_ref0 (gtk_tree_view_get_selection (self->priv->tv_files));
 	model = NULL;
 	is_active = (_tmp1_ = gtk_tree_selection_get_selected (sel, &_tmp0_, &iter), model = (_tmp2_ = _g_object_ref0 (_tmp0_), _g_object_unref0 (model), _tmp2_), _tmp1_);
-	g_object_set ((GtkWidget*) self->priv->btn_edit_file, "sensitive", is_active, NULL);
-	g_object_set ((GtkWidget*) self->priv->btn_finish_file, "sensitive", is_active, NULL);
-	g_object_set ((GtkWidget*) self->priv->btn_finish_all, "sensitive", gee_collection_get_size ((GeeCollection*) (_tmp3_ = launcher_file_get_files ())) > 0, NULL);
+	gtk_widget_set_sensitive ((GtkWidget*) self->priv->btn_edit_file, is_active);
+	gtk_widget_set_sensitive ((GtkWidget*) self->priv->btn_finish_file, is_active);
+	gtk_widget_set_sensitive ((GtkWidget*) self->priv->btn_finish_all, gee_collection_get_size ((GeeCollection*) (_tmp3_ = launcher_file_get_files ())) > 0);
 	_g_object_unref0 (_tmp3_);
 	_g_object_unref0 (sel);
 	_g_object_unref0 (model);

@@ -17,6 +17,16 @@ public class LauncherFile : Object
   }
   
   /**
+   * Adds a launcher file object to the list of files
+   *
+   * @param lf
+   */
+  public static void add_file(LauncherFile lf)
+  {
+    launcherfiles.add(lf);
+  }
+  
+  /**
    * Remove file from the list of launcher files
    *
    * @param file
@@ -140,7 +150,6 @@ public class LauncherFile : Object
    */
   public LauncherFile(string data) throws RoxenError
   {
-
 #if DEBUG
     message("New incomming launcher file");
 #endif
@@ -205,6 +214,9 @@ public class LauncherFile : Object
     return s;
   }
   
+  /**
+   * Returns the cookie to send when downloading/uploading
+   */
   public string get_cookie()
   {
     return "RoxenACauth=" + auth_cookie + "; " +
@@ -293,13 +305,7 @@ public class LauncherFile : Object
     cmd += " \"" + local_file + "\"";
 
     try {
-      if (monitor != null)
-        monitor.cancel();
-
-      var f = File.new_for_path(local_file);
-      monitor = f.monitor_file(FileMonitorFlags.NONE);
-      monitor.changed += on_file_changed;
-
+      set_monitor();
 	    Process.spawn_command_line_async(cmd);
       message("Spawned command");
     }
@@ -309,12 +315,32 @@ public class LauncherFile : Object
   }
 
   /**
+   * Set monitor for local file
+   */
+  void set_monitor()
+  {
+    try {
+      if (monitor != null)
+        monitor.cancel();
+        
+      var f = File.new_for_path(local_file);
+      monitor = f.monitor_file(FileMonitorFlags.NONE);
+      monitor.changed += on_file_changed;
+    }
+    catch (Error e) {
+      warning("Failed to set monitor for \"%s\"", local_file);
+    }
+  }
+
+  /**
    * Download the file from the remote host
    */
   public void download(bool do_launch_editor=true)
   {
-    if (status == Statuses.DOWNLOADING) {
-      message("=== File under downloading ===");
+    if (status == Statuses.DOWNLOADING ||
+        status == Statuses.UPLOADING) 
+    {
+      message("=== File under down/uploading ===");
       return;
     }
 
@@ -325,64 +351,22 @@ public class LauncherFile : Object
     win_set_status(Statuses.DOWNLOADING);
 
     Idle.add(() => {
-      var session = new Soup.SessionAsync();
-      var msg     = new Soup.Message("GET", get_uri());
-      var headers = new Soup.MessageHeaders(Soup.MessageHeadersType.REQUEST);
-      headers.append("User-Agent", "Roxen Application Launcher (Linux)");
-      headers.append("Translate", "f");
-      headers.append("Cookie", get_cookie());
-      headers.append("Connection", "close");
-      msg.request_headers = headers;
-      msg.response_body.set_accumulate(false);
+      HTTP.Request req = new HTTP.Request(get_uri());
+      req.headers["User-Agent"] = App.USER_AGENT;
+      req.headers["Translate"] = "f";
+      req.headers["Cookie"] = get_cookie();
+      req.keep_alive = false;
       
-      StringBuilder buffer = new StringBuilder();
-      
-      msg.got_chunk += (chunk) => {
-        message(" >>> Chunk: %s", chunk.data);
-        buffer.append(chunk.data);
-      };
+      HTTP.Response response = req.do_method("GET", null);  
 
-#if DEBUG
-      message(" # Sending request: %s", get_uri());
-#endif
-      
-      session.send_message(msg);
-
-#if DEBUG
-      message(" # Got status: %ld", msg.status_code);
-      uint len = (uint)msg.response_body.length;
-      uint rlen = (uint)buffer.len;
-      if (len != rlen)
-        message("Downloaded data id truncated: %ld != %ld", len, rlen);
-      
-      msg.response_headers.foreach((name, val) => {
-        message(" ¤¤¤ %s: %s", name, val);
-      });
-#endif
-
-      if (msg.status_code != 200) {
-        warning("Bad status in download: %ld", msg.status_code);
+      if (response.status_code != 200) {
+        warning("Bad status in download: %ld", response.status_code);
         win_set_status(Statuses.NOT_DOWNLOADED);
         return false;
       }
 
-      if (file_exists(local_file)) {
-        message("@@@ Local file exists overwrite!");
-      }
-      else {
-        message("+++ Local file doesn't exists...create!");
-        try {
-          FileUtils.set_contents(local_file, buffer.str);
-        }
-        catch (Error e) {
-          warning("Error writing file: %s", e.message);
-        }
-      }
-      
-      buffer = null;
-      
+      write_download_data(response);
       win_set_status(Statuses.NOT_UPLOADED);
-
       launch_editor();
 
       return false;
@@ -391,6 +375,52 @@ public class LauncherFile : Object
 #if DEBUG
     message(" --- Post invoke download()");
 #endif
+  }
+  
+  /**
+   * Upload the file to the remote server
+   */
+  public void upload()
+  {
+    if (status == Statuses.DOWNLOADING ||
+        status == Statuses.UPLOADING) 
+    {
+      message("=== File under up/donwloading ===");
+      return;
+    }
+    
+    message("Do upload file...");
+  }
+  
+  /**
+   * Write the response stream from the donwloaded file to the local file
+   *
+   * @param resp
+   * @return
+   */
+  private bool write_download_data(HTTP.Response resp)
+  {
+    var tmpfile = Path.build_filename(getdir("$TMP"), 
+                                      Path.get_basename(local_file) + ".tmp");
+    try {
+      var file = File.new_for_path(tmpfile);
+      if (file_exists(tmpfile))
+        file.delete(null);
+        
+      var fh = file.create(FileCreateFlags.NONE, null);
+      var ds = new DataOutputStream(fh);
+      foreach (uint8 c in resp.raw_data)
+        ds.put_byte((uchar)c, null);
+
+      var f = File.new_for_path(local_file);
+      file.move(f, FileCopyFlags.OVERWRITE, null, null);
+    }
+    catch (Error e) {
+      warning("Failed to save tmp file to disk: %s", e.message);
+      return false;
+    }
+    
+    return true;
   }
 
   /**
@@ -402,7 +432,6 @@ public class LauncherFile : Object
   {
     status = st;
     Idle.add(() => {
-
 #if DEBUG
       message(" o win_set_status(%s, %s)", get_uri(), status_as_string());
 #endif
@@ -456,11 +485,13 @@ public class LauncherFile : Object
     local_file = Path.build_filename(local_dir, p[p.length-1]);
 
     if (_id == null) {
-
 #if DEBUG
       message("First creation");
 #endif
-
+      Idle.add(() => {
+        win.add_launcher_file(this);
+        return false;
+      });
       save();
       download();
     }
@@ -569,6 +600,8 @@ public class LauncherFile : Object
     }
   }
 
+  FileMonitorEvent previous_event;
+
   /**
    * Callback for the file monitor when the file is changed.
    *
@@ -591,6 +624,14 @@ public class LauncherFile : Object
 			
 		  case FileMonitorEvent.CHANGES_DONE_HINT:
 			  message("Changes done hint");
+			  if (previous_event == FileMonitorEvent.CREATED ||
+			      previous_event == FileMonitorEvent.CHANGED)
+			  {
+			    upload();
+			  }
+			  else {
+			    message("::: Don't upload: previous status: %d", previous_event);
+			  }
 			  break;
 			
 		  case FileMonitorEvent.CREATED:
@@ -599,8 +640,6 @@ public class LauncherFile : Object
 		
 		  case FileMonitorEvent.DELETED:
 			  message("File deleted");
-			  if (monitor != null)
-			    monitor.cancel();
 			  break;
 			
 		  case FileMonitorEvent.PRE_UNMOUNT:
@@ -615,6 +654,8 @@ public class LauncherFile : Object
 			  message("Why???");
 			  break;
 	  }
+	  
+	  previous_event = e;
   }
   
   ~LauncherFile()
