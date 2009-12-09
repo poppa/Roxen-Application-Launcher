@@ -53,6 +53,11 @@ namespace Roxenlauncher
 
       foreach (string path in ui_paths) {
         string filename = path + "/" + App.EDITOR_UI_FILENAME;
+        if (!filename.has_prefix("/")) {
+          // TODO: Don't forget to fix.
+          filename = "/home/pontus/Vala/roxenlauncher/src/" + filename;
+        }
+
         if (FileUtils.test(filename, FileTest.EXISTS)) {
           try {
             builder.set_translation_domain("roxenlauncher");
@@ -66,7 +71,8 @@ namespace Roxenlauncher
       }
 
       if (!gui_loaded) {
-        error("Unable to load GUI for main window");
+        warning("Unable to load GUI for main window");
+        return;
       }
 
       //builder.connect_signals(this);

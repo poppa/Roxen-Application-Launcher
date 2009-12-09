@@ -15,6 +15,22 @@ public class LauncherFile : Object
   {
     return launcherfiles;
   }
+
+  /**
+   * Returns the list of launcher files in reversed order.
+   * Called from Roxenlauncher.Tray
+   */
+  public static ArrayList<LauncherFile> get_reversed_files()
+  {
+    ArrayList<LauncherFile> nlist = new Gee.ArrayList<LauncherFile>();
+
+    for (int i = launcherfiles.size; i > 0;) {
+      message("*** i is: %ld", i);
+      nlist.add(launcherfiles.get(--i));
+    }
+
+    return nlist; 
+  }
   
   /**
    * Adds a launcher file object to the list of files
@@ -23,6 +39,12 @@ public class LauncherFile : Object
    */
   public static void add_file(LauncherFile lf)
   {
+    foreach (LauncherFile l in launcherfiles)
+      if (l.get_uri() == lf.get_uri()) {
+        warning("Launcher file exists. Skip adding!");
+        return;
+      }
+
     launcherfiles.add(lf);
   }
   
@@ -34,6 +56,22 @@ public class LauncherFile : Object
   public static void remove_file(LauncherFile file)
   {
     launcherfiles.remove(file);
+  }
+  
+  /**
+   * Find the launcher file with URI uri
+   *
+   * @param uri
+   * @return 
+   *  The found LauncherFile object or null
+   */
+  public static LauncherFile? find_by_uri(string uri)
+  {
+    foreach (LauncherFile lf in launcherfiles)
+      if (lf.get_uri() == uri)
+        return lf;
+
+    return null;
   }
   
   /**
@@ -115,28 +153,27 @@ public class LauncherFile : Object
     NOT_CHANGED
   }
 
-  public string rawdata { get; private set; }
-  public string schema { get; private set; }
-  public string host { get; private set; }
-  public string port { get; private set; }
-  public string auth_cookie { get; private set; }
-  public string content_type { get; private set; }
-  public string sb_params { get; private set; }
-  public string id { get; private set; }
-  public string path { get; private set; }
-  public string local_dir { get; private set; }
-  public string local_file { get; private set; }
+  public string      rawdata        { get; private set; }
+  public string      schema         { get; private set; }
+  public string      host           { get; private set; }
+  public string      port           { get; private set; }
+  public string      auth_cookie    { get; private set; }
+  public string      content_type   { get; private set; }
+  public string      sb_params      { get; private set; }
+  public string      id             { get; private set; }
+  public string      path           { get; private set; }
+  public string      local_dir      { get; private set; }
+  public string      local_file     { get; private set; }
+  public int         status         { get; private set; default = -1; }
+  public bool        is_downloading { get; private set; default = false; }
+  public bool        is_uploading   { get; private set; default = false; }
+  public DateTime    last_upload    { get; private set; }
+  public DateTime    last_download  { get; private set; }
+  public DateTime    last_modified  { get; private set; }
+  public DateTime    age            { get; private set; }
+  public Application application    { get; private set; }
 
-  public int status { get; private set; default = -1; }
-  public bool is_downloading { get; private set; default = false; }
-  public bool is_uploading { get; private set; default = false; }
-  
-  private DateTime null_date = new DateTime();
-  public DateTime last_upload { get; private set; }
-  public DateTime last_download { get; private set; }
-  public DateTime last_modified { get; private set; }
-  public DateTime age { get; private set; }
-  public Application application { get; private set; }
+  //private DateTime null_date = new DateTime();
   
   /**
    * File monitor
@@ -316,34 +353,52 @@ public class LauncherFile : Object
       warning("Failed to set monitor for \"%s\"", local_file);
     }
   }
+  
+  /**
+   * Stop the file monitor
+   */
+  void stop_monitor()
+  {
+    if (monitor != null)
+      monitor.cancel();
+
+    monitor = null;
+  }
 
   /**
    * Download the file from the remote host
    */
   public void download(bool do_launch_editor=true)
   {
+    message(">>> download()");
+
     if (status == Statuses.DOWNLOADING ||
         status == Statuses.UPLOADING) 
     {
       message("=== File under down/uploading ===");
       return;
     }
-
+    
+    stop_monitor();
     win_set_status(Statuses.DOWNLOADING);
 
     Idle.add(() => {
       HTTP.Response response = get_http_client().do_method("GET", null);  
-
+      message("Download status code: %d", response.status_code);
       if (response.status_code != 200) {
         warning("Bad status in download: %ld", response.status_code);
         win_set_status(Statuses.NOT_DOWNLOADED);
         return false;
       }
 
-      write_download_data(response);
-      win_set_status(Statuses.NOT_UPLOADED);
-      launch_editor();
+      if (write_download_data(response)) {
+        win_set_status(Statuses.DOWNLOADED);
+        launch_editor();
+      }
+      else 
+        warning("Unable to write downloaded data to disk!");
 
+      save();
       return false;
     });
   }
@@ -365,8 +420,12 @@ public class LauncherFile : Object
     message("> Do upload file...");
 
     Idle.add(() => {
-      HTTP.Response response = get_http_client().do_method("PUT", file_get_contents(local_file));
+      HTTP.Response response = get_http_client().do_method(
+        "PUT", file_get_contents(local_file)
+      );
+
       message("> File uploaded");
+
       if (response.status_code != 200) {
         message("> Bad status code (%d) in upload response!", response.status_code);
         win_set_status(Statuses.NOT_UPLOADED);
@@ -467,8 +526,6 @@ public class LauncherFile : Object
     if (a.length >= 9) {
       last_upload = DateTime.unixtime((time_t)a[7].to_long());
       status = a[8].to_int();
-      if (last_upload.to_unixtime() == null_date.to_unixtime())
-        status = Statuses.NOT_UPLOADED;
     }
     else {
       last_upload = new DateTime();

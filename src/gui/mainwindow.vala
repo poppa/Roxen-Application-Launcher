@@ -5,28 +5,23 @@ namespace Roxenlauncher
 {
   public class MainWindow : GLib.Object
   {
-    Gtk.Builder builder;
-    Gtk.Window win;
+    Gtk.Builder           builder;
+    Gtk.Window            win;
     Gtk.ScrolledWindow    sw_files;
     Gtk.CheckButton       cb_logging;
     Gtk.FileChooserButton fc_logfile;
-    
-    Gtk.Button btn_edit_file;
-    Gtk.Button btn_finish_file;
-    Gtk.Button btn_finish_all;
-    
-    Gtk.Button btn_edit_app;
-    Gtk.Button btn_add_app;
-    Gtk.Button btn_remove_app;
-    
-    Gtk.TreeView tv_files;
-    Gtk.TreeView tv_apps;
-    
-    Gtk.ListStore ls_files;
-    Gtk.ListStore ls_apps;
-    
-    Gtk.Statusbar statusbar;
-   
+    Gtk.Button            btn_edit_file;
+    Gtk.Button            btn_finish_file;
+    Gtk.Button            btn_finish_all;
+    Gtk.Button            btn_edit_app;
+    Gtk.Button            btn_add_app;
+    Gtk.Button            btn_remove_app;
+    Gtk.TreeView          tv_files;
+    Gtk.TreeView          tv_apps;
+    Gtk.ListStore         ls_files;
+    Gtk.ListStore         ls_apps;
+    Gtk.Statusbar         statusbar;
+
     /**
      * Init main window
      */
@@ -42,10 +37,12 @@ namespace Roxenlauncher
         string filename = path + "/" + App.MAIN_UI_FILENAME;
         
         if (!filename.has_prefix("/")) {
+          // TODO: Don't forget to fix.
           filename = "/home/pontus/Vala/roxenlauncher/src/" + filename;
         }
-        
+
         message("UI file name: %s", filename);
+
         if (FileUtils.test(filename, FileTest.EXISTS)) {
           try {
             builder.set_translation_domain("roxenlauncher");
@@ -164,8 +161,6 @@ namespace Roxenlauncher
       btn_remove_app.clicked          += on_btn_remove_app_clicked;
 
       tv_apps.key_release_event.connect(on_tv_apps_key_release_event);
-
-      win.show_all();
     }
     
     /**
@@ -198,6 +193,11 @@ namespace Roxenlauncher
         message("Abort...");
       
       return null;
+    }
+    
+    public Gtk.Window get_window()
+    {
+      return win;
     }
     
     /**
@@ -430,7 +430,7 @@ namespace Roxenlauncher
     /**
      * Callback for when the main window is destroyed. Quits the application
      */ 
-    void on_window_destroy()
+    public void on_window_destroy()
     {
       message("Main killed");
       Gtk.main_quit();
@@ -488,7 +488,7 @@ namespace Roxenlauncher
     /**
      * Finish all files
      */
-    void finish_all_files()
+    public void finish_all_files()
     {
       message("Finish all files...");
       ls_files.clear();

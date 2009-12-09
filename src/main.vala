@@ -3,11 +3,13 @@ using GLib;
 using Roxenlauncher;
 
 Roxenlauncher.MainWindow win;
+Roxenlauncher.Tray tray;
 
 static int main (string[] args) 
 {
-  var app = new ApplicationLauncher();
-	return app.run(args);
+  Gtk.init (ref args);
+  tray = new Tray();
+	return new ApplicationLauncher().run(args);
 }
 
 public class ApplicationLauncher : Object
@@ -18,7 +20,6 @@ public class ApplicationLauncher : Object
   {
     message("User agent: %s", App.USER_AGENT);
     win = new MainWindow();
-    Gtk.init (ref args);
     instance = new Unique.App(App.LIB_UNIQUE_PATH, null);
 
     string[] argslist = new string[args.length-2];
@@ -43,13 +44,15 @@ public class ApplicationLauncher : Object
 
 	  LauncherFile.load_existing();
 	  Application.load_from_gconf();
-
+	  
     if (argslist.length > 0) {
       foreach (string s in argslist)
         handle_incomming_file(s);
     }
 
     win.init();
+    tray.hookup();
+    win.get_window().show_all();
     Gtk.main();
 
 	  return 0;
