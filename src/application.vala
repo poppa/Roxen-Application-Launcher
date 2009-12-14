@@ -17,8 +17,52 @@ namespace Roxenlauncher
     public const string DATE_FORMAT = "%Y-%m-%d %H:%M";
     public const string USER_AGENT = "Roxen Application Launcher for Linux (" + 
                                      VERSION + ")";
-    
-    public const string LAST_FOLDER = "~/";
+    //public const string LAST_FOLDER = "~/";
+  }
+  
+  public struct WindowsProperties
+  {
+    public int width;
+    public int height;
+    public int x;
+    public int y;
+  }
+
+  public void init()
+  {
+    winprops = { 0, 0, 0, 0 };
+    var cli = GConf.Client.get_default();
+    try {
+      string p = App.GCONF_ROOT + "properties/";
+      winprops.width     = cli.get_int(p  + "window-width");
+      winprops.height    = cli.get_int(p  + "window-height");
+      winprops.x         = cli.get_int(p  + "window-x");
+      winprops.y         = cli.get_int(p  + "window-y");
+    }
+    catch (Error e) {
+      warning("Failed to read window properties from GConf: %s", e.message);
+    }
+  }
+  
+  public void save_window_properties(int width, int height, int x, int y)
+  {
+    winprops.width = width;
+    winprops.height = height;
+    winprops.x = x;
+    winprops.y = y;
+    try {
+      var cli = GConf.Client.get_default();
+      string p = App.GCONF_ROOT + "properties/";
+      message("Try set winprops: %d, %d, %d, %d",
+              winprops.width, winprops.height, winprops.x, winprops.y);
+      cli.set_int(p + "window-width",  winprops.width);
+      cli.set_int(p + "window-height", winprops.height);
+      cli.set_int(p + "window-x",      winprops.x);
+      cli.set_int(p + "window-y",      winprops.y);
+    }
+    catch (Error e) {
+      warning("Failed to save window properties to GConf: %s", e.message);
+    }
   }
   
   public string get_last_folder()

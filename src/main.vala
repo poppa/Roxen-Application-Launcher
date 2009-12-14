@@ -2,8 +2,12 @@
 using GLib;
 using Roxenlauncher;
 
+// Set in ApplicationLauncher.run()
 Roxenlauncher.MainWindow win;
+// Set in main()
 Roxenlauncher.Tray tray;
+// Set in init() in application.vala
+Roxenlauncher.WindowsProperties winprops;
 
 static int main (string[] args) 
 {
@@ -18,7 +22,6 @@ public class ApplicationLauncher : Object
 
   public int run(string[] args)
   {
-    message("User agent: %s", App.USER_AGENT);
     win = new MainWindow();
     instance = new Unique.App(App.LIB_UNIQUE_PATH, null);
 
@@ -42,6 +45,7 @@ public class ApplicationLauncher : Object
 
     instance.message_received += on_message_received; 
 
+    init();
 	  LauncherFile.load_existing();
 	  Application.load_from_gconf();
 	  
@@ -70,6 +74,7 @@ public class ApplicationLauncher : Object
         }
         else {
           message("Incomming file exists locally!");
+          win.set_file_selection(lf);
         } 
       }
       catch (Error e) {

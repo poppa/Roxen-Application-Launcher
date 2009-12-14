@@ -80,7 +80,24 @@ namespace Roxenlauncher
 
       statusbar       = (Gtk.Statusbar)         gtkobj("statusbar1");
 
-      // Signals      
+      if (winprops.width > 0 && winprops.height > 0)
+        win.set_default_size(winprops.width, winprops.height);
+
+      if (winprops.x > 0 || winprops.y > 0)
+        win.move(winprops.x, winprops.y);
+
+      // Signals
+      win.configure_event.connect((widget, event) => {
+        // Save new window properties
+        if (event.type == Gdk.EventType.CONFIGURE && (
+            event.width  != winprops.width  ||
+            event.height != winprops.height ||
+            event.x      != winprops.x      ||
+            event.y      != winprops.y))
+        {
+          save_window_properties(event.width, event.height, event.x, event.y);
+        }
+      });
       win.destroy += on_window_destroy;
       cb_logging.toggled += () => { 
         fc_logfile.sensitive = cb_logging.active;
@@ -93,7 +110,7 @@ namespace Roxenlauncher
       ((Gtk.ImageMenuItem)gtkobj("im_quit")).activate += on_window_destroy;
       
       /* File treeview setup */
-      
+
       tv_files.row_activated += on_tv_files_activated;
       // Setup treeviews and liststores
       ls_files = new Gtk.ListStore(4, typeof(string), typeof(string),
@@ -172,17 +189,12 @@ namespace Roxenlauncher
      */
     public Application? editor_dialog_new(string content_type)
     {
-      message("OK");
-
       var d = new ApplicationForm();
       d.content_type = content_type;
-      message("Running dialog...");
       d.run();
       if (d.response) {
-        message("Ok, save...");
         Application app = new Application(d.editor_name, d.editor_command,
                                           d.content_type, d.editor_arguments);
-                                          
         Application.add_application(app);
         Gtk.TreeIter iter;
         ls_apps.append(out iter);
@@ -195,6 +207,9 @@ namespace Roxenlauncher
       return null;
     }
     
+    /**
+     * Returns the GTK main window object
+     */
     public Gtk.Window get_window()
     {
       return win;
@@ -272,6 +287,36 @@ namespace Roxenlauncher
 
       ls_files.set(iter, 0, lf.get_uri(), 1, lf.status_as_string(),
                          2, last_upload, 3, lf, -1);  
+                         
+      set_file_selection(lf);
+      set_file_count();
+    }
+    
+    /**
+     * Selects the launcher file lf in the treeview
+     *
+     * @param lf
+     */
+    public void set_file_selection(LauncherFile lf)
+    {
+      ls_files.foreach((model, path, iter) => {
+        Value v;
+        model.get_value(iter, 3, out v);
+        try {
+          LauncherFile f = (LauncherFile)v;
+          message("%s == %s", f.id, lf.id);
+          if (f != null && f.id == lf.id) {
+            message("Select \"%s\"!", f.get_uri());
+            tv_files.get_selection().select_path(path);
+            return true;
+          }
+        }
+        catch (Error e) {
+          warning("set_file_selection(): %s", e.message);
+        }
+        v.unset();
+        return false;
+      });
     }
 
     /**
@@ -416,7 +461,7 @@ namespace Roxenlauncher
           message("No selected file to delete!");
           return false;
         }
-        
+
         var msg = "Do you want to delete the selected application?";
         if (Alert.confirm(win, msg)) {
           remove_application();
@@ -532,7 +577,6 @@ namespace Roxenlauncher
 
       if (lf != null) {
         message("Begin edit file...%s", lf.get_uri());
-        //lf.launch_editor();
         lf.download();
       }
     }

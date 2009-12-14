@@ -39,6 +39,7 @@ public class LauncherFile : Object
    */
   public static void add_file(LauncherFile lf)
   {
+    message("# Add launcher file (%s) to ArrayList", lf.get_uri());
     foreach (LauncherFile l in launcherfiles)
       if (l.get_uri() == lf.get_uri()) {
         warning("Launcher file exists. Skip adding!");
@@ -137,7 +138,6 @@ public class LauncherFile : Object
     }
 
     file = new LauncherFile(data);
-    launcherfiles.add(file);
 
     return true;
   }
@@ -194,7 +194,7 @@ public class LauncherFile : Object
     rawdata = data;
     init(null); 
   }
-  
+
   /**
    * Creates a new launcher file from an existing stub file
    *
@@ -209,7 +209,7 @@ public class LauncherFile : Object
     rawdata = data == null ? load() : data;
     init(id);
   } 
-  
+
   /**
    * Returns the file status as a string
    *
@@ -431,6 +431,7 @@ public class LauncherFile : Object
         win_set_status(Statuses.NOT_UPLOADED);
         return false;
       }
+
       last_upload = DateTime.now();
       win_set_status(Statuses.UPLOADED);
       save();
@@ -452,7 +453,7 @@ public class LauncherFile : Object
       var file = File.new_for_path(tmpfile);
       if (file_exists(tmpfile))
         file.delete(null);
-        
+
       var fh = file.create(FileCreateFlags.NONE, null);
       var ds = new DataOutputStream(fh);
       foreach (uint8 c in resp.raw_data)
@@ -587,7 +588,10 @@ public class LauncherFile : Object
     for (int i = 0; i < paths.length-1; i++)
       npaths += paths[i];
 
-    id = sb + "_" + implode(npaths, "_");
+    if (npaths.length > 0)
+      id = sb + "_" + implode(npaths, "_");
+    else
+      id = sb;
 
 #if DEBUG
     message("New ID created: %s", id);
