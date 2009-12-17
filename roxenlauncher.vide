@@ -1,0 +1,40 @@
+--- !Project
+path: /home/pontus/Vala/rl2
+name: Roxen Launhcer
+author: "Pontus \xD6stlund"
+version: 0.1.0
+license: GPL-3.0
+builder: make
+builder-options: !NativeBuilderOptions
+  debug: false
+  thread: false
+  disable-assert: false
+  disable-checking: false
+  disable-non-null: false
+  save-temps: false
+  quiet: false
+  other: 
+executable-options:
+  program: 
+  arguments: 
+  working-dir: /home/pontus/Vala/rl2
+  environment: []
+files:
+- path: src/application-form.vala
+- path: NEWS
+- path: README
+- path: AUTHORS
+- path: COPYING
+- path: src/main.vala
+- path: src/application.vala
+- path: src/config.vapi
+- path: src/http-client.vala
+- path: src/launcherfile.vala
+- path: src/mainwindow.vala
+- path: src/tools.vala
+- path: src/tray.vala
+- path: ChangeLog
+- path: MAINTAINERS
+packages:
+- name: gtk+-2.0
+vapi_dir: []

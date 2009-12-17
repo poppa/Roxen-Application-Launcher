@@ -1,0 +1,9 @@
+[encoding: UTF-8]
+# List of source files which contain translatable strings.
+src/mainwindow.vala
+src/launcherfile.vala
+src/application.vala
+src/application-form.vala
+src/tray.vala
+src/gui/mainwindow.ui
+src/gui/application-form.ui

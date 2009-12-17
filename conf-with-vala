@@ -1,0 +1,9 @@
+#/bin/sh
+if test "x$RL_WITH_VALA" == x
+then
+	export RL_WITH_VALA=true
+fi
+
+./autogen.sh
+
+export RL_WITH_VALA=

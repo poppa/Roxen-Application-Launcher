@@ -1,0 +1,238 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: roxenlauncher 0.1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2009-12-16 01:27+0100\n"
+"PO-Revision-Date: 2009-12-16 01:28+0100\n"
+"Last-Translator: Pontus Östlund <pontus@poppa.se>\n"
+"Language-Team: Swedish <pontus@poppa.se>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+"X-Poedit-Language: Swedish\n"
+"X-Poedit-Country: SWEDEN\n"
+"X-Poedit-SourceCharset: utf-8\n"
+"X-Poedit-Basepath: ../\n"
+"X-Poedit-SearchPath-0: src\n"
+"X-Poedit-SearchPath-1: src/gui\n"
+
+#: src/tray.c:279
+msgid "No active files"
+msgstr "Inga aktiva filer"
+
+#: src/tray.c:452
+msgid "Click to show the application launcher"
+msgstr "Klicka för att visa programstartaren"
+
+#: src/tray.c:453
+msgid "Click to hide the application launcher"
+msgstr "Klicka för att gömma programstartaren"
+
+#: src/tray.c:454
+msgid "Show application launcher"
+msgstr "Visa programstartaren"
+
+#: src/tray.c:455
+msgid "Hide application launcher"
+msgstr "Göm programstartaren"
+
+#: src/application-form.c:569
+msgid "Select application..."
+msgstr "Välj program..."
+
+#: src/tools.c:641
+#: src/tools.c:654
+msgid "Unable to create local directory"
+msgstr "Kunde inte skapa lokal katalog"
+
+#: src/mainwindow.c:533
+msgid "File"
+msgstr "Fil"
+
+#: src/mainwindow.c:533
+msgid "Status"
+msgstr "Status"
+
+#: src/mainwindow.c:533
+msgid "Last upload"
+msgstr "Senast uppladdad"
+
+#: src/mainwindow.c:598
+msgid "Content type"
+msgstr "Filtyp"
+
+#: src/mainwindow.c:598
+msgid "Application"
+msgstr "Program"
+
+#: src/mainwindow.c:1074
+msgid "Do you want to delete the selected file?"
+msgstr "Vill du radera den valda filen?"
+
+#: src/mainwindow.c:1116
+msgid "Do you want to delete the selected application?"
+msgstr "Vill du ta bort det valda programmet?"
+
+#: src/mainwindow.c:1381
+msgid "No files"
+msgstr "Inga filer"
+
+#: src/mainwindow.c:1385
+msgid "One file"
+msgstr "En fil"
+
+#: src/mainwindow.c:1388
+#, c-format
+msgid "%d active files"
+msgstr "%d aktiva filer"
+
+#: src/launcherfile.c:520
+#: src/launcherfile.c:1321
+msgid "Bad data in launcher file!"
+msgstr "Felaktigt innehåll i filen"
+
+#: src/launcherfile.c:707
+msgid "Not downloaded"
+msgstr "Ej nerladdad"
+
+#: src/launcherfile.c:713
+msgid "Downloaded"
+msgstr "Nerladdad"
+
+#: src/launcherfile.c:719
+msgid "Uploaded"
+msgstr "Uppladdad"
+
+#: src/launcherfile.c:725
+msgid "Not uploaded"
+msgstr "Ej uppladdad"
+
+#: src/launcherfile.c:731
+msgid "Downloading..."
+msgstr "Laddar ner..."
+
+#: src/launcherfile.c:737
+msgid "Uploading..."
+msgstr "Laddar upp..."
+
+#: src/launcherfile.c:743
+msgid "Not changed"
+msgstr "Ej ändrad"
+
+#: src/launcherfile.c:1307
+msgid "No data in launcher file!"
+msgstr "Filen är tom"
+
+#: src/launcherfile.c:1480
+msgid "Unable to create directory for launcher file!"
+msgstr "Kunde inte skapa katalog för fil"
+
+#: src/application.c:84
+msgid "Roxen Application Launcher"
+msgstr "Roxen Programstartare"
+
+#: src/gui/mainwindow (kopia).ui:25
+#: src/gui/mainwindow.ui:25
+msgid "_File"
+msgstr "_Arkiv"
+
+#: src/gui/mainwindow (kopia).ui:45
+#: src/gui/mainwindow.ui:45
+msgid "_Help"
+msgstr "_Hjälp"
+
+#: src/gui/mainwindow (kopia).ui:170
+#: src/gui/mainwindow.ui:170
+msgid "Files"
+msgstr "Filer"
+
+#: src/gui/mainwindow (kopia).ui:293
+#: src/gui/mainwindow.ui:293
+msgid "Enable logging"
+msgstr "Aktivera loggning"
+
+#: src/gui/mainwindow (kopia).ui:326
+#: src/gui/mainwindow.ui:326
+msgid "<b>Logging</b>"
+msgstr "<b>Loggning</b>"
+
+#: src/gui/mainwindow (kopia).ui:354
+#: src/gui/mainwindow.ui:354
+msgid "Applications"
+msgstr "Program"
+
+#: src/gui/mainwindow.ui:8
+msgid "Roxen™ Application Launcher"
+msgstr "Roxen™ Programstartare"
+
+#: src/gui/mainwindow.ui:395
+msgid "About %s"
+msgstr "Om %s"
+
+#: src/gui/mainwindow.ui:405
+msgid "Copyright © 2009 Pontus Östlund"
+msgstr "Copyright © 2009 Pontus Östlund"
+
+#: src/gui/mainwindow.ui:406
+msgid ""
+"This is a Gnome port - written in Vala - of the Roxen™ \n"
+"Application Launcher originally written in Pike."
+msgstr ""
+"Det här är en Gnome-variant - skriven i Vala - av Roxen™\n"
+"Application Launcher ursprungligen skriven i Pike."
+
+#: src/gui/mainwindow.ui:409
+msgid "www.poppa.se"
+msgstr "www.poppa.se"
+
+#: src/gui/mainwindow.ui:410
+msgid ""
+"ROXEN™ APPLICATION LAUNCHER\n"
+"Copyright © 2009 Pontus Östlund\n"
+"\n"
+"This program is free software: you can redistribute it and/or modify\n"
+"it under the terms of the GNU General Public License as published by\n"
+"the Free Software Foundation, either version 3 of the License, or\n"
+"(at your option) any later version.\n"
+"\n"
+"This program is distributed in the hope that it will be useful,\n"
+"but WITHOUT ANY WARRANTY; without even the implied warranty of\n"
+"MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n"
+"GNU General Public License for more details.\n"
+"\n"
+"You should have received a copy of the GNU General Public License\n"
+"along with this program.  If not, see <http://www.gnu.org/licenses/>.\n"
+msgstr ""
+"ROXEN™ APPLICATION LAUNCHER\n"
+"Copyright © 2009 Pontus Östlund\n"
+"\n"
+"This program is free software: you can redistribute it and/or modify\n"
+"it under the terms of the GNU General Public License as published by\n"
+"the Free Software Foundation, either version 3 of the License, or\n"
+"(at your option) any later version.\n"
+"\n"
+"This program is distributed in the hope that it will be useful,\n"
+"but WITHOUT ANY WARRANTY; without even the implied warranty of\n"
+"MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n"
+"GNU General Public License for more details.\n"
+"\n"
+"You should have received a copy of the GNU General Public License\n"
+"along with this program.  If not, see <http://www.gnu.org/licenses/>.\n"
+
+#: src/gui/application-form.ui:47
+msgid "<b>Content type</b>"
+msgstr "<b>Filtyp</b>"
+
+#: src/gui/application-form.ui:83
+msgid "<b>Editor name</b>"
+msgstr "<b>Programnamn</b>"
+
+#: src/gui/application-form.ui:149
+msgid "<b>Editor command</b>"
+msgstr "<b>Programkommando</b>"
+
+#: src/gui/application-form.ui:185
+msgid "<b>Editor extra arguments</b>"
+msgstr "<b>Extra argument</b>"
+
