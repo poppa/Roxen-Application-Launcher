@@ -1,13 +1,4 @@
-is_maintainer=false
-for opt in $*; do
-case $opt in
-	--enable-maintainer-mode)
-		is_maintainer=true
-		;;
-esac
-done
-
-AC_INIT([roxenlauncher], [0.4.0], [pontus@poppa.se], [roxenlauncher])
+AC_INIT([roxenlauncher], [0.4.1], [pontus@poppa.se], [roxenlauncher])
 AC_CONFIG_SRCDIR([Makefile.am])
 AC_CONFIG_HEADERS(config.h)
 AM_INIT_AUTOMAKE([dist-bzip2])
@@ -41,16 +32,16 @@ AC_SUBST(CFLAGS)
 AC_SUBST(CPPFLAGS)
 AC_SUBST(LDFLAGS)
 
-GLIB_REQUIRED=2.12.0
-GTK_REQUIRED=2.10.0
+GLIB_REQUIRED=2.22.2
+GTK_REQUIRED=2.18.3
 GEE_REQUIRED=0.5
-UNIQUE_REQUIRED=1.0
-SOUP24_REQUIRED=2.4.0
-GCONF_REQUIRED=2.0
-GIO_REQUIRED=2.0
-GDK_REQUIRED=2.0
-GNOME_REQUIRED=2.26.0
-GDK_PIXBUF_REQUIRED=2.0
+UNIQUE_REQUIRED=1.1.2
+SOUP24_REQUIRED=2.28.1
+GCONF_REQUIRED=2.28.0
+GIO_REQUIRED=2.22.2
+GDK_REQUIRED=2.18.3
+GNOME_REQUIRED=2.28.0
+GDK_PIXBUF_REQUIRED=2.18.3
 
 if test "x$RL_WITH_VALA" != x
 then

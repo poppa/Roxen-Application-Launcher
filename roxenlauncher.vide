@@ -1,23 +1,23 @@
 --- !Project
-path: /home/pontus/Vala/rl2
+path: /home/pontus/Vala/roxenlauncher
 name: Roxen Launhcer
 author: "Pontus \xD6stlund"
-version: 0.1.0
+version: 0.4.1
 license: GPL-3.0
-builder: make
-builder-options: !NativeBuilderOptions
-  debug: false
-  thread: false
-  disable-assert: false
-  disable-checking: false
-  disable-non-null: false
-  save-temps: false
-  quiet: false
-  other: 
+builder: Make
+builder-options: !MakeBuilderOptions
+  prefix: ~
+  configure-options: ~
+  build-options: ~
+  install-options: ~
+  dist-options: ~
+  clean-options: ~
+  distclean-options: ~
+  uninstall-options: ~
 executable-options:
   program: 
   arguments: 
-  working-dir: /home/pontus/Vala/rl2
+  working-dir: /home/pontus/Vala/roxenlauncher
   environment: []
 files:
 - path: src/application-form.vala

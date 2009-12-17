@@ -1,0 +1,13 @@
+For those fortunate enough working with Roxen CMS, Roxen Application Launcher
+lets you edit files on a remote Roxen CMS server in your preferred desktop
+application.
+
+This Roxen Application Launcher is primarily for the GNOME desktop and is
+written in the programming language Vala. If you don't have the Vala compiler 
+you can download the C source files from the "Downloads" tab at Github
+
+	http://github.com/poppa/Roxen-Application-Launcher/downloads
+
+which will build with the usual `./configure`, `make` and `make install`
+
+You will need
