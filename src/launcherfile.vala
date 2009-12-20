@@ -340,6 +340,10 @@ public class LauncherFile : Object
       return;
     }
 
+#if DEBUG
+    message("Got application: %s\n", application.name);
+#endif
+
     var cmd = application.command;
     if (application.arguments != null && application.arguments.length > 0)
       cmd += " " + application.arguments;
@@ -445,7 +449,7 @@ public class LauncherFile : Object
 #endif
     Idle.add(() => {
       HTTP.Response response = get_http_client().do_method(
-        "PUT", file_get_contents(local_file)
+        "PUT", bin_read_file(local_file)
       );
 #if DEBUG
       message("> File uploaded");
@@ -688,32 +692,24 @@ public class LauncherFile : Object
 #endif
 	  switch (e)
 	  {
-		  case FileMonitorEvent.ATTRIBUTE_CHANGED:
-#if DEBUG
-			  message("Attribute changed");
-#endif
-			  break;
-			
 		  case FileMonitorEvent.CHANGED:
 #if DEBUG
 			  message("File changed");
 #endif
 			  break;
-			
+
+		  case FileMonitorEvent.ATTRIBUTE_CHANGED:
+#if DEBUG
+			  message("Attribute changed");
+#endif
+        upload_on_change();
+		    break;
+
 		  case FileMonitorEvent.CHANGES_DONE_HINT:
 #if DEBUG
 			  message("Changes done hint");
 #endif
-			  if (previous_event == FileMonitorEvent.CREATED ||
-			      previous_event == FileMonitorEvent.CHANGED)
-			  {
-			    upload();
-			  }
-#if DEBUG
-			  else {
-			    message("::: Don't upload: previous status: %d", previous_event);
-			  }
-#endif
+        upload_on_change();
 			  break;
 			
 		  case FileMonitorEvent.CREATED:
@@ -748,6 +744,24 @@ public class LauncherFile : Object
 	  }
 	  
 	  previous_event = e;
+  }
+  
+  void upload_on_change()
+  {
+#if DEBUG
+    message("Upload on change");
+#endif
+
+	  if (previous_event == FileMonitorEvent.CREATED ||
+	      previous_event == FileMonitorEvent.CHANGED)
+	  {
+	    upload();
+	  }
+#if DEBUG
+	  else {
+	    message("::: Don't upload: previous status: %d", previous_event);
+	  }
+#endif
   }
   
   ~LauncherFile()

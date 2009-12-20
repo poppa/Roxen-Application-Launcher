@@ -112,7 +112,7 @@ namespace Roxenlauncher
 
       btn_cancel.clicked.connect(on_btn_cancel_clicked);
       btn_ok.clicked.connect(on_btn_ok_clicked);
-      dialog.destroy.connect(on_quit);
+      //dialog.destroy.connect(on_quit);
       
       
       btn_browse.clicked.connect((() => {
@@ -159,11 +159,6 @@ namespace Roxenlauncher
       name = tf_editor_name.text;
       cmd = tf_editor_cmd.text;
       args = tf_editor_args.text;
-    }
-
-    void on_quit()
-    {
-      message("Destroy dialog");
     }
   }
   

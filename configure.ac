@@ -1,4 +1,4 @@
-AC_INIT([roxenlauncher], [0.4.1], [pontus@poppa.se], [roxenlauncher])
+AC_INIT([roxenlauncher], [0.4.2], [pontus@poppa.se], [roxenlauncher])
 AC_CONFIG_SRCDIR([Makefile.am])
 AC_CONFIG_HEADERS(config.h)
 AM_INIT_AUTOMAKE([dist-bzip2])
@@ -20,6 +20,10 @@ AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE, "$GETTEXT_PACKAGE")
 AC_SUBST(GETTEXT_PACKAGE)
 AM_GLIB_GNU_GETTEXT
 IT_PROG_INTLTOOL([0.35.0])
+
+AH_TEMPLATE([RL_DEBUG], [Debug flags])
+AC_DEFINE(RL_DEBUG, "$RL_DEBUG")
+AC_SUBST(RL_DEBUG)
 
 if test "x$localedir" == x
 then

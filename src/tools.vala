@@ -45,6 +45,45 @@ namespace Roxenlauncher
     }
     return output;
   }
+
+  public uint8[] bin_read_file(string filename)
+  {
+    var file = File.new_for_path(filename);
+    uint8[] buf = new uint8[]{};
+    uint8[] tmp = new uint8[1024*64];
+
+    try {
+      var stream = file.read(null);
+      for (;;) {
+        size_t read = stream.read(tmp, tmp.length, null);
+        if (read <= 0)
+          break;
+
+        if (read < tmp.length) {
+          uint8[] tmp2 = new uint8[read];
+          Memory.copy(tmp2, tmp, read);
+          tmp = tmp2;
+        }
+
+        buf = HTTP.concat(buf, tmp);
+      }
+    }
+    catch (Error e) {
+      warning("Failed to read stream: %s", e.message);
+    }
+
+    return buf;
+  }
+  
+  public uint8[] string_to_uint8_array(string s)
+  {
+    long len = s.length;
+    uint8[] ret = new uint8[len];
+    for (long i = 0; i < len; i++)
+      ret[i] = (uint8)s[i];
+
+    return ret;
+  }
   
   public bool file_exists(string file)
   {

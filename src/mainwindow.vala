@@ -103,6 +103,9 @@ namespace Roxenlauncher
       cb_logging.toggled += () => { 
         fc_logfile.sensitive = cb_logging.active;
       };
+
+      cb_logging.sensitive = false;
+
       btn_edit_file.clicked   += on_btn_edit_file_clicked;
       btn_finish_file.clicked += on_btn_finish_file_clicked;
       btn_finish_all.clicked  += on_btn_finish_all_clicked;
@@ -563,7 +566,7 @@ namespace Roxenlauncher
       Application app = get_selected_application(out model, out iter);
       if (app != null) {
         foreach (LauncherFile lf in LauncherFile.get_files()) {
-          if (lf.application.mimetype == app.mimetype)
+          if (lf.application != null && lf.application.mimetype == app.mimetype)
             lf.unset_application();
         }
         Application.remove_application(app);

@@ -1,4 +1,3 @@
-
 Roxen Application Launcher for Linux (GNOME)
 ================================================================================
 
@@ -37,7 +36,7 @@ Requirements (RAL 0.4.1)
 	GDK Pixbuf	2.18.3
 
 I can't say these versions actually is required, they are the versions I have
-build against and that's a standard Ubuntu 9.10 except for `libgee` which is
+built against and that's a standard Ubuntu 9.10 except for `libgee` which is
 older in the Ubuntu repositories. (I think GIO, GDK and GDK Pixbuf is part of
 GLib and GTK)
 

@@ -71,7 +71,7 @@ namespace Roxenlauncher
        * Getter/setter for keep alive
        */
       public bool keep_alive { get; set; default = true; }
-      
+
       /**
        * Set to true to output traces
        */
@@ -100,6 +100,7 @@ namespace Roxenlauncher
         my_uri = the_uri.copy();
       }
       
+      
       /**
        * Send request with arbitrary method
        *
@@ -111,7 +112,7 @@ namespace Roxenlauncher
        * @return
        *  Returns a Response object
        */
-      public Response? do_method(owned string method, string? data)
+      public Response? do_method(owned string method, uint8[]? data)
       {
         method = method.up();
         var content_len = data != null ? data.length : 0;
@@ -138,8 +139,9 @@ namespace Roxenlauncher
         var req = "%s %s HTTP/%s\r\n".printf(method, uri.path, http_version);
         req += headers_to_string() + "\r\n";
 
+        uint8[] obuf = string_to_uint8_array(req);
         if (data != null)
-          req += data;
+          obuf = concat(obuf, data);
 
         if (do_trace) {
           foreach (string tmp in req.split("\r\n"))
@@ -163,7 +165,7 @@ namespace Roxenlauncher
           var con = client.connect(new InetSocketAddress(address, 
                                                          (uint16)uri.port), 
                                                          null);
-          con.output_stream.write(req, req.size(), null);
+          con.output_stream.write(obuf, obuf.length, null);
           return new Response(con.input_stream);
         }
         catch (Error e) {
