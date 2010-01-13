@@ -20,21 +20,23 @@ executable-options:
   working-dir: /home/pontus/Vala/roxenlauncher
   environment: []
 files:
-- path: src/application-form.vala
-- path: NEWS
-- path: README
-- path: AUTHORS
-- path: COPYING
-- path: src/main.vala
-- path: src/application.vala
-- path: src/config.vapi
-- path: src/http-client.vala
-- path: src/launcherfile.vala
-- path: src/mainwindow.vala
-- path: src/tools.vala
-- path: src/tray.vala
-- path: ChangeLog
 - path: MAINTAINERS
+- path: ChangeLog
+- path: src/tray.vala
+- path: src/tools.vala
+- path: src/mainwindow.vala
+- path: src/launcherfile.vala
+- path: src/http-client.vala
+- path: src/config.vapi
+- path: src/application.vala
+- path: src/main.vala
+- path: COPYING
+- path: AUTHORS
+- path: README
+- path: NEWS
+- path: src/application-form.vala
+- path: src/soppa.vapi
+- path: src/soppa.c
 packages:
 - name: gtk+-2.0
 vapi_dir: []

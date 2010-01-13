@@ -20,6 +20,7 @@ roxenlauncher_SOURCES =                                                  \
 	tray.vala                                                              \
 	mainwindow.vala                                                        \
 	application-form.vala                                                  \
+	soppa.c                                                                \
 	$(NULL)
 
 roxenlauncher_VALAFLAGS =                                                \
@@ -34,8 +35,10 @@ roxenlauncher_VALAFLAGS =                                                \
 	--pkg=gee-1.0                                                          \
 	--pkg=libgnome-2.0                                                     \
 	--pkg=gdk-pixbuf-2.0                                                   \
+	--pkg=libnotify                                                        \
 	--vapidir=.                                                            \
 	--pkg=config                                                           \
+	--pkg=soppa                                                            \
 	$(RL_DEBUG)                                                            \
 	$(NULL)
 

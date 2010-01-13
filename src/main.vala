@@ -36,7 +36,7 @@ public class ApplicationLauncher : Object
   public static int main (string[] args) 
   {
 #if DEBUG
-    message("Datadir: %s\n", Config.DATADIR);
+    message("DEBUG MODE: %s\n", Config.DATADIR);
 #endif
 
 	  Intl.setlocale(LocaleCategory.ALL,"");

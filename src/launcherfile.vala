@@ -206,9 +206,6 @@ public class LauncherFile : Object
    */
   public LauncherFile(string data) throws RoxenError
   {
-#if DEBUG
-    message("New incomming launcher file");
-#endif
     rawdata = data;
     init(null); 
   }
@@ -322,9 +319,6 @@ public class LauncherFile : Object
   public void launch_editor()
   {
     if (application == null) {
-#if DEBUG
-      message("No application set for %s", local_file);
-#endif
       var app = Application.get_for_mimetype(content_type);
       if (app == null) {
         application = win.editor_dialog_new(content_type);
@@ -339,10 +333,6 @@ public class LauncherFile : Object
       download();
       return;
     }
-
-#if DEBUG
-    message("Got application: %s\n", application.name);
-#endif
 
     var cmd = application.command;
     if (application.arguments != null && application.arguments.length > 0)
@@ -393,38 +383,53 @@ public class LauncherFile : Object
    */
   public void download(bool do_launch_editor=true)
   {
-#if DEBUG
-    message(">>> download()");
-#endif
-
     if (status == Statuses.DOWNLOADING ||
         status == Statuses.UPLOADING) 
     {
-#if DEBUG
-      message("=== File under down/uploading ===");
-#endif
       return;
     }
-    
+
     stop_monitor();
     win_set_status(Statuses.DOWNLOADING);
 
     Idle.add(() => {
-      HTTP.Response response = get_http_client().do_method("GET", null);  
-      if (response.status_code != 200) {
-        warning("Bad status in download: %ld", response.status_code);
+      var sess = new Soup.SessionSync();
+      var mess = new Soup.Message("GET", get_uri());
+      mess.request_headers.append("Cookie", get_cookie());
+      mess.request_headers.append("Translate", "f");
+      sess.send_message(mess);
+
+      if (mess.status_code == Soup.KnownStatusCode.OK) {
+        if (Soppa.save_soup_data(mess.response_body, local_file)) {
+          win_set_status(Statuses.DOWNLOADED);
+          win.show_notification("Download OK", "%s was downloaded OK from %s"
+                                               .printf(path, host));
+          launch_editor();
+        }
+        else {
+          message("Unable to write downloaded data to file!");
+          win_set_status(Statuses.NOT_DOWNLOADED);
+        }
+
+        save();
+      }
+      else if (mess.status_code == Soup.KnownStatusCode.MOVED_PERMANENTLY ||
+               mess.status_code == Soup.KnownStatusCode.MOVED_TEMPORARILY)
+      {
+        message("Redirection...follow!");
+        win.show_notification("Redirection NOT HANDLED", 
+                              "%s was not downloaded OK from %s"
+                              .printf(path, host));
         win_set_status(Statuses.NOT_DOWNLOADED);
-        return false;
+      }
+      else {
+        warning("Bad status (%ld) in download!", mess.status_code);
+        win.show_notification("Download FAILED", "%s was not from %s"
+                                                 .printf(path, host));
+        win_set_status(Statuses.NOT_DOWNLOADED);
+        save();
       }
 
-      if (write_download_data(response)) {
-        win_set_status(Statuses.DOWNLOADED);
-        launch_editor();
-      }
-      else 
-        warning("Unable to write downloaded data to disk!");
-
-      save();
       return false;
     });
   }
@@ -437,68 +442,42 @@ public class LauncherFile : Object
     if (status == Statuses.DOWNLOADING ||
         status == Statuses.UPLOADING) 
     {
-#if DEBUG
-      message("=== File under up/donwloading ===");
-#endif
       return;
     }
 
     win_set_status(Statuses.UPLOADING);
-#if DEBUG
-    message("> Do upload file...");
-#endif
-    Idle.add(() => {
-      HTTP.Response response = get_http_client().do_method(
-        "PUT", bin_read_file(local_file)
-      );
-#if DEBUG
-      message("> File uploaded");
-#endif
-      if (response.status_code != 200) {
-        warning("> Bad status code (%d) in upload response!", 
-                response.status_code);
-        win_set_status(Statuses.NOT_UPLOADED);
-        return false;
-      }
 
-      last_upload = DateTime.now();
-      win_set_status(Statuses.UPLOADED);
+    Idle.add(() => {
+			try {
+				var sess = new Soup.SessionSync();
+			  var mess = new Soup.Message("PUT", get_uri());
+			  mess.request_headers.append("Cookie", get_cookie());
+			  mess.request_headers.append("Translate", "f");
+
+				IOChannel ch = new IOChannel.file(local_file, "r");
+				ch.set_encoding(null); // Enables reading of binary data
+				string s;
+				size_t len;
+				ch.read_to_end(out s, out len);
+
+				mess.request_body.append(Soup.MemoryUse.COPY, s, len);
+    		sess.send_message(mess);
+
+		    last_upload = DateTime.now();
+		    win_set_status(Statuses.UPLOADED);
+		    win.show_notification("Upload OK", "%s was uploaded OK to %s"
+		                                       .printf(path, host));
+			}
+			catch (Error e) {
+				message("Unable to upload file: %s", e.message);
+				win_set_status(Statuses.NOT_UPLOADED);
+			}
+
       save();
       return  false;
     });
   }
   
-  /**
-   * Write the response stream from the donwloaded file to the local file
-   *
-   * @param resp
-   * @return
-   */
-  private bool write_download_data(HTTP.Response resp)
-  {
-    var tmpfile = Path.build_filename(getdir("$TMP"), 
-                                      Path.get_basename(local_file) + ".tmp");
-    try {
-      var file = File.new_for_path(tmpfile);
-      if (file_exists(tmpfile))
-        file.delete(null);
-
-      var fh = file.create(FileCreateFlags.NONE, null);
-      var ds = new DataOutputStream(fh);
-      foreach (uint8 c in resp.raw_data)
-        ds.put_byte((uchar)c, null);
-
-      var f = File.new_for_path(local_file);
-      file.move(f, FileCopyFlags.OVERWRITE, null, null);
-    }
-    catch (Error e) {
-      warning("Failed to save tmp file to disk: %s", e.message);
-      return false;
-    }
-    
-    return true;
-  }
-
   /**
    * Set status for the file in the treeview
    *
@@ -513,21 +492,6 @@ public class LauncherFile : Object
     });
   }
   
-  private HTTP.Request get_http_client()
-  {
-    HTTP.Request req = new HTTP.Request(get_uri());
-    req.headers["User-Agent"] = App.USER_AGENT;
-    req.headers["Translate"]  = "f";
-    req.headers["Cookie"]     = get_cookie();
-    req.keep_alive            = false;
-
-#if DEBUG
-    req.trace = true;
-#endif
-
-    return req;
-  }
-
   /**
    * Initialize the file. Sets up directories and such and downloads the
    * real file from the remote host
@@ -569,10 +533,8 @@ public class LauncherFile : Object
     local_dir = Path.build_filename(getdir("files"), id);
     local_file = Path.build_filename(local_dir, p[p.length-1]);
 
+    // No local copy available - first download
     if (_id == null) {
-#if DEBUG
-      message("First creation");
-#endif
       Idle.add(() => {
         win.add_launcher_file(this);
         return false;

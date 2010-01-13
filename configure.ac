@@ -1,4 +1,4 @@
-AC_INIT([roxenlauncher], [0.4.2], [pontus@poppa.se], [roxenlauncher])
+AC_INIT([roxenlauncher], [0.4.3], [pontus@poppa.se], [roxenlauncher])
 AC_CONFIG_SRCDIR([Makefile.am])
 AC_CONFIG_HEADERS(config.h)
 AM_INIT_AUTOMAKE([dist-bzip2])
@@ -11,8 +11,6 @@ AC_PROG_LIBTOOL
 
 AC_PATH_PROG(VALAC, valac, valac)
 AC_SUBST(VALAC)
-
-#AM_CONDITIONAL([WITHOUT_VALA], [test x$RL_VALA = x])
 
 AH_TEMPLATE([GETTEXT_PACKAGE], [Package name for gettext])
 GETTEXT_PACKAGE='roxenlauncher'
@@ -46,6 +44,7 @@ GIO_REQUIRED=2.22.2
 GDK_REQUIRED=2.18.3
 GNOME_REQUIRED=2.28.0
 GDK_PIXBUF_REQUIRED=2.18.3
+LIBNOTIFY_REQUIRED=0.4
 
 if test "x$RL_WITH_VALA" != x
 then
@@ -70,6 +69,7 @@ PKG_CHECK_MODULES(ROXENLAUNCHER,    \
 	gio-2.0 >= $GIO_REQUIRED          \
 	gdk-2.0 >= $GDK_REQUIRED          \
 	libgnome-2.0 >= $GNOME_REQUIRED   \
+	libnotify >= $LIBNOTIFY_REQUIRED  \
 	gdk-pixbuf-2.0 >= $GDK_PIXBUF_REQUIRED)
 
 AC_SUBST(ROXENLAUNCHER_CFLAGS)

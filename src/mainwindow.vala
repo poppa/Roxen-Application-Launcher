@@ -20,6 +20,7 @@
  */
 
 using Gee;
+using Notify;
 using Roxenlauncher;
 
 namespace Roxenlauncher
@@ -185,6 +186,8 @@ namespace Roxenlauncher
       btn_remove_app.clicked          += on_btn_remove_app_clicked;
 
       tv_apps.key_release_event.connect(on_tv_apps_key_release_event);
+      
+      Notify.init(App.NAME);
     }
     
     /**
@@ -514,7 +517,7 @@ namespace Roxenlauncher
       Gtk.TreeSelection sel = tv_files.get_selection();
       Gtk.TreeIter iter;
       Gtk.TreeModel model;
-      
+
       bool is_active = sel.get_selected(out model, out iter);
 
       btn_edit_file.sensitive = is_active;
@@ -678,8 +681,34 @@ namespace Roxenlauncher
     {
       statusbar.push(0, text);
     }
+    
+    /** 
+     * Displays a notification if wanted
+     *
+     * @param summary
+     * @param text
+     */
+    public void show_notification(string summary, string text)
+    {
+      var nf = new Notification(summary, text, null, null);
+      nf.set_timeout(1000);
+		  nf.set_urgency(Notify.Urgency.NORMAL);
+		  try { 
+		    nf.show();
+		    Timeout.add(1000, () => {
+		      try { nf.close(); }
+		      catch (Error ex) {
+		        message("Notification close error: %s", ex.message);
+		      }
+		      return false;
+		    }); 
+		  }
+		  catch (Error e) {
+		    message("libnotify error: %s", e.message);
+		  }
+    }
   }
-  
+
   class About : GLib.Object
   {
     //Gtk.Builder builder;
