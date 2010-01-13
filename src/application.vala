@@ -67,7 +67,7 @@ namespace Roxenlauncher
   public string? get_ui_path(string local_path)
   {
     // The first index is for local usage during development
-    string[] paths = { "gui", Config.DATADIR + "/roxenlauncher/gui" };
+    string[] paths = { "gui", "src/gui", Config.DATADIR + "/roxenlauncher/gui" };
     string full_path = null;
     foreach (string path in paths) {
       full_path = Path.build_filename(path, local_path);
@@ -77,7 +77,7 @@ namespace Roxenlauncher
 
     return null;
   }
-  
+
   public void save_window_properties(int width, int height, int x, int y)
   {
     winprops.width = width;
@@ -117,6 +117,27 @@ namespace Roxenlauncher
     try { cli.set_string(key, path); }
     catch (Error e) {
       warning("Error setting GConf key \"%s\": %s", key, e.message);
+    }
+  }
+  
+  public bool get_enable_notifications()
+  {
+    var cli = GConf.Client.get_default();
+    bool v = true;
+    try { v = cli.get_bool(App.GCONF_ROOT + "properties/notifications"); }
+    catch (Error e) {
+      warning("Error getting GConf value for notifications!");
+    }
+    
+    return v;
+  }
+
+  public void set_enable_notifications(bool val)
+  {
+    var cli = GConf.Client.get_default();
+    try { cli.set_bool(App.GCONF_ROOT + "properties/notifications", val); }
+    catch (Error e) {
+      warning("Error setting GConf value for notifications!");
     }
   }
 

@@ -46,45 +46,6 @@ namespace Roxenlauncher
     return output;
   }
 
-  public uint8[] bin_read_file(string filename)
-  {
-    var file = File.new_for_path(filename);
-    uint8[] buf = new uint8[]{};
-    uint8[] tmp = new uint8[1024*64];
-
-    try {
-      var stream = file.read(null);
-      for (;;) {
-        size_t read = stream.read(tmp, tmp.length, null);
-        if (read <= 0)
-          break;
-
-        if (read < tmp.length) {
-          uint8[] tmp2 = new uint8[read];
-          Memory.copy(tmp2, tmp, read);
-          tmp = tmp2;
-        }
-
-        buf = HTTP.concat(buf, tmp);
-      }
-    }
-    catch (Error e) {
-      warning("Failed to read stream: %s", e.message);
-    }
-
-    return buf;
-  }
-  
-  public uint8[] string_to_uint8_array(string s)
-  {
-    long len = s.length;
-    uint8[] ret = new uint8[len];
-    for (long i = 0; i < len; i++)
-      ret[i] = (uint8)s[i];
-
-    return ret;
-  }
-  
   public bool file_exists(string file)
   {
     return FileUtils.test(file, FileTest.EXISTS);
@@ -340,89 +301,6 @@ namespace Roxenlauncher
     public time_t to_unixtime()
     {
       return time.mktime();
-    }
-  }
-  
-  public class SimpleURI : Object
-  {
-    private static Regex re;
-    private static HashMap<string,int> _ports;
-
-    public string scheme { get; set; }
-    public string host { get; set; }
-    public string? username { get; set; }
-    public string? password { get; set; }
-    public int port { get; set; }
-    public string? path { get; set; }
-    public string? query { get; set; }
-    public string? fragment { get; set; }
-    
-    public SimpleURI(string uri)
-    {
-      if (re == null) {
-        try {
-          re = new Regex("([-+a-zA-Z0-9]+)://" + // Scheme
-	                       "((.[^:]*):?(.*)?@)?" + // Userinfo
-	                       "(.[^:/]*)"           + // Host
-	                       ":?([0-9]{1,6})?"     + // Port
-	                       "(/.[^?#]*)"          + // Path
-	                       "[?]?(.[^#]*)?"       + // Query
-	                       "#?(.*)?");             // Fragment
-        }
-        catch (Error e) {
-          warning("Regex error: %s", e.message);
-          return;
-        }
-      }
-
-      MatchInfo m;
-      if (re.match(uri, RegexMatchFlags.ANCHORED, out m)) {
-        string[] ss = m.fetch_all();
-
-        int i = 0;
-        foreach (string s in ss) {
-          if (s.length == 0) {
-            i++;
-            continue;
-          }
-	        
-          switch (i) 
-          {
-            case 1: scheme   = s.down();   break;
-            case 2: /* Move along... */    break;
-            case 3: username = s;          break;
-            case 4: password = s;          break;
-            case 5: host     = s.down();   break;
-            case 6: port     = s.to_int(); break;
-            case 7: path     = s;          break;
-            case 8: query    = s;          break;
-            case 9: fragment = s;          break;
-          }
-
-          i++; 
-        }
-
-        if (port == 0) {
-          ports();
-          port = _ports[scheme];
-        }					
-      }
-      else warning("Bad URI(%s)", uri);
-    }
-    
-    public static HashMap ports()
-    {
-      if (_ports == null) {
-        _ports = new HashMap<string,int>();
-        _ports["ftp"]    = 21;
-        _ports["ssh"]    = 22;
-        _ports["telnet"] = 23;
-        _ports["smtp"]   = 25;
-        _ports["http"]   = 80;
-        _ports["https"]  = 443;
-      }
-
-      return _ports;
     }
   }
 

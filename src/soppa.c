@@ -9,7 +9,13 @@ gboolean save_soup_data(SoupMessageBody *data, const char *file)
 		return FALSE;
 	}
 
-	fwrite(data->data, 1, data->length, fh);
+	int wrote = fwrite(data->data, 1, data->length, fh);
+	
+	if (wrote != (int)data->length) {
+	  fprintf(stderr, "wrote (%d) != data->length (%d). Data may have been "
+	                  "truncated", wrote, (int)data->length);
+	} 
+
 	fclose(fh);
 	return TRUE;
 }

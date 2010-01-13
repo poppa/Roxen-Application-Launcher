@@ -14,7 +14,6 @@ bin_PROGRAMS = roxenlauncher
 roxenlauncher_SOURCES =                                                  \
 	main.vala                                                              \
 	application.vala                                                       \
-	http-client.vala                                                       \
 	launcherfile.vala                                                      \
 	tools.vala                                                             \
 	tray.vala                                                              \
@@ -56,11 +55,15 @@ roxenlauncherpixmapsdir = ${datadir}/roxenlauncher/gui/pixmap
 roxenlauncherpixmaps_DATA =                                              \
 	gui/pixmap/roxen-logo.png                                              \
 	gui/pixmap/roxen-logo-small.png                                        \
+	gui/pixmap/down_48.png                                                 \
+	gui/pixmap/up_48.png                                                   \
+	gui/pixmap/warning_48.png                                              \
 	$(NULL)
 
 EXTRA_DIST =                                                             \
 	$(roxenlauncherextra_DATA)                                             \
 	$(roxenlauncherpixmaps_DATA)                                           \
+	soppa.h \
 	$(NULL)
 
 DISTCLEANFILES =                                                         \

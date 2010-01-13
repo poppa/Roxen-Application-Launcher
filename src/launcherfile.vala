@@ -170,6 +170,12 @@ public class LauncherFile : Object
     UPLOADING,
     NOT_CHANGED
   }
+  
+  public enum NotifyType {
+    UP,
+    DOWN,
+    ERROR
+  }
 
   public string      rawdata        { get; private set; }
   public string      schema         { get; private set; }
@@ -402,13 +408,18 @@ public class LauncherFile : Object
       if (mess.status_code == Soup.KnownStatusCode.OK) {
         if (Soppa.save_soup_data(mess.response_body, local_file)) {
           win_set_status(Statuses.DOWNLOADED);
-          win.show_notification("Download OK", "%s was downloaded OK from %s"
-                                               .printf(path, host));
+          win.show_notification(NotifyType.DOWN,
+                                _("Download OK"),
+                                _("%s was downloaded OK from %s")
+                                .printf(path, host));
           launch_editor();
         }
         else {
           message("Unable to write downloaded data to file!");
           win_set_status(Statuses.NOT_DOWNLOADED);
+          win.show_notification(NotifyType.ERROR,
+                                _("Download failed"),
+                                _("Unable to write downloaded data to file!"));
         }
 
         save();
@@ -417,15 +428,18 @@ public class LauncherFile : Object
                mess.status_code == Soup.KnownStatusCode.MOVED_TEMPORARILY)
       {
         message("Redirection...follow!");
-        win.show_notification("Redirection NOT HANDLED", 
-                              "%s was not downloaded OK from %s"
+        win.show_notification(NotifyType.ERROR,
+                              _("Unhandled redirection"), 
+                              _("%s was not downloaded OK from %s")
                               .printf(path, host));
         win_set_status(Statuses.NOT_DOWNLOADED);
       }
       else {
         warning("Bad status (%ld) in download!", mess.status_code);
-        win.show_notification("Download FAILED", "%s was not from %s"
-                                                 .printf(path, host));
+        win.show_notification(NotifyType.ERROR,
+                              _("Download failed"), 
+                              _("%s was not downloaded from %s")
+                              .printf(path, host));
         win_set_status(Statuses.NOT_DOWNLOADED);
         save();
       }
@@ -465,12 +479,18 @@ public class LauncherFile : Object
 
 		    last_upload = DateTime.now();
 		    win_set_status(Statuses.UPLOADED);
-		    win.show_notification("Upload OK", "%s was uploaded OK to %s"
-		                                       .printf(path, host));
+		    win.show_notification(NotifyType.UP,
+		                          _("Upload OK"), 
+		                          _("%s was uploaded OK to %s")
+		                          .printf(path, host));
 			}
 			catch (Error e) {
 				message("Unable to upload file: %s", e.message);
 				win_set_status(Statuses.NOT_UPLOADED);
+				win.show_notification(NotifyType.ERROR,
+		                          _("Upload failed"), 
+		                          _("%s was not uploaded OK to %s")
+		                          .printf(path, host));
 			}
 
       save();

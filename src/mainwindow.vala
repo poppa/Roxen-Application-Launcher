@@ -31,6 +31,7 @@ namespace Roxenlauncher
     Gtk.Window            win;
     Gtk.ScrolledWindow    sw_files;
     Gtk.CheckButton       cb_logging;
+    Gtk.CheckButton       cb_notify;
     Gtk.FileChooserButton fc_logfile;
     Gtk.Button            btn_edit_file;
     Gtk.Button            btn_finish_file;
@@ -68,6 +69,7 @@ namespace Roxenlauncher
       sw_files        = (Gtk.ScrolledWindow)    gtkobj("sw_files");
       fc_logfile      = (Gtk.FileChooserButton) gtkobj("fc_logfile");
       cb_logging      = (Gtk.CheckButton)       gtkobj("cb_logging");
+      cb_notify       = (Gtk.CheckButton)       gtkobj("cb_notify");
       btn_edit_file   = (Gtk.Button)            gtkobj("btn_edit_file");
       btn_finish_file = (Gtk.Button)            gtkobj("btn_finish_file");
       btn_finish_all  = (Gtk.Button)            gtkobj("btn_finish_all");
@@ -100,12 +102,17 @@ namespace Roxenlauncher
           save_window_properties(event.width, event.height, event.x, event.y);
         }
       });
+
       win.destroy += on_window_destroy;
-      cb_logging.toggled += () => { 
+      cb_logging.toggled += () => {
         fc_logfile.sensitive = cb_logging.active;
       };
-
       cb_logging.sensitive = false;
+      
+      cb_notify.active = get_enable_notifications();
+      cb_notify.toggled += () => {
+        set_enable_notifications(cb_notify.active);
+      };
 
       btn_edit_file.clicked   += on_btn_edit_file_clicked;
       btn_finish_file.clicked += on_btn_finish_file_clicked;
@@ -224,7 +231,7 @@ namespace Roxenlauncher
       //a.run();
       a = null;
     }
-    
+
     /**
      * Returns the GTK main window object
      */
@@ -671,7 +678,7 @@ namespace Roxenlauncher
 
       set_status("# " + m);
     }
-    
+
     /**
      * Set the status text
      *
@@ -681,31 +688,48 @@ namespace Roxenlauncher
     {
       statusbar.push(0, text);
     }
-    
+
     /** 
      * Displays a notification if wanted
      *
      * @param summary
      * @param text
      */
-    public void show_notification(string summary, string text)
+    public void show_notification(LauncherFile.NotifyType type,
+                                  string summary, string text)
     {
-      var nf = new Notification(summary, text, null, null);
-      nf.set_timeout(1000);
-		  nf.set_urgency(Notify.Urgency.NORMAL);
-		  try { 
-		    nf.show();
-		    Timeout.add(1000, () => {
-		      try { nf.close(); }
-		      catch (Error ex) {
-		        message("Notification close error: %s", ex.message);
-		      }
-		      return false;
-		    }); 
-		  }
-		  catch (Error e) {
-		    message("libnotify error: %s", e.message);
-		  }
+      if (cb_notify.active) {
+        
+        string icon = null;
+        switch (type)
+        {
+          case LauncherFile.NotifyType.UP:
+            icon = get_ui_path("pixmap/up_48.png");
+            break;
+
+          case LauncherFile.NotifyType.DOWN:
+            icon = get_ui_path("pixmap/down_48.png");
+            break;
+            
+          case LauncherFile.NotifyType.ERROR:
+            icon = get_ui_path("pixmap/warning_48.png");
+            break;
+
+          default:
+            break;
+        }
+
+        var nf = new Notification(summary, text, null, null);
+        // FIXME: This just simply doesn't work!
+        nf.set_timeout(1500); 
+	      try {
+	        nf.set_icon_from_pixbuf(new Gdk.Pixbuf.from_file(icon)); 
+	        nf.show(); 
+	      }
+	      catch (Error e) {
+	        message("libnotify error: %s", e.message);
+	      }
+	    }
     }
   }
 

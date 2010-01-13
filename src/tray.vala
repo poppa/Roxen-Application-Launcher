@@ -46,6 +46,11 @@ namespace Roxenlauncher
       }
     }
     
+    public StatusIcon get_icon()
+    {
+      return icon;
+    }
+    
     public void hookup()
     {
       icon.popup_menu += on_trayicon_popup;

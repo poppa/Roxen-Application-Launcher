@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: roxenlauncher 0.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-12-16 01:27+0100\n"
-"PO-Revision-Date: 2009-12-16 01:28+0100\n"
+"POT-Creation-Date: 2010-01-13 22:49+0100\n"
+"PO-Revision-Date: 2010-01-13 22:53+0100\n"
 "Last-Translator: Pontus Östlund <pontus@poppa.se>\n"
 "Language-Team: Swedish <pontus@poppa.se>\n"
 "MIME-Version: 1.0\n"
@@ -17,164 +17,217 @@ msgstr ""
 "X-Poedit-SearchPath-0: src\n"
 "X-Poedit-SearchPath-1: src/gui\n"
 
-#: src/tray.c:279
+#: src/tray.c:288
 msgid "No active files"
 msgstr "Inga aktiva filer"
 
-#: src/tray.c:452
+#: src/tray.c:461
 msgid "Click to show the application launcher"
 msgstr "Klicka för att visa programstartaren"
 
-#: src/tray.c:453
+#: src/tray.c:462
 msgid "Click to hide the application launcher"
 msgstr "Klicka för att gömma programstartaren"
 
-#: src/tray.c:454
+#: src/tray.c:463
 msgid "Show application launcher"
 msgstr "Visa programstartaren"
 
-#: src/tray.c:455
+#: src/tray.c:464
 msgid "Hide application launcher"
 msgstr "Göm programstartaren"
 
-#: src/application-form.c:569
+#: src/application-form.c:548
 msgid "Select application..."
 msgstr "Välj program..."
 
-#: src/tools.c:641
-#: src/tools.c:654
+#: src/tools.c:567
+#: src/tools.c:580
 msgid "Unable to create local directory"
 msgstr "Kunde inte skapa lokal katalog"
 
-#: src/mainwindow.c:533
-msgid "File"
-msgstr "Fil"
-
-#: src/mainwindow.c:533
-msgid "Status"
-msgstr "Status"
-
-#: src/mainwindow.c:533
-msgid "Last upload"
-msgstr "Senast uppladdad"
-
-#: src/mainwindow.c:598
-msgid "Content type"
-msgstr "Filtyp"
-
-#: src/mainwindow.c:598
-msgid "Application"
-msgstr "Program"
-
-#: src/mainwindow.c:1074
-msgid "Do you want to delete the selected file?"
-msgstr "Vill du radera den valda filen?"
-
-#: src/mainwindow.c:1116
-msgid "Do you want to delete the selected application?"
-msgstr "Vill du ta bort det valda programmet?"
-
-#: src/mainwindow.c:1381
-msgid "No files"
-msgstr "Inga filer"
-
-#: src/mainwindow.c:1385
-msgid "One file"
-msgstr "En fil"
-
-#: src/mainwindow.c:1388
-#, c-format
-msgid "%d active files"
-msgstr "%d aktiva filer"
-
-#: src/launcherfile.c:520
-#: src/launcherfile.c:1321
-msgid "Bad data in launcher file!"
-msgstr "Felaktigt innehåll i filen"
-
-#: src/launcherfile.c:707
-msgid "Not downloaded"
-msgstr "Ej nerladdad"
-
-#: src/launcherfile.c:713
-msgid "Downloaded"
-msgstr "Nerladdad"
-
-#: src/launcherfile.c:719
-msgid "Uploaded"
-msgstr "Uppladdad"
-
-#: src/launcherfile.c:725
-msgid "Not uploaded"
-msgstr "Ej uppladdad"
-
-#: src/launcherfile.c:731
-msgid "Downloading..."
-msgstr "Laddar ner..."
-
-#: src/launcherfile.c:737
-msgid "Uploading..."
-msgstr "Laddar upp..."
-
-#: src/launcherfile.c:743
-msgid "Not changed"
-msgstr "Ej ändrad"
-
-#: src/launcherfile.c:1307
-msgid "No data in launcher file!"
-msgstr "Filen är tom"
-
-#: src/launcherfile.c:1480
-msgid "Unable to create directory for launcher file!"
-msgstr "Kunde inte skapa katalog för fil"
-
+#: src/mainwindow.c:246
 #: src/application.c:84
 msgid "Roxen Application Launcher"
 msgstr "Roxen Programstartare"
 
-#: src/gui/mainwindow (kopia).ui:25
+#: src/mainwindow.c:582
+msgid "File"
+msgstr "Fil"
+
+#: src/mainwindow.c:582
+msgid "Status"
+msgstr "Status"
+
+#: src/mainwindow.c:582
+msgid "Last upload"
+msgstr "Senast uppladdad"
+
+#: src/mainwindow.c:647
+msgid "Content type"
+msgstr "Filtyp"
+
+#: src/mainwindow.c:647
+msgid "Application"
+msgstr "Program"
+
+#: src/mainwindow.c:1079
+msgid "Do you want to delete the selected file?"
+msgstr "Vill du radera den valda filen?"
+
+#: src/mainwindow.c:1121
+msgid "Do you want to delete the selected application?"
+msgstr "Vill du ta bort det valda programmet?"
+
+#: src/mainwindow.c:1392
+msgid "No files"
+msgstr "Inga filer"
+
+#: src/mainwindow.c:1396
+msgid "One file"
+msgstr "En fil"
+
+#: src/mainwindow.c:1399
+#, c-format
+msgid "%d active files"
+msgstr "%d aktiva filer"
+
+#: src/mainwindow.c:1644
+msgid "Roxen™ Application Launcher"
+msgstr "Roxen™ Programstartare"
+
+#: src/launcherfile.c:510
+#: src/launcherfile.c:1293
+msgid "Bad data in launcher file!"
+msgstr "Felaktigt innehåll i filen"
+
+#: src/launcherfile.c:697
+msgid "Not downloaded"
+msgstr "Ej nerladdad"
+
+#: src/launcherfile.c:703
+msgid "Downloaded"
+msgstr "Nerladdad"
+
+#: src/launcherfile.c:709
+msgid "Uploaded"
+msgstr "Uppladdad"
+
+#: src/launcherfile.c:715
+msgid "Not uploaded"
+msgstr "Ej uppladdad"
+
+#: src/launcherfile.c:721
+msgid "Downloading..."
+msgstr "Laddar ner..."
+
+#: src/launcherfile.c:727
+msgid "Uploading..."
+msgstr "Laddar upp..."
+
+#: src/launcherfile.c:733
+msgid "Not changed"
+msgstr "Ej ändrad"
+
+#: src/launcherfile.c:1046
+msgid "Download OK"
+msgstr "Hämtningen lyckades"
+
+#: src/launcherfile.c:1046
+#, c-format
+msgid "%s was downloaded OK from %s"
+msgstr "%s laddades ner OK från %s"
+
+#: src/launcherfile.c:1052
+#: src/launcherfile.c:1074
+msgid "Download failed"
+msgstr "Hämtningen misslyckades"
+
+#: src/launcherfile.c:1052
+msgid "Unable to write downloaded data to file!"
+msgstr "Kunde inte skriva nerladdad data till fil"
+
+#: src/launcherfile.c:1067
+msgid "Unhandled redirection"
+msgstr "Ej hanterad omdirigering"
+
+#: src/launcherfile.c:1067
+#, c-format
+msgid "%s was not downloaded OK from %s"
+msgstr "%s laddades inte ner OK från %s"
+
+#: src/launcherfile.c:1074
+#, c-format
+msgid "%s was not downloaded from %s"
+msgstr "%s laddades inte ner från %s"
+
+#: src/launcherfile.c:1164
+msgid "Upload OK"
+msgstr "Uppladdningen lyckades"
+
+#: src/launcherfile.c:1164
+#, c-format
+msgid "%s was uploaded OK to %s"
+msgstr "%s laddades upp OK till %s"
+
+#: src/launcherfile.c:1181
+msgid "Upload failed"
+msgstr "Uppladdningen misslyckades"
+
+#: src/launcherfile.c:1181
+#, c-format
+msgid "%s was not uploaded OK to %s"
+msgstr "%s laddades inte upp OK till %s"
+
+#: src/launcherfile.c:1279
+msgid "No data in launcher file!"
+msgstr "Filen är tom"
+
+#: src/launcherfile.c:1452
+msgid "Unable to create directory for launcher file!"
+msgstr "Kunde inte skapa katalog för fil"
+
 #: src/gui/mainwindow.ui:25
 msgid "_File"
 msgstr "_Arkiv"
 
-#: src/gui/mainwindow (kopia).ui:45
 #: src/gui/mainwindow.ui:45
 msgid "_Help"
 msgstr "_Hjälp"
 
-#: src/gui/mainwindow (kopia).ui:170
-#: src/gui/mainwindow.ui:170
+#: src/gui/mainwindow.ui:177
 msgid "Files"
 msgstr "Filer"
 
-#: src/gui/mainwindow (kopia).ui:293
-#: src/gui/mainwindow.ui:293
+#: src/gui/mainwindow.ui:305
 msgid "Enable logging"
 msgstr "Aktivera loggning"
 
-#: src/gui/mainwindow (kopia).ui:326
-#: src/gui/mainwindow.ui:326
+#: src/gui/mainwindow.ui:338
 msgid "<b>Logging</b>"
 msgstr "<b>Loggning</b>"
 
-#: src/gui/mainwindow (kopia).ui:354
-#: src/gui/mainwindow.ui:354
+#: src/gui/mainwindow.ui:370
+msgid "Enable notifications"
+msgstr "Aktivera notifieringar"
+
+#: src/gui/mainwindow.ui:395
+msgid "<b>Notifications</b>"
+msgstr "<b>Notifieringar</b>"
+
+#: src/gui/mainwindow.ui:420
 msgid "Applications"
 msgstr "Program"
 
-#: src/gui/mainwindow.ui:8
-msgid "Roxen™ Application Launcher"
-msgstr "Roxen™ Programstartare"
-
-#: src/gui/mainwindow.ui:395
+#: src/gui/mainwindow.ui:461
 msgid "About %s"
 msgstr "Om %s"
 
-#: src/gui/mainwindow.ui:405
+#: src/gui/mainwindow.ui:471
 msgid "Copyright © 2009 Pontus Östlund"
 msgstr "Copyright © 2009 Pontus Östlund"
 
-#: src/gui/mainwindow.ui:406
+#: src/gui/mainwindow.ui:472
 msgid ""
 "This is a Gnome port - written in Vala - of the Roxen™ \n"
 "Application Launcher originally written in Pike."
@@ -182,11 +235,11 @@ msgstr ""
 "Det här är en Gnome-variant - skriven i Vala - av Roxen™\n"
 "Application Launcher ursprungligen skriven i Pike."
 
-#: src/gui/mainwindow.ui:409
+#: src/gui/mainwindow.ui:475
 msgid "www.poppa.se"
 msgstr "www.poppa.se"
 
-#: src/gui/mainwindow.ui:410
+#: src/gui/mainwindow.ui:476
 msgid ""
 "ROXEN™ APPLICATION LAUNCHER\n"
 "Copyright © 2009 Pontus Östlund\n"
