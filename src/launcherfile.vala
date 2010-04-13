@@ -14,7 +14,7 @@
  * WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License along
  * with RAL.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -24,6 +24,37 @@ using Roxenlauncher;
 
 public class LauncherFile : Object
 {
+  /**
+   * Soup.Message to use for all uploads and downloads. This only object is
+   * used to have a Keep-Alive connection
+   */
+  private static Soup.Message httpmess = null;
+  
+  /**
+   * Returns the Keep-Alive Soup.Message.
+   *
+   * @param method
+   *  The HTTP method to use
+   * @param uri
+   *  The file to download or upload
+   */
+  public static Soup.Message get_http_message(string method, string uri)
+  {
+    if (httpmess == null)
+      httpmess = new Soup.Message("GET", uri);
+
+    httpmess.method = method;
+    httpmess.set_uri(new Soup.URI(uri));
+    httpmess.request_headers.clear();
+    httpmess.request_headers.append("connection", "keep-alive");
+    httpmess.request_body.truncate();
+
+    return httpmess;
+  }
+   
+  /**
+   * Array of LauncherFiles
+   */
   private static ArrayList<LauncherFile> launcherfiles =
     new ArrayList<LauncherFile>();
 
@@ -400,9 +431,10 @@ public class LauncherFile : Object
 
     Idle.add(() => {
       var sess = new Soup.SessionSync();
-      var mess = new Soup.Message("GET", get_uri());
-      mess.request_headers.append("Cookie", get_cookie());
-      mess.request_headers.append("Translate", "f");
+      //var mess = new Soup.Message("GET", get_uri());
+      var mess = get_http_message("GET", get_uri());
+      mess.request_headers.append("cookie", get_cookie());
+      mess.request_headers.append("translate", "f");
       sess.send_message(mess);
 
       if (mess.status_code == Soup.KnownStatusCode.OK) {
@@ -464,7 +496,12 @@ public class LauncherFile : Object
     Idle.add(() => {
 			try {
 				var sess = new Soup.SessionSync();
-			  var mess = new Soup.Message("PUT", get_uri());
+#if DEBUG
+			  var logger  = new Soup.Logger(Soup.LoggerLogLevel.BODY, -1);
+				sess.add_feature = logger;
+#endif
+			  //var mess = new Soup.Message("PUT", get_uri());
+			  var mess = get_http_message("PUT", get_uri());
 			  mess.request_headers.append("Cookie", get_cookie());
 			  mess.request_headers.append("Translate", "f");
 

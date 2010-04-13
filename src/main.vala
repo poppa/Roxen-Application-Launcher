@@ -39,10 +39,10 @@ public class ApplicationLauncher : Object
     message("DEBUG MODE: %s\n", Config.DATADIR);
 #endif
 
-	  Intl.setlocale(LocaleCategory.ALL,"");
-	  Intl.bindtextdomain(Config.GETTEXT_PACKAGE, Config.LOCALEDIR);
-	  Intl.bind_textdomain_codeset(Config.GETTEXT_PACKAGE, "UTF-8");
-	  Intl.textdomain(Config.GETTEXT_PACKAGE);
+    Intl.setlocale(LocaleCategory.ALL,"");
+    Intl.bindtextdomain(Config.GETTEXT_PACKAGE, Config.LOCALEDIR);
+    Intl.bind_textdomain_codeset(Config.GETTEXT_PACKAGE, "UTF-8");
+    Intl.textdomain(Config.GETTEXT_PACKAGE);
 
     Gtk.init (ref args);
     tray = new Tray();

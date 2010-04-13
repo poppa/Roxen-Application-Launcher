@@ -63,6 +63,11 @@ namespace Roxenlauncher
       icon.set_blinking(val);
     }
     
+    public void hide_window()
+    {
+      set_window_visibility();
+    }
+    
     void on_trayicon_popup(uint btn, uint time)
     {
       var visible     = win.get_window().visible;
@@ -99,14 +104,9 @@ namespace Roxenlauncher
             mi = new Gtk.MenuItem.with_label(lf.get_uri());
 
           mi.activate += (widget) => {
-            try {
-              var f = LauncherFile.find_by_uri(((Gtk.MenuItem)widget).label);
-              if (f != null)
-                f.download();
-            }
-            catch (Error e) {
-              warning("Error calling download: %s", e.message);
-            }
+            var f = LauncherFile.find_by_uri(((Gtk.MenuItem)widget).label);
+            if (f != null)
+              f.download();
           };
 
           popmenu.add(mi);
@@ -125,6 +125,23 @@ namespace Roxenlauncher
       item_quit.activate += win.on_window_destroy;
       item_toggle.activate += set_window_visibility;
 
+      var t_notify = _("Enable notifications");
+      var t_tray   = _("Minimize to tray");
+      var item_notify = new Gtk.CheckMenuItem.with_label(t_notify);
+      item_notify.set_active(get_enable_notifications());
+      item_notify.activate += () => {
+        win.toggle_notifications((int)(!get_enable_notifications()));
+      };
+
+      var item_minimize = new Gtk.CheckMenuItem.with_label(t_tray);
+      item_minimize.set_active(get_minimize_to_tray());
+      item_minimize.activate += () => {
+        win.toggle_minimize_to_tray((int)(!get_minimize_to_tray()));
+      };
+
+      popmenu.add(new Gtk.SeparatorMenuItem());
+      popmenu.add(item_notify);
+      popmenu.add(item_minimize);
       popmenu.add(new Gtk.SeparatorMenuItem());
       popmenu.add(finish_all);
       popmenu.add(item_toggle);

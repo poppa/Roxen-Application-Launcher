@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: roxenlauncher 0.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-01-13 22:49+0100\n"
-"PO-Revision-Date: 2010-01-13 22:53+0100\n"
+"POT-Creation-Date: 2010-04-13 01:50+0100\n"
+"PO-Revision-Date: 2010-04-13 20:26+0100\n"
 "Last-Translator: Pontus Östlund <pontus@poppa.se>\n"
 "Language-Team: Swedish <pontus@poppa.se>\n"
 "MIME-Version: 1.0\n"
@@ -17,173 +17,173 @@ msgstr ""
 "X-Poedit-SearchPath-0: src\n"
 "X-Poedit-SearchPath-1: src/gui\n"
 
-#: src/tray.c:288
+#: src/tray.c:274
 msgid "No active files"
 msgstr "Inga aktiva filer"
 
-#: src/tray.c:461
+#: src/tray.c:446
 msgid "Click to show the application launcher"
 msgstr "Klicka för att visa programstartaren"
 
-#: src/tray.c:462
+#: src/tray.c:447
 msgid "Click to hide the application launcher"
 msgstr "Klicka för att gömma programstartaren"
 
-#: src/tray.c:463
+#: src/tray.c:448
 msgid "Show application launcher"
 msgstr "Visa programstartaren"
 
-#: src/tray.c:464
+#: src/tray.c:449
 msgid "Hide application launcher"
 msgstr "Göm programstartaren"
 
-#: src/application-form.c:548
+#: src/application-form.c:549
 msgid "Select application..."
 msgstr "Välj program..."
 
-#: src/tools.c:567
-#: src/tools.c:580
+#: src/tools.c:574
+#: src/tools.c:590
 msgid "Unable to create local directory"
 msgstr "Kunde inte skapa lokal katalog"
 
-#: src/mainwindow.c:246
+#: src/mainwindow.c:266
 #: src/application.c:84
 msgid "Roxen Application Launcher"
 msgstr "Roxen Programstartare"
 
-#: src/mainwindow.c:582
+#: src/mainwindow.c:634
 msgid "File"
 msgstr "Fil"
 
-#: src/mainwindow.c:582
+#: src/mainwindow.c:634
 msgid "Status"
 msgstr "Status"
 
-#: src/mainwindow.c:582
+#: src/mainwindow.c:634
 msgid "Last upload"
 msgstr "Senast uppladdad"
 
-#: src/mainwindow.c:647
+#: src/mainwindow.c:699
 msgid "Content type"
 msgstr "Filtyp"
 
-#: src/mainwindow.c:647
+#: src/mainwindow.c:699
 msgid "Application"
 msgstr "Program"
 
-#: src/mainwindow.c:1079
+#: src/mainwindow.c:1109
 msgid "Do you want to delete the selected file?"
 msgstr "Vill du radera den valda filen?"
 
-#: src/mainwindow.c:1121
+#: src/mainwindow.c:1151
 msgid "Do you want to delete the selected application?"
 msgstr "Vill du ta bort det valda programmet?"
 
-#: src/mainwindow.c:1392
+#: src/mainwindow.c:1422
 msgid "No files"
 msgstr "Inga filer"
 
-#: src/mainwindow.c:1396
+#: src/mainwindow.c:1426
 msgid "One file"
 msgstr "En fil"
 
-#: src/mainwindow.c:1399
+#: src/mainwindow.c:1429
 #, c-format
 msgid "%d active files"
 msgstr "%d aktiva filer"
 
-#: src/mainwindow.c:1644
+#: src/mainwindow.c:1674
 msgid "Roxen™ Application Launcher"
 msgstr "Roxen™ Programstartare"
 
-#: src/launcherfile.c:510
-#: src/launcherfile.c:1293
+#: src/launcherfile.c:535
+#: src/launcherfile.c:1317
 msgid "Bad data in launcher file!"
 msgstr "Felaktigt innehåll i filen"
 
-#: src/launcherfile.c:697
+#: src/launcherfile.c:724
 msgid "Not downloaded"
 msgstr "Ej nerladdad"
 
-#: src/launcherfile.c:703
+#: src/launcherfile.c:730
 msgid "Downloaded"
 msgstr "Nerladdad"
 
-#: src/launcherfile.c:709
+#: src/launcherfile.c:736
 msgid "Uploaded"
 msgstr "Uppladdad"
 
-#: src/launcherfile.c:715
+#: src/launcherfile.c:742
 msgid "Not uploaded"
 msgstr "Ej uppladdad"
 
-#: src/launcherfile.c:721
+#: src/launcherfile.c:748
 msgid "Downloading..."
 msgstr "Laddar ner..."
 
-#: src/launcherfile.c:727
+#: src/launcherfile.c:754
 msgid "Uploading..."
 msgstr "Laddar upp..."
 
-#: src/launcherfile.c:733
+#: src/launcherfile.c:760
 msgid "Not changed"
 msgstr "Ej ändrad"
 
-#: src/launcherfile.c:1046
+#: src/launcherfile.c:1067
 msgid "Download OK"
 msgstr "Hämtningen lyckades"
 
-#: src/launcherfile.c:1046
+#: src/launcherfile.c:1067
 #, c-format
 msgid "%s was downloaded OK from %s"
 msgstr "%s laddades ner OK från %s"
 
-#: src/launcherfile.c:1052
-#: src/launcherfile.c:1074
+#: src/launcherfile.c:1073
+#: src/launcherfile.c:1095
 msgid "Download failed"
 msgstr "Hämtningen misslyckades"
 
-#: src/launcherfile.c:1052
+#: src/launcherfile.c:1073
 msgid "Unable to write downloaded data to file!"
 msgstr "Kunde inte skriva nerladdad data till fil"
 
-#: src/launcherfile.c:1067
+#: src/launcherfile.c:1088
 msgid "Unhandled redirection"
 msgstr "Ej hanterad omdirigering"
 
-#: src/launcherfile.c:1067
+#: src/launcherfile.c:1088
 #, c-format
 msgid "%s was not downloaded OK from %s"
 msgstr "%s laddades inte ner OK från %s"
 
-#: src/launcherfile.c:1074
+#: src/launcherfile.c:1095
 #, c-format
 msgid "%s was not downloaded from %s"
 msgstr "%s laddades inte ner från %s"
 
-#: src/launcherfile.c:1164
+#: src/launcherfile.c:1187
 msgid "Upload OK"
 msgstr "Uppladdningen lyckades"
 
-#: src/launcherfile.c:1164
+#: src/launcherfile.c:1187
 #, c-format
 msgid "%s was uploaded OK to %s"
 msgstr "%s laddades upp OK till %s"
 
-#: src/launcherfile.c:1181
+#: src/launcherfile.c:1205
 msgid "Upload failed"
 msgstr "Uppladdningen misslyckades"
 
-#: src/launcherfile.c:1181
+#: src/launcherfile.c:1205
 #, c-format
 msgid "%s was not uploaded OK to %s"
 msgstr "%s laddades inte upp OK till %s"
 
-#: src/launcherfile.c:1279
+#: src/launcherfile.c:1303
 msgid "No data in launcher file!"
 msgstr "Filen är tom"
 
-#: src/launcherfile.c:1452
+#: src/launcherfile.c:1476
 msgid "Unable to create directory for launcher file!"
 msgstr "Kunde inte skapa katalog för fil"
 
@@ -199,35 +199,43 @@ msgstr "_Hjälp"
 msgid "Files"
 msgstr "Filer"
 
-#: src/gui/mainwindow.ui:305
+#: src/gui/mainwindow.ui:306
 msgid "Enable logging"
 msgstr "Aktivera loggning"
 
-#: src/gui/mainwindow.ui:338
+#: src/gui/mainwindow.ui:336
 msgid "<b>Logging</b>"
 msgstr "<b>Loggning</b>"
 
-#: src/gui/mainwindow.ui:370
+#: src/gui/mainwindow.ui:369
 msgid "Enable notifications"
 msgstr "Aktivera notifieringar"
 
-#: src/gui/mainwindow.ui:395
-msgid "<b>Notifications</b>"
-msgstr "<b>Notifieringar</b>"
+#: src/gui/mainwindow.ui:383
+msgid "Minimize to tray"
+msgstr "Minimera till notifieringsytan"
 
-#: src/gui/mainwindow.ui:420
+#: src/gui/mainwindow.ui:387
+msgid "Window close button minimizes the application to the tray"
+msgstr "Fönstrets stängknapp minimerar applikationen till notifieringsytan"
+
+#: src/gui/mainwindow.ui:403
+msgid "<b>Settings</b>"
+msgstr "<b>Inställningar</b>"
+
+#: src/gui/mainwindow.ui:432
 msgid "Applications"
 msgstr "Program"
 
-#: src/gui/mainwindow.ui:461
+#: src/gui/mainwindow.ui:473
 msgid "About %s"
 msgstr "Om %s"
 
-#: src/gui/mainwindow.ui:471
+#: src/gui/mainwindow.ui:483
 msgid "Copyright © 2009 Pontus Östlund"
 msgstr "Copyright © 2009 Pontus Östlund"
 
-#: src/gui/mainwindow.ui:472
+#: src/gui/mainwindow.ui:484
 msgid ""
 "This is a Gnome port - written in Vala - of the Roxen™ \n"
 "Application Launcher originally written in Pike."
@@ -235,11 +243,11 @@ msgstr ""
 "Det här är en Gnome-variant - skriven i Vala - av Roxen™\n"
 "Application Launcher ursprungligen skriven i Pike."
 
-#: src/gui/mainwindow.ui:475
+#: src/gui/mainwindow.ui:487
 msgid "www.poppa.se"
 msgstr "www.poppa.se"
 
-#: src/gui/mainwindow.ui:476
+#: src/gui/mainwindow.ui:488
 msgid ""
 "ROXEN™ APPLICATION LAUNCHER\n"
 "Copyright © 2009 Pontus Östlund\n"
@@ -288,4 +296,7 @@ msgstr "<b>Programkommando</b>"
 #: src/gui/application-form.ui:185
 msgid "<b>Editor extra arguments</b>"
 msgstr "<b>Extra argument</b>"
+
+#~ msgid "<b>Notifications</b>"
+#~ msgstr "<b>Notifieringar</b>"
 

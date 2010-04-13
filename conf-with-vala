@@ -3,7 +3,7 @@ case $1 in
 	'')
 		echo 
 		echo "	### Unsetting debug flag ###"
-		export RL_DEBUG="-D DEBUG"
+		export RL_DEBUG=""
 		echo
 		;;
 
@@ -22,4 +22,4 @@ fi
 
 ./autogen.sh
 
-export RL_WITH_VALA=
+#export RL_WITH_VALA=

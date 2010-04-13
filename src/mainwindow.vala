@@ -32,6 +32,7 @@ namespace Roxenlauncher
     Gtk.ScrolledWindow    sw_files;
     Gtk.CheckButton       cb_logging;
     Gtk.CheckButton       cb_notify;
+    Gtk.CheckButton       cb_minimize;
     Gtk.FileChooserButton fc_logfile;
     Gtk.Button            btn_edit_file;
     Gtk.Button            btn_finish_file;
@@ -44,6 +45,8 @@ namespace Roxenlauncher
     Gtk.ListStore         ls_files;
     Gtk.ListStore         ls_apps;
     Gtk.Statusbar         statusbar;
+
+    bool min_to_tray = false;
 
     /**
      * Init main window
@@ -70,6 +73,7 @@ namespace Roxenlauncher
       fc_logfile      = (Gtk.FileChooserButton) gtkobj("fc_logfile");
       cb_logging      = (Gtk.CheckButton)       gtkobj("cb_logging");
       cb_notify       = (Gtk.CheckButton)       gtkobj("cb_notify");
+      cb_minimize     = (Gtk.CheckButton)       gtkobj("cb_minimize");
       btn_edit_file   = (Gtk.Button)            gtkobj("btn_edit_file");
       btn_finish_file = (Gtk.Button)            gtkobj("btn_finish_file");
       btn_finish_all  = (Gtk.Button)            gtkobj("btn_finish_all");
@@ -100,19 +104,28 @@ namespace Roxenlauncher
             event.y      != winprops.y))
         {
           save_window_properties(event.width, event.height, event.x, event.y);
+          return false;
         }
+        return false;
       });
 
-      win.destroy += on_window_destroy;
-      cb_logging.toggled += () => {
-        fc_logfile.sensitive = cb_logging.active;
-      };
+      win.delete_event.connect(() => {
+        if (min_to_tray) tray.get_icon().activate();
+        else Gtk.main_quit();
+        return true;
+      });
+
+      // Logging check button
+      cb_logging.toggled += () => { fc_logfile.sensitive = cb_logging.active; };
       cb_logging.sensitive = false;
       
+      // Notifications check button
       cb_notify.active = get_enable_notifications();
-      cb_notify.toggled += () => {
-        set_enable_notifications(cb_notify.active);
-      };
+      cb_notify.toggled += () => { toggle_notifications(); };
+      
+      // Minimize to tray check button
+      cb_minimize.active = min_to_tray = get_minimize_to_tray();
+      cb_minimize.toggled += () => { toggle_minimize_to_tray(); };
 
       btn_edit_file.clicked   += on_btn_edit_file_clicked;
       btn_finish_file.clicked += on_btn_finish_file_clicked;
@@ -196,7 +209,29 @@ namespace Roxenlauncher
       
       Notify.init(App.NAME);
     }
+
+    /**
+     * Toggle enable notifications.
+     * This is also called from the check menu item in tray.vala
+     */ 
+    public void toggle_notifications(int istate=2)
+    {
+      bool state = istate == 2 ? cb_notify.active : (bool)istate;
+      cb_notify.set_active(state);
+      set_enable_notifications(state);
+    }
     
+    /**
+     * Toggle minimize to tray on window close button.
+     * This is also called from the check menu item in tray.vala
+     */
+    public void toggle_minimize_to_tray(int istate=2)
+    {
+      bool state = istate == 2 ? cb_minimize.active : (bool)istate;
+      cb_minimize.set_active(state);
+      set_minimize_to_tray(state);
+    }
+
     /**
      * Popup the dialog for adding an application
      *
@@ -326,16 +361,16 @@ namespace Roxenlauncher
       ls_files.foreach((model, path, iter) => {
         Value v;
         model.get_value(iter, 3, out v);
-        try {
+        //try {
           LauncherFile f = (LauncherFile)v;
           if (f != null && f.id == lf.id) {
             tv_files.get_selection().select_path(path);
             return true;
           }
-        }
-        catch (Error e) {
-          warning("set_file_selection(): %s", e.message);
-        }
+        //}
+        //catch (Error e) {
+        //  warning("set_file_selection(): %s", e.message);
+        //}
         v.unset();
         return false;
       });
@@ -495,9 +530,6 @@ namespace Roxenlauncher
      */ 
     public void on_window_destroy()
     {
-#if DEBUG
-      message("Main window killed");
-#endif
       Gtk.main_quit();
     }
 
@@ -699,7 +731,6 @@ namespace Roxenlauncher
                                   string summary, string text)
     {
       if (cb_notify.active) {
-        
         string icon = null;
         switch (type)
         {
@@ -721,7 +752,7 @@ namespace Roxenlauncher
 
         var nf = new Notification(summary, text, null, null);
         // FIXME: This just simply doesn't work!
-        nf.set_timeout(1500); 
+        nf.set_timeout(4000); 
 	      try {
 	        nf.set_icon_from_pixbuf(new Gdk.Pixbuf.from_file(icon)); 
 	        nf.show(); 

@@ -67,7 +67,7 @@ namespace Roxenlauncher
   public string? get_ui_path(string local_path)
   {
     // The first index is for local usage during development
-    string[] paths = { "gui", "src/gui", Config.DATADIR + "/roxenlauncher/gui" };
+    string[] paths = { "gui", "src/gui", Config.DATADIR+"/roxenlauncher/gui" };
     string full_path = null;
     foreach (string path in paths) {
       full_path = Path.build_filename(path, local_path);
@@ -139,6 +139,27 @@ namespace Roxenlauncher
     catch (Error e) {
       warning("Error setting GConf value for notifications!");
     }
+  }
+  
+  public void set_minimize_to_tray(bool val)
+  {
+    var cli = GConf.Client.get_default();
+    try { cli.set_bool(App.GCONF_ROOT + "properties/minimize-to-tray", val); }
+    catch (Error e) {
+      warning("Error setting GConf value for tray minimization!");
+    }
+  }
+  
+  public bool get_minimize_to_tray()
+  {
+    var cli = GConf.Client.get_default();
+    bool v = true;
+    try { v = cli.get_bool(App.GCONF_ROOT + "properties/minimize-to-tray"); }
+    catch (Error e) {
+      warning("Error getting GConf value for minimization!");
+    }
+
+    return v;
   }
 
   public class Application : Object
@@ -247,7 +268,7 @@ namespace Roxenlauncher
     
       var cli = GConf.Client.get_default();
       var key = App.GCONF_ROOT + "settings/applications";
-      unowned SList<string> list = null;
+      SList<string> list = null;
       try { list = cli.get_list(key, GConf.ValueType.STRING); }
       catch (Error e) {
         warning("Error getting GConf list for \"%s\": %s", key, e.message);
