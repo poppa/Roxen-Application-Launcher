@@ -397,7 +397,8 @@ public class LauncherFile : Object
         
       var f = File.new_for_path(local_file);
       monitor = f.monitor_file(FileMonitorFlags.NONE);
-      monitor.changed += on_file_changed;
+      //monitor.changed += on_file_changed;
+      monitor.changed.connect(on_file_changed);
     }
     catch (Error e) {
       warning("Failed to set monitor for \"%s\"", local_file);

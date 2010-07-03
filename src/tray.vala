@@ -53,8 +53,8 @@ namespace Roxenlauncher
     
     public void hookup()
     {
-      icon.popup_menu += on_trayicon_popup;
-      icon.activate += set_window_visibility;
+      icon.popup_menu.connect(on_trayicon_popup);
+      icon.activate.connect(set_window_visibility);
       icon.set_visible(true);
     }
     
@@ -103,41 +103,41 @@ namespace Roxenlauncher
           else
             mi = new Gtk.MenuItem.with_label(lf.get_uri());
 
-          mi.activate += (widget) => {
+          mi.activate.connect((widget) => {
             var f = LauncherFile.find_by_uri(((Gtk.MenuItem)widget).label);
             if (f != null)
               f.download();
-          };
+          });
 
           popmenu.add(mi);
         }
       }
 
       var finish_all = new Gtk.ImageMenuItem.from_stock(Gtk.STOCK_CLEAR, null);
-      finish_all.activate += () => {
+      finish_all.activate.connect(() => {
         Idle.add(() => { win.finish_all_files(); return false; });
         popmenu.popdown();
-      };
+      });
 
       if (lfs.size == 0)
         finish_all.sensitive = false;
 
-      item_quit.activate += win.on_window_destroy;
-      item_toggle.activate += set_window_visibility;
+      item_quit.activate.connect(win.on_window_destroy);
+      item_toggle.activate.connect(set_window_visibility);
 
       var t_notify = _("Enable notifications");
       var t_tray   = _("Minimize to tray");
       var item_notify = new Gtk.CheckMenuItem.with_label(t_notify);
       item_notify.set_active(get_enable_notifications());
-      item_notify.activate += () => {
+      item_notify.activate.connect(() => {
         win.toggle_notifications((int)(!get_enable_notifications()));
-      };
+      });
 
       var item_minimize = new Gtk.CheckMenuItem.with_label(t_tray);
       item_minimize.set_active(get_minimize_to_tray());
-      item_minimize.activate += () => {
+      item_minimize.activate.connect(() => {
         win.toggle_minimize_to_tray((int)(!get_minimize_to_tray()));
-      };
+      });
 
       popmenu.add(new Gtk.SeparatorMenuItem());
       popmenu.add(item_notify);

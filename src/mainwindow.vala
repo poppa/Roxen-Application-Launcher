@@ -116,30 +116,32 @@ namespace Roxenlauncher
       });
 
       // Logging check button
-      cb_logging.toggled += () => { fc_logfile.sensitive = cb_logging.active; };
+      cb_logging.toggled.connect(() => { 
+      	fc_logfile.sensitive = cb_logging.active; 
+      });
       cb_logging.sensitive = false;
       
       // Notifications check button
       cb_notify.active = get_enable_notifications();
-      cb_notify.toggled += () => { toggle_notifications(); };
+      cb_notify.toggled.connect(() => { toggle_notifications(); });
       
       // Minimize to tray check button
       cb_minimize.active = min_to_tray = get_minimize_to_tray();
-      cb_minimize.toggled += () => { toggle_minimize_to_tray(); };
+      cb_minimize.toggled.connect(() => { toggle_minimize_to_tray(); });
 
-      btn_edit_file.clicked   += on_btn_edit_file_clicked;
-      btn_finish_file.clicked += on_btn_finish_file_clicked;
-      btn_finish_all.clicked  += on_btn_finish_all_clicked;
+      btn_edit_file.clicked.connect(on_btn_edit_file_clicked);
+      btn_finish_file.clicked.connect(on_btn_finish_file_clicked);
+      btn_finish_all.clicked.connect(on_btn_finish_all_clicked);
 
       // Quit item in menu
-      ((Gtk.ImageMenuItem)gtkobj("im_quit")).activate += on_window_destroy;
+      ((Gtk.ImageMenuItem)gtkobj("im_quit")).activate.connect(on_window_destroy);
       
       // About item in menu
-      ((Gtk.ImageMenuItem)gtkobj("im_about")).activate += on_about;
+      ((Gtk.ImageMenuItem)gtkobj("im_about")).activate.connect(on_about);
 
       /* File treeview setup */
 
-      tv_files.row_activated += on_tv_files_activated;
+      tv_files.row_activated.connect(on_tv_files_activated);
       // Setup treeviews and liststores
       ls_files = new Gtk.ListStore(4, typeof(string), typeof(string),
                                       typeof(string), typeof(LauncherFile));
@@ -175,7 +177,7 @@ namespace Roxenlauncher
         
       set_file_count();
       
-      tv_files.get_selection().changed += on_tv_files_selection_changed;
+      tv_files.get_selection().changed.connect(on_tv_files_selection_changed);
       tv_files.key_release_event.connect(on_tv_files_key_release_event);
       
       /* Applications treeview setup */
@@ -199,11 +201,11 @@ namespace Roxenlauncher
         ls_apps.set(iter, 0, app.mimetype, 1, app.name, 2, app, -1);
       }
 
-      tv_apps.row_activated           += on_tv_apps_activated;
-      tv_apps.get_selection().changed += on_tv_apps_selection_changed;
-      btn_add_app.clicked             += () => { editor_dialog_new(""); };
-      btn_edit_app.clicked            += on_btn_edit_app_clicked;
-      btn_remove_app.clicked          += on_btn_remove_app_clicked;
+      tv_apps.row_activated.connect(on_tv_apps_activated);
+      tv_apps.get_selection().changed.connect(on_tv_apps_selection_changed);
+      btn_add_app.clicked.connect(() => { editor_dialog_new(""); });
+      btn_edit_app.clicked.connect(on_btn_edit_app_clicked);
+      btn_remove_app.clicked.connect(on_btn_remove_app_clicked);
 
       tv_apps.key_release_event.connect(on_tv_apps_key_release_event);
       

@@ -74,7 +74,7 @@ public class ApplicationLauncher : Object
       return 0;
     }  
 
-    instance.message_received += on_message_received; 
+    instance.message_received.connect(on_message_received); 
 
     init();
     LauncherFile.load_existing();
