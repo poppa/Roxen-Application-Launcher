@@ -3,7 +3,7 @@
 *~
 *.stamp
 *.gmo
-*.mo
+po/*.mo
 *.tar.bz2
 *.tar.gz
 aclocal.m4
