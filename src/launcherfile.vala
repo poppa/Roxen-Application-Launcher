@@ -226,7 +226,7 @@ public class LauncherFile : Object
   public DateTime    last_download  { get; private set; }
   public DateTime    last_modified  { get; private set; }
   public DateTime    age            { get; private set; }
-  public Application application    { get; private set; }
+  public Roxenlauncher.Application application    { get; private set; }
 
   //private DateTime null_date = new DateTime();
   
@@ -304,6 +304,21 @@ public class LauncherFile : Object
   }
   
   /**
+   * Returns the URI to the file in Sitebuilder
+   */
+  public string get_sb_uri()
+  {
+  	var s = schema + "://" + host;
+    if (schema == "https" && port != "443")
+      s += port;
+    else if (schema == "http" && port != "80")
+      s += port;
+      
+    s += "/edit" + path;
+    return s;
+  }
+
+  /**
    * Returns the cookie to send when downloading/uploading
    */
   public string get_cookie()
@@ -356,7 +371,7 @@ public class LauncherFile : Object
   public void launch_editor()
   {
     if (application == null) {
-      var app = Application.get_for_mimetype(content_type);
+      var app = Roxenlauncher.Application.get_for_mimetype(content_type);
       if (app == null) {
         application = win.editor_dialog_new(content_type);
         if (application == null)
@@ -502,9 +517,9 @@ public class LauncherFile : Object
 				sess.add_feature = logger;
 #endif
 			  //var mess = new Soup.Message("PUT", get_uri());
-			  var mess = get_http_message("PUT", get_uri());
-			  mess.request_headers.append("Cookie", get_cookie());
-			  mess.request_headers.append("Translate", "f");
+				var mess = get_http_message("PUT", get_uri());
+				mess.request_headers.append("Cookie", get_cookie());
+				mess.request_headers.append("Translate", "f");
 
 				IOChannel ch = new IOChannel.file(local_file, "r");
 				ch.set_encoding(null); // Enables reading of binary data
@@ -513,14 +528,14 @@ public class LauncherFile : Object
 				ch.read_to_end(out s, out len);
 
 				mess.request_body.append(Soup.MemoryUse.COPY, s, len);
-    		sess.send_message(mess);
+				sess.send_message(mess);
 
-		    last_upload = DateTime.now();
-		    win_set_status(Statuses.UPLOADED);
-		    win.show_notification(NotifyType.UP,
-		                          _("Upload OK"), 
-		                          _("%s was uploaded OK to %s")
-		                          .printf(path, host));
+				last_upload = DateTime.now();
+				win_set_status(Statuses.UPLOADED);
+				win.show_notification(NotifyType.UP,
+				                      _("Upload OK"), 
+				                      _("%s was uploaded OK to %s")
+				                      .printf(path, host));
 			}
 			catch (Error e) {
 				message("Unable to upload file: %s", e.message);

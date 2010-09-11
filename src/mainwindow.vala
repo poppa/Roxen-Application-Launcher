@@ -30,10 +30,8 @@ namespace Roxenlauncher
     Gtk.Builder           builder;
     Gtk.Window            win;
     Gtk.ScrolledWindow    sw_files;
-    Gtk.CheckButton       cb_logging;
     Gtk.CheckButton       cb_notify;
     Gtk.CheckButton       cb_minimize;
-    Gtk.FileChooserButton fc_logfile;
     Gtk.Button            btn_edit_file;
     Gtk.Button            btn_finish_file;
     Gtk.Button            btn_finish_all;
@@ -45,6 +43,7 @@ namespace Roxenlauncher
     Gtk.ListStore         ls_files;
     Gtk.ListStore         ls_apps;
     Gtk.Statusbar         statusbar;
+    Gtk.Menu              ctx_menu;
 
     bool min_to_tray = false;
 
@@ -70,8 +69,6 @@ namespace Roxenlauncher
       // Setup widgets
       win             = (Gtk.Window)            gtkobj("mainwindow");
       sw_files        = (Gtk.ScrolledWindow)    gtkobj("sw_files");
-      fc_logfile      = (Gtk.FileChooserButton) gtkobj("fc_logfile");
-      cb_logging      = (Gtk.CheckButton)       gtkobj("cb_logging");
       cb_notify       = (Gtk.CheckButton)       gtkobj("cb_notify");
       cb_minimize     = (Gtk.CheckButton)       gtkobj("cb_minimize");
       btn_edit_file   = (Gtk.Button)            gtkobj("btn_edit_file");
@@ -80,6 +77,7 @@ namespace Roxenlauncher
       btn_edit_app    = (Gtk.Button)            gtkobj("btn_edit_app");
       btn_add_app     = (Gtk.Button)            gtkobj("btn_add_app");
       btn_remove_app  = (Gtk.Button)            gtkobj("btn_remove_app");
+      ctx_menu        = (Gtk.Menu)              gtkobj("tv_files_rclick_menu");
       
       tv_files        = (Gtk.TreeView)          gtkobj("tv_files");
       ls_files        = (Gtk.ListStore)         gtkobj("ls_files");
@@ -115,12 +113,6 @@ namespace Roxenlauncher
         return true;
       });
 
-      // Logging check button
-      cb_logging.toggled.connect(() => { 
-      	fc_logfile.sensitive = cb_logging.active; 
-      });
-      cb_logging.sensitive = false;
-      
       // Notifications check button
       cb_notify.active = get_enable_notifications();
       cb_notify.toggled.connect(() => { toggle_notifications(); });
@@ -134,10 +126,11 @@ namespace Roxenlauncher
       btn_finish_all.clicked.connect(on_btn_finish_all_clicked);
 
       // Quit item in menu
-      ((Gtk.ImageMenuItem)gtkobj("im_quit")).activate.connect(on_window_destroy);
-      
+      Gtk.ImageMenuItem imq = ((Gtk.ImageMenuItem)gtkobj("im_quit"));
+      imq.activate.connect(on_window_destroy);
       // About item in menu
-      ((Gtk.ImageMenuItem)gtkobj("im_about")).activate.connect(on_about);
+      Gtk.ImageMenuItem ima = ((Gtk.ImageMenuItem)gtkobj("im_about"));
+      ima.activate.connect(on_about);
 
       /* File treeview setup */
 
@@ -179,13 +172,32 @@ namespace Roxenlauncher
       
       tv_files.get_selection().changed.connect(on_tv_files_selection_changed);
       tv_files.key_release_event.connect(on_tv_files_key_release_event);
-      
+      tv_files.button_press_event.connect(on_ctx_popup_menu);
+      ((Gtk.MenuItem)gtkobj("sb_view")).activate.connect(() => {
+      	Gtk.TreeModel model;
+      	Gtk.TreeIter iter;
+      	LauncherFile lf = get_selected_file(out model, out iter);
+      	if (lf != null) {
+      		string uri = lf.get_sb_uri();
+      		string cmd = "xdg-open '" + uri + "'";
+      		try { Process.spawn_command_line_async(cmd); }
+	 			  catch (Error e) {
+	 			  	warning("Unable to open file: %s", e.message);
+	 			  }
+      	}
+      });
+
+      Gtk.MenuItem md = (Gtk.MenuItem)gtkobj("ctx_menu_delete");
+      Gtk.MenuItem me = (Gtk.MenuItem)gtkobj("ctx_menu_edit");
+      me.activate.connect(on_btn_edit_file_clicked);
+      md.activate.connect(on_ctx_popup_menu_delete);
+
       /* Applications treeview setup */
 
       ls_apps = new Gtk.ListStore(3, typeof(string), typeof(string),
                                      typeof(Application));
       tv_apps.set_model(ls_apps);
-      
+
       cols = { _("Content type"), _("Application") };
       for (ulong i = 0; i < cols.length; i++) {
         var ct = new Gtk.CellRendererText();
@@ -211,6 +223,27 @@ namespace Roxenlauncher
       
       Notify.init(App.NAME);
     }
+
+		/** 
+		 * Callback for right click in file treeview
+		 *
+		 * @param w
+		 * @param e
+		 */
+		public bool on_ctx_popup_menu(Gtk.Widget w, Gdk.EventButton e)
+		{
+  		if (e.button == 3 && e.type == Gdk.EventType.BUTTON_PRESS) {
+        Gtk.TreeModel model;
+        Gtk.TreeIter iter;
+        LauncherFile f = get_selected_file(out model, out iter);
+   
+        if (f != null) {
+		      ctx_menu.popup(null, null, null, e.button, e.time);
+ 			    return true;
+		    }
+  		}
+  		return false;
+		}
 
     /**
      * Toggle enable notifications.
@@ -310,8 +343,6 @@ namespace Roxenlauncher
      */
     public void set_file_status(LauncherFile lf, string status)
     {
-      //message("Set file status");
-
       ls_files.foreach((model, path, iter) => {
         Value v;
         model.get_value(iter, 3, out v);
@@ -363,16 +394,13 @@ namespace Roxenlauncher
       ls_files.foreach((model, path, iter) => {
         Value v;
         model.get_value(iter, 3, out v);
-        //try {
-          LauncherFile f = (LauncherFile)v;
-          if (f != null && f.id == lf.id) {
-            tv_files.get_selection().select_path(path);
-            return true;
-          }
-        //}
-        //catch (Error e) {
-        //  warning("set_file_selection(): %s", e.message);
-        //}
+        LauncherFile f = (LauncherFile)v;
+        
+        if (f != null && f.id == lf.id) {
+          tv_files.get_selection().select_path(path);
+          return true;
+        }
+
         v.unset();
         return false;
       });
@@ -497,6 +525,25 @@ namespace Roxenlauncher
       }
 
       return false;
+    }
+    
+    /**
+     * Callback for right click delete
+     */
+    void on_ctx_popup_menu_delete()
+    {
+    	Gtk.TreeModel model;
+    	Gtk.TreeIter iter;
+    	
+    	if (get_selected_file(out model, out iter) == null)
+    		return;
+    		
+    	if (Alert.confirm(win, _("Do you want to delete the selected file?"))) {
+        finish_file();
+        return;
+      }
+      
+      return;
     }
 
     /**
@@ -768,8 +815,6 @@ namespace Roxenlauncher
 
   class About : GLib.Object
   {
-    //Gtk.Builder builder;
-  
     construct 
     {
       Gtk.Builder builder = new Gtk.Builder();

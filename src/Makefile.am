@@ -55,6 +55,7 @@ roxenlauncherpixmapsdir = ${datadir}/roxenlauncher/gui/pixmap
 roxenlauncherpixmaps_DATA =                                              \
 	gui/pixmap/roxen-logo.png                                              \
 	gui/pixmap/roxen-logo-small.png                                        \
+	gui/pixmap/roxen-logo.svg                                              \
 	gui/pixmap/down_48.png                                                 \
 	gui/pixmap/up_48.png                                                   \
 	gui/pixmap/warning_48.png                                              \

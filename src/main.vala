@@ -78,7 +78,7 @@ public class ApplicationLauncher : Object
 
     init();
     LauncherFile.load_existing();
-    Application.load_from_gconf();
+    Roxenlauncher.Application.load_from_gconf();
 	  
     if (argslist.length > 0) {
       foreach (string s in argslist)
