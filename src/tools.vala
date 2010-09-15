@@ -19,8 +19,6 @@
  * with RAL.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-using GLib;
-using Gee;
 using Roxenlauncher;
 
 namespace Roxenlauncher
@@ -30,6 +28,106 @@ namespace Roxenlauncher
     BAD_LAUNCHERFILE,
     GENERIC
   }
+
+	public class ConfigFile : Object
+	{
+		string delim = "¤";
+		string path;
+		KeyFile kf;
+
+		public ConfigFile(string path)
+		{
+			if (!file_exists(path)) {
+				try {
+					var file = File.new_for_path(path);
+					var fs = file.create_readwrite(FileCreateFlags.NONE, null);
+					fs.close(null);
+				}
+				catch (Error e) {
+					critical("Unable to create config file \"%s\"!", path);
+					Gtk.main_quit();
+				}
+			}
+
+			this.path = path;
+			kf = new KeyFile();
+			try {
+				kf.load_from_file(path, KeyFileFlags.NONE);				
+			}
+			catch (Error e) {
+				message("%s", e.message);
+			}
+		}
+
+		public void set_integer(string section, string key, int val)
+		{
+			kf.set_integer(section, key, val);
+		}
+
+		public int get_integer(string section, string key)
+			throws KeyFileError
+		{
+			return kf.get_integer(section, key);
+		}
+
+		public void set_string(string section, string key, string val)
+		{
+			kf.set_string(section, key, val);
+		}
+
+		public string get_string(string section, string key)
+			throws KeyFileError
+		{
+			return kf.get_string(section, key);
+		}
+
+		public void set_boolean(string section, string key, bool val)
+		{
+			kf.set_boolean(section, key, val);
+		}
+
+		public bool get_boolean(string section, string key)
+			throws KeyFileError
+		{
+			return kf.get_boolean(section, key);
+		}
+
+		public void set_string_list(string section, string key, string[] val)
+		{
+			string v = implode(val, delim);
+			kf.set_string(section, key, v);
+		}
+
+		public string[] get_string_list(string section, string key)
+			throws KeyFileError
+		{
+			string s = kf.get_string(section, key);
+			return s.split(delim);
+		}
+
+		public bool save() 
+			throws Error
+		{
+			size_t len;
+			Error e = null;
+			string data = kf.to_data(out len, out e);
+
+			if (e != null)
+				throw e;
+
+			try {
+				var file = File.new_for_path(path);
+				var fs = new DataOutputStream(file.open_readwrite(null).output_stream);
+				fs.put_string(data, null);
+				fs.close(null);
+			}
+			catch (Error e) {
+				warning("Unable to save config: %s", e.message);
+			}
+
+			return true;
+		}
+	}
 
   public string? file_get_contents(string file)
   {

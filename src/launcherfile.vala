@@ -19,7 +19,6 @@
  * with RAL.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-using Gee;
 using Roxenlauncher;
 
 public class LauncherFile : Object
@@ -55,15 +54,15 @@ public class LauncherFile : Object
   /**
    * Array of LauncherFiles
    */
-  private static ArrayList<LauncherFile> launcherfiles =
-    new ArrayList<LauncherFile>();
+  private static GLib.List<LauncherFile> launcherfiles =
+    new GLib.List<LauncherFile>();
 
   /**
    * Returns the list of launcher files
    * 
    * @return
    */
-  public static ArrayList<LauncherFile> get_files()
+  public static unowned GLib.List<LauncherFile> get_files()
   {
     return launcherfiles;
   }
@@ -72,12 +71,12 @@ public class LauncherFile : Object
    * Returns the list of launcher files in reversed order.
    * Called from Roxenlauncher.Tray
    */
-  public static ArrayList<LauncherFile> get_reversed_files()
+  public static GLib.List<LauncherFile> get_reversed_files()
   {
-    ArrayList<LauncherFile> nlist = new Gee.ArrayList<LauncherFile>();
+    GLib.List<LauncherFile> nlist = new GLib.List<LauncherFile>();
 
-    for (int i = launcherfiles.size; i > 0;)
-      nlist.add(launcherfiles.get(--i));
+    for (uint i = launcherfiles.length(); i > 0;)
+      nlist.append(launcherfiles.nth_data(--i));
 
     return nlist; 
   }
@@ -95,7 +94,7 @@ public class LauncherFile : Object
         return;
       }
 
-    launcherfiles.add(lf);
+    launcherfiles.append(lf);
   }
   
   /**
@@ -129,7 +128,8 @@ public class LauncherFile : Object
    */
   public static void clear_files()
   {
-    launcherfiles.clear();
+    foreach (LauncherFile l in launcherfiles)
+    	launcherfiles.remove(l);
   }
 
   /**
@@ -138,7 +138,7 @@ public class LauncherFile : Object
   public static void load_existing()
   {
     if (launcherfiles == null)
-      launcherfiles = new ArrayList<LauncherFile>();
+      launcherfiles = new GLib.List<LauncherFile>();
 
     var p = getdir("files");
 
@@ -149,7 +149,7 @@ public class LauncherFile : Object
       FileInfo fi;
       while ((fi = f.next_file(null)) != null) {
         var lf = new LauncherFile.from_existing(fi.get_name(), null);
-        launcherfiles.add(lf);
+        launcherfiles.append(lf);
       }
     }
     catch (Error e) {

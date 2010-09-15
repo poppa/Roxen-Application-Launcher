@@ -70,41 +70,38 @@ namespace Roxenlauncher
     
     void on_trayicon_popup(uint btn, uint time)
     {
-      var visible     = win.get_window().visible;
-      popmenu         = new Gtk.Menu();
-      var item_quit   = new Gtk.ImageMenuItem.from_stock(Gtk.STOCK_QUIT, null);
-      var img_hide    = new Gtk.Image.from_stock(Gtk.STOCK_CLOSE, 
-                                                 Gtk.IconSize.MENU);
-      var img_show    = new Gtk.Image.from_stock(Gtk.STOCK_OPEN, 
-                                                 Gtk.IconSize.MENU);
-      var item_toggle = new Gtk.ImageMenuItem.with_label(visible ? t_hide : 
-                                                                   t_show);
+      var visible = win.get_window().visible;
+      popmenu = new Menu();
+      var item_quit = new ImageMenuItem.from_stock(Gtk.STOCK_QUIT, null);
+      var img_hide = new Image.from_stock(STOCK_CLOSE, IconSize.MENU);
+      var img_show = new Image.from_stock(STOCK_OPEN, IconSize.MENU);
+      var item_toggle = new ImageMenuItem.with_label(visible ? t_hide : t_show);
       item_toggle.set_image(visible ? img_hide : img_show);
 
-      Gee.ArrayList<LauncherFile> lfs = LauncherFile.get_reversed_files();
+      GLib.List<LauncherFile> lfs = LauncherFile.get_reversed_files();
 
-      if (lfs.size == 0) {
-        var mi = new Gtk.MenuItem.with_label(_("No active files"));
+      if (lfs.length() == 0) {
+        var mi = new MenuItem.with_label(_("No active files"));
         mi.sensitive = false;
         popmenu.add(mi);
       }
       else {
         foreach (LauncherFile lf in lfs) {
-          Gtk.MenuItem mi = null;
+          MenuItem mi = null;
           if (lf.status == LauncherFile.Statuses.DOWNLOADED ||
               lf.status == LauncherFile.Statuses.UPLOADED)
           {
             string img = lf.status == LauncherFile.Statuses.DOWNLOADED ?
-                                      Gtk.STOCK_GO_DOWN : Gtk.STOCK_GO_UP;
-            var imi = new Gtk.ImageMenuItem.from_stock(img, null);
+                                      STOCK_GO_DOWN : STOCK_GO_UP;
+            var imi = new ImageMenuItem.from_stock(img, null);
             imi.set_label(lf.get_uri());
             mi = (MenuItem)imi;
           }
           else
-            mi = new Gtk.MenuItem.with_label(lf.get_uri());
+            mi = new MenuItem.with_label(lf.get_uri());
 
           mi.activate.connect((widget) => {
-            var f = LauncherFile.find_by_uri(((Gtk.MenuItem)widget).label);
+            var f = LauncherFile.find_by_uri(((MenuItem)widget).label);
             if (f != null)
               f.download();
           });
@@ -113,36 +110,36 @@ namespace Roxenlauncher
         }
       }
 
-      var finish_all = new Gtk.ImageMenuItem.from_stock(Gtk.STOCK_CLEAR, null);
+      var finish_all = new ImageMenuItem.from_stock(STOCK_CLEAR, null);
       finish_all.activate.connect(() => {
         Idle.add(() => { win.finish_all_files(); return false; });
         popmenu.popdown();
       });
 
-      if (lfs.size == 0)
+      if (lfs.length() == 0)
         finish_all.sensitive = false;
 
       item_quit.activate.connect(win.on_window_destroy);
       item_toggle.activate.connect(set_window_visibility);
 
       var t_notify = _("Enable notifications");
-      var t_tray   = _("Minimize to tray");
-      var item_notify = new Gtk.CheckMenuItem.with_label(t_notify);
+      var t_tray = _("Minimize to tray");
+      var item_notify = new CheckMenuItem.with_label(t_notify);
       item_notify.set_active(get_enable_notifications());
       item_notify.activate.connect(() => {
         win.toggle_notifications((int)(!get_enable_notifications()));
       });
 
-      var item_minimize = new Gtk.CheckMenuItem.with_label(t_tray);
+      var item_minimize = new CheckMenuItem.with_label(t_tray);
       item_minimize.set_active(get_minimize_to_tray());
       item_minimize.activate.connect(() => {
         win.toggle_minimize_to_tray((int)(!get_minimize_to_tray()));
       });
 
-      popmenu.add(new Gtk.SeparatorMenuItem());
+      popmenu.add(new SeparatorMenuItem());
       popmenu.add(item_notify);
       popmenu.add(item_minimize);
-      popmenu.add(new Gtk.SeparatorMenuItem());
+      popmenu.add(new SeparatorMenuItem());
       popmenu.add(finish_all);
       popmenu.add(item_toggle);
       popmenu.add(item_quit);

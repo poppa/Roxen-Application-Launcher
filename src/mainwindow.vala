@@ -19,7 +19,6 @@
  * with RAL.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-using Gee;
 using Notify;
 using Roxenlauncher;
 
@@ -165,7 +164,7 @@ namespace Roxenlauncher
                            2, last_upload, 3, lf, -1);        
       }
 
-      if (LauncherFile.get_files().size > 0)
+      if (LauncherFile.get_files().length() > 0)
         btn_finish_all.sensitive = true;
         
       set_file_count();
@@ -264,6 +263,8 @@ namespace Roxenlauncher
     {
       bool state = istate == 2 ? cb_minimize.active : (bool)istate;
       cb_minimize.set_active(state);
+      min_to_tray = state;
+      // In application.vala
       set_minimize_to_tray(state);
     }
 
@@ -282,11 +283,12 @@ namespace Roxenlauncher
       if (d.response) {
         Application app = new Application(d.editor_name, d.editor_command,
                                           d.content_type, d.editor_arguments);
-        Application.add_application(app);
-        Gtk.TreeIter iter;
-        ls_apps.append(out iter);
-        ls_apps.set(iter, 0, app.mimetype, 1, app.name, 2, app);
-        return app;
+        if (Application.add_application(app)) {
+		      Gtk.TreeIter iter;
+		      ls_apps.append(out iter);
+		      ls_apps.set(iter, 0, app.mimetype, 1, app.name, 2, app);
+		      return app;
+		    }
       }
 
       return null;
@@ -328,6 +330,10 @@ namespace Roxenlauncher
         d.run();
 
         if (d.response) {
+        	if (d.content_type != app.mimetype)
+        		if (Application.get_for_mimetype(d.content_type) != null)
+        			return;
+
           app.mimetype = d.content_type;
           app.name = d.editor_name;
           app.command = d.editor_command;
@@ -509,7 +515,7 @@ namespace Roxenlauncher
      */
     bool on_tv_files_key_release_event(Gtk.Widget source, Gdk.EventKey key)
     {
-      if (LauncherFile.get_files().size > 0 &&
+      if (LauncherFile.get_files().length() > 0 &&
           Gdk.keyval_name(key.keyval).down() == "delete")
       {
         Gtk.TreeModel model;
@@ -555,7 +561,7 @@ namespace Roxenlauncher
      */
     bool on_tv_apps_key_release_event(Gtk.Widget source, Gdk.EventKey key)
     {
-      if (Application.get_applications().size > 0 &&
+      if (Application.get_applications().length() > 0 &&
           Gdk.keyval_name(key.keyval).down() == "delete")
       {
         Gtk.TreeModel model;
@@ -610,7 +616,7 @@ namespace Roxenlauncher
 
       btn_edit_file.sensitive = is_active;
       btn_finish_file.sensitive = is_active;
-      btn_finish_all.sensitive = LauncherFile.get_files().size > 0;
+      btn_finish_all.sensitive = LauncherFile.get_files().length() > 0;
     }
     
     /**
@@ -748,14 +754,14 @@ namespace Roxenlauncher
     void set_file_count()
     {
       string m = "";
-      int num = LauncherFile.get_files().size;
+      uint num = LauncherFile.get_files().length();
       
       if (num == 0)
         m = _("No files");
       else if (num == 1)
         m = _("One file");
       else
-        m = _("%d active files").printf((int)num);
+        m = _("%d active files").printf(num);
 
       set_status("# " + m);
     }

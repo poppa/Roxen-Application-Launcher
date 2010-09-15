@@ -19,7 +19,6 @@
  * with RAL.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-using GLib;
 using Roxenlauncher;
 
 // Set in ApplicationLauncher.run()
