@@ -220,13 +220,14 @@ public class LauncherFile : Object
   public string      local_dir      { get; private set; }
   public string      local_file     { get; private set; }
   public int         status         { get; private set; default = -1; }
+  public string[]    bundle_paths   { get; private set; }
   public bool        is_downloading { get; private set; default = false; }
   public bool        is_uploading   { get; private set; default = false; }
   public DateTime    last_upload    { get; private set; }
   public DateTime    last_download  { get; private set; }
   public DateTime    last_modified  { get; private set; }
   public DateTime    age            { get; private set; }
-  public Roxenlauncher.Application application    { get; private set; }
+  public Roxenlauncher.Application application { get; private set; }
 
   //private DateTime null_date = new DateTime();
   
@@ -290,7 +291,7 @@ public class LauncherFile : Object
    *
    * @return
    */
-  public string get_uri()
+  public string get_uri(string? _path=null)
   {
     var s = schema + "://" + host;
     
@@ -299,7 +300,7 @@ public class LauncherFile : Object
     else if (schema == "http" && port != "80")
       s += port;
       
-    s += path;
+    s += _path == null ? path : _path;
     return s;
   }
   
@@ -447,7 +448,9 @@ public class LauncherFile : Object
 
     Idle.add(() => {
       var sess = new Soup.SessionSync();
-      //var mess = new Soup.Message("GET", get_uri());
+			//var logger  = new Soup.Logger(Soup.LoggerLogLevel.BODY, -1);
+			//sess.add_feature = logger;
+
       var mess = get_http_message("GET", get_uri());
       mess.request_headers.append("cookie", get_cookie());
       mess.request_headers.append("translate", "f");
@@ -455,6 +458,29 @@ public class LauncherFile : Object
 
       if (mess.status_code == Soup.KnownStatusCode.OK) {
         if (Soppa.save_soup_data(mess.response_body, local_file)) {
+        	if (bundle_paths != null) {
+        		foreach (string bp in bundle_paths) {
+        			mess = get_http_message("GET", get_uri(bp));
+				      mess.request_headers.append("cookie", get_cookie());
+      				mess.request_headers.append("translate", "f");
+        			sess.send_message(mess);
+
+        			if (mess.status_code == Soup.KnownStatusCode.OK) {
+        				string lp = bp;
+        				if (lp.contains("?"))
+        					lp = lp.str("?");
+
+        				string[] parts = lp.split("/");
+        				lp = local_dir + "/" + parts[parts.length-1];
+        				message("Saving bundle: %s", lp);
+        				Soppa.save_soup_data(mess.response_body, lp);
+        			}
+        			else {
+        				warning("Download of bundle file %s failed", bp);
+        			}
+        		}
+        	}
+        
           win_set_status(Statuses.DOWNLOADED);
           win.show_notification(NotifyType.DOWN,
                                 _("Download OK"),
@@ -516,7 +542,6 @@ public class LauncherFile : Object
 			  var logger  = new Soup.Logger(Soup.LoggerLogLevel.BODY, -1);
 				sess.add_feature = logger;
 #endif
-			  //var mess = new Soup.Message("PUT", get_uri());
 				var mess = get_http_message("PUT", get_uri());
 				mess.request_headers.append("Cookie", get_cookie());
 				mess.request_headers.append("Translate", "f");
@@ -593,6 +618,8 @@ public class LauncherFile : Object
     if (a.length >= 9) {
       last_upload = DateTime.unixtime((time_t)a[7].to_long());
       status = a[8].to_int();
+      if (a.length > 9 && a[9].length > 0)
+      	bundle_paths = a[9].split(":");
     }
     else {
       last_upload = new DateTime();
@@ -603,7 +630,7 @@ public class LauncherFile : Object
       randid();
       
     string[] p = path.split("/");
-    local_dir = Path.build_filename(getdir("files"), id);
+    local_dir  = Path.build_filename(getdir("files"), id);
     local_file = Path.build_filename(local_dir, p[p.length-1]);
 
     // No local copy available - first download
@@ -689,6 +716,9 @@ public class LauncherFile : Object
   private void save()
   {
     create_dir();
+		string bp = "";
+		if (bundle_paths != null)
+			bp = implode(bundle_paths, ":");
 
     string[] data = {
       schema,
@@ -699,7 +729,8 @@ public class LauncherFile : Object
       content_type,
       sb_params,
       "%ld".printf(last_upload.to_unixtime()),
-      status.to_string()
+      status.to_string(),
+      bp
     };
 
     try {
