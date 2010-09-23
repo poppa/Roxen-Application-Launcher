@@ -50,20 +50,19 @@ namespace Roxenlauncher
   public void init()
   {
     winprops = { 0, 0, 0, 0 };
-    try {
-			var cfg = get_config();
-      winprops.width  = cfg.get_integer("winprops", "width");
-      winprops.height = cfg.get_integer("winprops", "height");
-      winprops.x      = cfg.get_integer("winprops", "left");;
-      winprops.y      = cfg.get_integer("winprops", "top");
-    }
-    catch {}
+		var cfg = get_config();
+    winprops.width  = cfg.get_integer("winprops", "width");
+    winprops.height = cfg.get_integer("winprops", "height");
+    winprops.x      = cfg.get_integer("winprops", "left");;
+    winprops.y      = cfg.get_integer("winprops", "top");
   }
 
   public ConfigFile get_config()
   {
   	string p = getdir("$home") + "/" + App.CONFIG;
-		return new ConfigFile(p);
+  	ConfigFile c = new ConfigFile(p);
+  	c.delimiter = "¤";
+		return c;
   }
   
   public string? get_ui_path(string local_path)
@@ -86,24 +85,18 @@ namespace Roxenlauncher
     winprops.height = height;
     winprops.x = x;
     winprops.y = y;
-    try {
-      var cli = get_config();
-      cli.set_integer("winprops", "width",  winprops.width);
-      cli.set_integer("winprops", "height", winprops.height);
-      cli.set_integer("winprops", "left",   winprops.x);
-      cli.set_integer("winprops", "top",    winprops.y);
-      cli.save();
-    }
-    catch (Error e) {
-      warning("Failed to save window properties to conf: %s", e.message);
-    }
+
+    var cli = get_config();
+    cli.set_integer("winprops", "width",  winprops.width);
+    cli.set_integer("winprops", "height", winprops.height);
+    cli.set_integer("winprops", "left",   winprops.x);
+    cli.set_integer("winprops", "top",    winprops.y);
+    cli.save();
   }
   
   public string get_last_folder()
   {
-    string k = null;
-    try { k = get_config().get_string("app", "last-folder"); }
-    catch {}
+    string k = get_config().get_string("app", "last-folder");
     if (k == null) k = getdir("$home"); 
     return k;
   }
@@ -111,54 +104,33 @@ namespace Roxenlauncher
   public void set_last_folder(string path)
   {
     var cli = get_config();
-    try { 
-    	cli.set_string("app", "last-folder", path); 
-    	cli.save();
-    }
-    catch (Error e) {
-      warning("Error setting conf key \"last-folder\": %s", e.message);
-    }
+  	cli.set_string("app", "last-folder", path); 
+  	cli.save();
   }
   
   public bool get_enable_notifications()
   {
-    bool v = true;
-    try { v = get_config().get_boolean("app", "notifications"); }
-    catch {}
+    bool v = get_config().get_boolean("app", "notifications");
     return v;
   }
 
   public void set_enable_notifications(bool val)
   {
     var cli = get_config();
-    try {
-    	cli.set_boolean("app", "notifications", val); 
-    	cli.save();
-    }
-    catch (Error e) {
-      warning("Error setting GConf value for notifications!");
-    }
+  	cli.set_boolean("app", "notifications", val);
   }
   
   public bool get_minimize_to_tray()
   {
-    bool v = true;
-    try { v = get_config().get_boolean("app", "minimize-to-tray"); }
-    catch {}
-
+    bool v = get_config().get_boolean("app", "minimize-to-tray");
     return v;
   }
 
   public void set_minimize_to_tray(bool val)
   {
     var cli = get_config();
-    try { 
-    	cli.set_boolean("app", "minimize-to-tray", val);
-    	cli.save();
-    }
-    catch (Error e) {
-      warning("Error setting GConf value for tray minimization!");
-    }
+  	cli.set_boolean("app", "minimize-to-tray", val);
+  	cli.save();
   }
 
   public class Application : Object
@@ -204,14 +176,9 @@ namespace Roxenlauncher
     public static void save_list()
     {
       var list = to_gconf_list();
-      try {
-        var cli = get_config();
-        cli.set_string_list("app", "applications", list);
-        cli.save();
-      }
-      catch (Error e) {
-        warning("Failed to save applications to GConf: %s", e.message);
-      }
+      var cli = get_config();
+      cli.set_string_list("app", "applications", list);
+      cli.save();
     }
 
     /**
@@ -251,9 +218,7 @@ namespace Roxenlauncher
         applications = new GLib.List<Application>();
     
       var cli = get_config();
-      string[] list = null;
-      try { list = cli.get_string_list("app", "applications"); }
-      catch {}
+      string[] list = cli.get_string_list("app", "applications");
 
       if (list != null) {
         foreach (string s in list) {
@@ -271,7 +236,7 @@ namespace Roxenlauncher
     public string command { get; set; }
     public string mimetype { get; set; }
     public string arguments { get; set; }
-    
+
     public Application(string name, string command, string mimetype,
                        string arguments="")
     {
