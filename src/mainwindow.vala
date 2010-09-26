@@ -21,6 +21,7 @@
 
 using Notify;
 using Roxenlauncher;
+using Poppa;
 
 namespace Roxenlauncher
 {
@@ -61,7 +62,7 @@ namespace Roxenlauncher
         builder.set_translation_domain(Config.GETTEXT_PACKAGE);
         builder.add_from_file(filename);
       }
-      catch (Error e) {
+      catch (GLib.Error e) {
         error("GUI load error: %s", e.message);
       }
 
@@ -156,7 +157,7 @@ namespace Roxenlauncher
         Gtk.TreeIter iter;
         ls_files.append(out iter);
 
-        string last_upload = "";
+        string last_upload = _("Not uploaded");
         if (lf.last_upload.to_unixtime() > dummy_date)
           last_upload = lf.last_upload.format(App.DATE_FORMAT);
 
@@ -166,12 +167,14 @@ namespace Roxenlauncher
 
       if (LauncherFile.get_files().length() > 0)
         btn_finish_all.sensitive = true;
-        
+
       set_file_count();
-      
+
       tv_files.get_selection().changed.connect(on_tv_files_selection_changed);
       tv_files.key_release_event.connect(on_tv_files_key_release_event);
       tv_files.button_press_event.connect(on_ctx_popup_menu);
+
+			// Right click in file list
       ((Gtk.MenuItem)gtkobj("sb_view")).activate.connect(() => {
       	Gtk.TreeModel model;
       	Gtk.TreeIter iter;
@@ -180,7 +183,7 @@ namespace Roxenlauncher
       		string uri = lf.get_sb_uri();
       		string cmd = "xdg-open '" + uri + "'";
       		try { Process.spawn_command_line_async(cmd); }
-	 			  catch (Error e) {
+	 			  catch (GLib.Error e) {
 	 			  	warning("Unable to open file: %s", e.message);
 	 			  }
       	}
@@ -812,7 +815,7 @@ namespace Roxenlauncher
 	        nf.set_icon_from_pixbuf(new Gdk.Pixbuf.from_file(icon)); 
 	        nf.show(); 
 	      }
-	      catch (Error e) {
+	      catch (GLib.Error e) {
 	        message("libnotify error: %s", e.message);
 	      }
 	    }
@@ -833,7 +836,7 @@ namespace Roxenlauncher
         builder.set_translation_domain(Config.GETTEXT_PACKAGE);
         builder.add_from_file(filename);
       }
-      catch (Error e) {
+      catch (GLib.Error e) {
         error("GUI load error: %s", e.message);
       }
       
@@ -843,7 +846,7 @@ namespace Roxenlauncher
         try {
           d.logo = new Gdk.Pixbuf.from_file(about_logo);
         }
-        catch (Error e) {
+        catch (GLib.Error e) {
           warning("Unable to set logo for about dialog: %s", e.message);
         }
       }

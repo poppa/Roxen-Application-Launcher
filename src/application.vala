@@ -20,6 +20,7 @@
  */
 
 using Roxenlauncher;
+using Poppa;
 
 namespace Roxenlauncher
 {
@@ -57,10 +58,10 @@ namespace Roxenlauncher
     winprops.y      = cfg.get_integer("winprops", "top");
   }
 
-  public ConfigFile get_config()
+  public Poppa.KeyFile get_config()
   {
   	string p = getdir("$home") + "/" + App.CONFIG;
-  	ConfigFile c = new ConfigFile(p);
+  	Poppa.KeyFile c = new Poppa.KeyFile(p);
   	c.delimiter = "¤";
 		return c;
   }
@@ -118,8 +119,9 @@ namespace Roxenlauncher
   {
     var cli = get_config();
   	cli.set_boolean("app", "notifications", val);
+  	cli.save();
   }
-  
+
   public bool get_minimize_to_tray()
   {
     bool v = get_config().get_boolean("app", "minimize-to-tray");

@@ -1,4 +1,4 @@
-AC_INIT([roxenlauncher], [1.0.3], [pontus@poppa.se], [roxenlauncher])
+AC_INIT([roxenlauncher], [1.0.4], [pontus@poppa.se], [roxenlauncher])
 AC_CONFIG_SRCDIR([Makefile.am])
 AC_CONFIG_HEADERS(config.h)
 AM_INIT_AUTOMAKE([dist-bzip2])

@@ -20,6 +20,7 @@
  */
 
 using Roxenlauncher;
+using Poppa;
 
 public class LauncherFile : Object
 {
@@ -152,7 +153,7 @@ public class LauncherFile : Object
         launcherfiles.append(lf);
       }
     }
-    catch (Error e) {
+    catch (GLib.Error e) {
       warning("Failed to load launcher files: %s", e.message);
     }
   }
@@ -175,20 +176,26 @@ public class LauncherFile : Object
     if (s.length < 6) 
       throw new RoxenError.BAD_LAUNCHERFILE(_("Bad data in launcher file!"));
 
-    string ss = implode(slice(s, 0, 6), "\r\n");
+		try {
+		  string ss = array_implode(array_slice(s, 0, 6), "\r\n");
 
-    foreach (LauncherFile lf in launcherfiles) {
-      var raw = implode(slice(lf.rawdata.split("\r\n"), 0, 6), "\r\n");
-      if (raw == ss) {
-        file = lf;
-        file.download();
-        return false;
-      }
-    }
+		  foreach (LauncherFile lf in launcherfiles) {
+		    var raw = array_implode(array_slice(lf.rawdata.split("\r\n"), 0, 6), 
+		                            "\r\n");
+		    if (raw == ss) {
+		      file = lf;
+		      file.download();
+		      return false;
+		    }
+		  }
 
-    file = new LauncherFile(data);
+		  file = new LauncherFile(data);
 
-    return true;
+		  return true;
+		}
+		catch (Poppa.Error e) {
+			throw new RoxenError.BAD_LAUNCHERFILE(_("Bad data in launcher file!"));
+		}
   }
 
   enum Statuses {
@@ -226,11 +233,8 @@ public class LauncherFile : Object
   public DateTime    last_upload    { get; private set; }
   public DateTime    last_download  { get; private set; }
   public DateTime    last_modified  { get; private set; }
-  public DateTime    age            { get; private set; }
   public Roxenlauncher.Application application { get; private set; }
 
-  //private DateTime null_date = new DateTime();
-  
   /**
    * File monitor
    */
@@ -357,7 +361,7 @@ public class LauncherFile : Object
       }
       File.new_for_path(local_dir).delete(null);
     }
-    catch (Error e) {
+    catch (GLib.Error e) {
       warning("Failed to delete launcher file: %s!", e.message);
       retval = false;
     }
@@ -397,7 +401,7 @@ public class LauncherFile : Object
       set_monitor();
 	    Process.spawn_command_line_async(cmd);
     }
-    catch (Error e) {
+    catch (GLib.Error e) {
       warning("Error starting application: %s", e.message); 
     }
   }
@@ -413,10 +417,9 @@ public class LauncherFile : Object
         
       var f = File.new_for_path(local_file);
       monitor = f.monitor_file(FileMonitorFlags.NONE);
-      //monitor.changed += on_file_changed;
       monitor.changed.connect(on_file_changed);
     }
-    catch (Error e) {
+    catch (GLib.Error e) {
       warning("Failed to set monitor for \"%s\"", local_file);
     }
   }
@@ -448,9 +451,10 @@ public class LauncherFile : Object
 
     Idle.add(() => {
       var sess = new Soup.SessionSync();
-			//var logger  = new Soup.Logger(Soup.LoggerLogLevel.BODY, -1);
-			//sess.add_feature = logger;
-
+#if DEBUG
+			var logger  = new Soup.Logger(Soup.LoggerLogLevel.BODY, -1);
+			sess.add_feature = logger;
+#endif
       var mess = get_http_message("GET", get_uri());
       mess.request_headers.append("cookie", get_cookie());
       mess.request_headers.append("translate", "f");
@@ -562,7 +566,7 @@ public class LauncherFile : Object
 				                      _("%s was uploaded OK to %s")
 				                      .printf(path, host));
 			}
-			catch (Error e) {
+			catch (GLib.Error e) {
 				message("Unable to upload file: %s", e.message);
 				win_set_status(Statuses.NOT_UPLOADED);
 				win.show_notification(NotifyType.ERROR,
@@ -651,9 +655,6 @@ public class LauncherFile : Object
         last_modified = lm;
     }
 
-    var _age = filectime(local_dir);
-    if (_age != null)
-      age = _age;
 #if DEBUG
     message("End of LauncherFile.init()");
 #endif
@@ -680,7 +681,7 @@ public class LauncherFile : Object
       npaths += paths[i];
 
     if (npaths.length > 0)
-      id = sb + "_" + implode(npaths, "_");
+      id = sb + "_" + array_implode(npaths, "_");
     else
       id = sb;
 
@@ -718,7 +719,7 @@ public class LauncherFile : Object
     create_dir();
 		string bp = "";
 		if (bundle_paths != null)
-			bp = implode(bundle_paths, ":");
+			bp = array_implode(bundle_paths, ":");
 
     string[] data = {
       schema,
@@ -735,9 +736,9 @@ public class LauncherFile : Object
 
     try {
       var f = Path.build_filename(getdir("files"), id, "stub");
-      FileUtils.set_contents(f, implode(data, "\r\n"));
+      FileUtils.set_contents(f, array_implode(data, "\r\n"));
     }
-    catch (Error e) {
+    catch (GLib.Error e) {
       warning("Failed to write stub file to local directory: %s", e.message);
     }
   }
@@ -753,88 +754,31 @@ public class LauncherFile : Object
    */
   private void on_file_changed(File f, File? other, FileMonitorEvent e)
   {
-#if DEBUG
-	  message("*** Changed...%d", e);
-#endif
 	  switch (e)
 	  {
-		  case FileMonitorEvent.CHANGED:
-#if DEBUG
-			  message("File changed");
-#endif
-			  break;
-
 		  case FileMonitorEvent.ATTRIBUTE_CHANGED:
-#if DEBUG
-			  message("Attribute changed");
-#endif
         upload_on_change();
 		    break;
 
 		  case FileMonitorEvent.CHANGES_DONE_HINT:
-#if DEBUG
-			  message("Changes done hint");
-#endif
         upload_on_change();
 			  break;
-			
-		  case FileMonitorEvent.CREATED:
-#if DEBUG
-			  message("File created");
-#endif
-			  break;
-		
-		  case FileMonitorEvent.DELETED:
-#if DEBUG
-			  message("File deleted");
-#endif
-			  break;
-			
-		  case FileMonitorEvent.PRE_UNMOUNT:
-#if DEBUG
-			  message("Pre unmounted");
-#endif
-			  break;
-			
-		  case FileMonitorEvent.UNMOUNTED:
-#if DEBUG
-			  message("Unmounted");
-#endif		  
-			  break;
-			
-		  default:
-#if DEBUG		  
-			  message("Why???");
-#endif
-			  break;
 	  }
-	  
+
 	  previous_event = e;
   }
   
   void upload_on_change()
   {
-#if DEBUG
-    message("Upload on change");
-#endif
-
 	  if (previous_event == FileMonitorEvent.CREATED ||
 	      previous_event == FileMonitorEvent.CHANGED)
 	  {
 	    upload();
 	  }
-#if DEBUG
-	  else {
-	    message("::: Don't upload: previous status: %d", previous_event);
-	  }
-#endif
   }
   
   ~LauncherFile()
   {
-#if DEBUG
-    message("Destructor called on launcher file");
-#endif    
     if (monitor != null)
       monitor.cancel();
   }

@@ -42,7 +42,7 @@ namespace Roxenlauncher
         icon.set_visible(false);
       }
       catch (Error e) {
-        warning("Unable to load logo for tray! Cant start panel applet");
+        warning("Unable to load logo for tray! Can't start panel applet");
       }
     }
     
@@ -146,7 +146,7 @@ namespace Roxenlauncher
       popmenu.show_all();
       popmenu.popup(null, null, null, btn, time);
     }
-    
+
     void set_window_visibility()
     {
       var v = win.get_window().visible;

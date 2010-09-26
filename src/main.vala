@@ -20,6 +20,7 @@
  */
 
 using Roxenlauncher;
+using Poppa;
 
 // Set in ApplicationLauncher.run()
 Roxenlauncher.MainWindow win;
@@ -54,18 +55,18 @@ public class ApplicationLauncher : Object
     instance = new Unique.App(App.LIB_UNIQUE_PATH, null);
 
     string[] argslist = new string[args.length-2];
-    try { argslist = slice(args, 1); }
-    catch (Error e) {
+    try { argslist = array_slice(args, 1); }
+    catch (Poppa.Error e) {
       warning("Error: %s", e.message);
     }
 
     if (instance.is_running) {
       if (argslist.length > 0) {
 #if DEBUG
-        message("Send args: %s", implode(argslist, ", "));
+        message("Send args: %s", array_implode(argslist, ", "));
 #endif
         var md = new Unique.MessageData();
-        md.set_text(implode(argslist,";"), -1);
+        md.set_text(array_implode(argslist,";"), -1);
         instance.send_message(Unique.Command.OPEN, md);
       }
 
@@ -114,7 +115,7 @@ public class ApplicationLauncher : Object
           win.set_file_selection(lf);
         }
       }
-      catch (Error e) {
+      catch (GLib.Error e) {
         warning("Failed to handle incomming file: %s", e.message);
       }
     }

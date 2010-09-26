@@ -19,6 +19,8 @@ roxenlauncher_SOURCES =                                                  \
 	tray.vala                                                              \
 	mainwindow.vala                                                        \
 	application-form.vala                                                  \
+	keyfile.vala                                                           \
+	poppa.vala                                                             \
 	soppa.c                                                                \
 	$(NULL)
 
@@ -34,7 +36,6 @@ roxenlauncher_VALAFLAGS =                                                \
 	--vapidir=.                                                            \
 	--pkg=config                                                           \
 	--pkg=soppa                                                            \
-	$(RL_DEBUG)                                                            \
 	$(NULL)
 
 roxenlauncher_LDADD =                                                    \
