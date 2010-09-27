@@ -28,6 +28,8 @@ Roxenlauncher.MainWindow win;
 Roxenlauncher.Tray tray;
 // Set in init() in application.vala
 Roxenlauncher.WindowsProperties winprops;
+// Checked for in init() in application.vala
+bool is_kde = false;
 
 public class ApplicationLauncher : Object
 {

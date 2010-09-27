@@ -86,6 +86,16 @@ namespace Roxenlauncher
 
       statusbar       = (Gtk.Statusbar)         gtkobj("statusbar1");
 
+      if (is_kde) {
+	try {
+	  string rlogo = get_ui_path("pixmap/roxen-logo.png");
+	  win.set_icon_from_file(rlogo);
+	}
+	catch (GLib.Error e) {
+	  warning("Unable to set icon: %s", e.message);
+	}
+      }
+      
       if (winprops.width > 0 && winprops.height > 0)
         win.set_default_size(winprops.width, winprops.height);
 

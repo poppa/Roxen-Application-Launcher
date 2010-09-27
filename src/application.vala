@@ -51,19 +51,26 @@ namespace Roxenlauncher
   public void init()
   {
     winprops = { 0, 0, 0, 0 };
-		var cfg = get_config();
+    var cfg = get_config();
     winprops.width  = cfg.get_integer("winprops", "width");
     winprops.height = cfg.get_integer("winprops", "height");
     winprops.x      = cfg.get_integer("winprops", "left");;
     winprops.y      = cfg.get_integer("winprops", "top");
+
+    foreach (string s in GLib.Environment.list_variables()) {
+      if ("KDE" in s) {
+	is_kde = true;
+	break;
+      }
+    }
   }
 
   public Poppa.KeyFile get_config()
   {
-  	string p = getdir("$home") + "/" + App.CONFIG;
-  	Poppa.KeyFile c = new Poppa.KeyFile(p);
-  	c.delimiter = "¤";
-		return c;
+    string p = getdir("$home") + "/" + App.CONFIG;
+    Poppa.KeyFile c = new Poppa.KeyFile(p);
+    c.delimiter = "¤";
+    return c;
   }
   
   public string? get_ui_path(string local_path)
@@ -105,8 +112,8 @@ namespace Roxenlauncher
   public void set_last_folder(string path)
   {
     var cli = get_config();
-  	cli.set_string("app", "last-folder", path); 
-  	cli.save();
+    cli.set_string("app", "last-folder", path);
+    cli.save();
   }
   
   public bool get_enable_notifications()
@@ -118,8 +125,8 @@ namespace Roxenlauncher
   public void set_enable_notifications(bool val)
   {
     var cli = get_config();
-  	cli.set_boolean("app", "notifications", val);
-  	cli.save();
+    cli.set_boolean("app", "notifications", val);
+    cli.save();
   }
 
   public bool get_minimize_to_tray()
@@ -131,8 +138,8 @@ namespace Roxenlauncher
   public void set_minimize_to_tray(bool val)
   {
     var cli = get_config();
-  	cli.set_boolean("app", "minimize-to-tray", val);
-  	cli.save();
+    cli.set_boolean("app", "minimize-to-tray", val);
+    cli.save();
   }
 
   public class Application : Object
