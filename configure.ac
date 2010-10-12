@@ -1,4 +1,4 @@
-AC_INIT([roxenlauncher], [1.0.4], [pontus@poppa.se], [roxenlauncher])
+AC_INIT([roxenlauncher], [1.0.5], [pontus@poppa.se], [roxenlauncher])
 AC_CONFIG_SRCDIR([Makefile.am])
 AC_CONFIG_HEADERS(config.h)
 AM_INIT_AUTOMAKE([dist-bzip2])
@@ -55,15 +55,15 @@ then
 	fi
 fi
 
-PKG_CHECK_MODULES(ROXENLAUNCHER,    \
-	glib-2.0 >= $GLIB_REQUIRED        \
-	gobject-2.0 >= $GLIB_REQUIRED     \
-	gtk+-2.0 >= $GTK_REQUIRED         \
-	unique-1.0 >= $UNIQUE_REQUIRED    \
-	libsoup-2.4 >= $SOUP24_REQUIRED   \
-	gio-2.0 >= $GIO_REQUIRED          \
-	gdk-2.0 >= $GDK_REQUIRED          \
-	libnotify >= $LIBNOTIFY_REQUIRED  \
+PKG_CHECK_MODULES(ROXENLAUNCHER,         \
+	glib-2.0       >= $GLIB_REQUIRED       \
+	gobject-2.0    >= $GLIB_REQUIRED       \
+	gtk+-2.0       >= $GTK_REQUIRED        \
+	unique-1.0     >= $UNIQUE_REQUIRED     \
+	libsoup-2.4    >= $SOUP24_REQUIRED     \
+	gio-2.0        >= $GIO_REQUIRED        \
+	gdk-2.0        >= $GDK_REQUIRED        \
+	libnotify      >= $LIBNOTIFY_REQUIRED  \
 	gdk-pixbuf-2.0 >= $GDK_PIXBUF_REQUIRED)
 
 AC_SUBST(ROXENLAUNCHER_CFLAGS)

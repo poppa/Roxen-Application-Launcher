@@ -87,13 +87,13 @@ namespace Roxenlauncher
       statusbar       = (Gtk.Statusbar)         gtkobj("statusbar1");
 
       if (is_kde) {
-	try {
-	  string rlogo = get_ui_path("pixmap/roxen-logo.png");
-	  win.set_icon_from_file(rlogo);
-	}
-	catch (GLib.Error e) {
-	  warning("Unable to set icon: %s", e.message);
-	}
+				try {
+					string rlogo = get_ui_path("pixmap/roxen-logo.png");
+					win.set_icon_from_file(rlogo);
+				}
+				catch (GLib.Error e) {
+					warning("Unable to set icon: %s", e.message);
+				}
       }
       
       if (winprops.width > 0 && winprops.height > 0)
@@ -191,7 +191,7 @@ namespace Roxenlauncher
       	LauncherFile lf = get_selected_file(out model, out iter);
       	if (lf != null) {
       		string uri = lf.get_sb_uri();
-      		string cmd = "xdg-open '" + uri + "'";
+      		string cmd = "xdg-open '" + uri.escape("") + "'";
       		try { Process.spawn_command_line_async(cmd); }
 	 			  catch (GLib.Error e) {
 	 			  	warning("Unable to open file: %s", e.message);
@@ -247,11 +247,12 @@ namespace Roxenlauncher
   		if (e.button == 3 && e.type == Gdk.EventType.BUTTON_PRESS) {
         Gtk.TreeModel model;
         Gtk.TreeIter iter;
+
         LauncherFile f = get_selected_file(out model, out iter);
-   
+
         if (f != null) {
-		      ctx_menu.popup(null, null, null, e.button, e.time);
- 			    return true;
+			    ctx_menu.popup(null, null, null, e.button, e.time);
+	 			  return false;
 		    }
   		}
   		return false;
