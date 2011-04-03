@@ -169,6 +169,8 @@ public class Poppa.KeyFile : Object
 			sections.append(idx);
 		}
 
+		debug("String list delimiter is: %s\n", delimiter);
+
 		int len = val.length;
 		string s = "";
 		for (uint i = 0; i < len; i++) {
@@ -374,7 +376,7 @@ public class Poppa.KeyFile : Object
 				
 			return r;
 		}
-		
+
 		return null;
 	}
 	
@@ -384,10 +386,12 @@ public class Poppa.KeyFile : Object
 	public bool save()
 	{
 		try {
-			var file = File.new_for_path(path);
-			var fs = new DataOutputStream(file.open_readwrite(null).output_stream);
-			fs.put_string(to_string(), null);
-			fs.close(null);
+      var fs = File.new_for_path(path).open_readwrite(null);
+      fs.truncate_fn(0, null);
+      var ds = new DataOutputStream(fs.output_stream);
+      ds.put_string(to_string(), null);
+      ds.close();
+      fs.close();
 		}
 		catch (GLib.Error e) {
 			warning("Failed saving file: %s", e.message);
@@ -403,8 +407,8 @@ public class Poppa.KeyFile : Object
 	public string to_string()
 	{
 		string s = "";
-		foreach (Index i in sections)
-			s += i.to_string() + "\n";
+		foreach (Index i in sections) 
+ 			s += i.to_string() + "\n";
 
 		return s.strip();
 	}
@@ -483,7 +487,7 @@ public class Poppa.KeyFile : Object
 			values = new GLib.List<Value>();
 		}
 
-		public void set_value(string k, string v)
+		public void set_value(string k, string? v)
 		{
 			Value val = get_value(k);
 			if (val == null) {
@@ -519,10 +523,10 @@ public class Poppa.KeyFile : Object
 		 */
 		internal class Value
 		{
-			public string key;
+			public string? key;
 			public string val;
 
-			public Value(string k, string v)
+			public Value(string k, string? v)
 			{
 				key = k;
 				val = v;
@@ -530,7 +534,7 @@ public class Poppa.KeyFile : Object
 
 			public string to_string()
 			{
-				return key + "=" + val;
+				return key + "=" + (val == null ? "" : val);
 			}
 		}
 	}

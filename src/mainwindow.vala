@@ -78,7 +78,7 @@ namespace Roxenlauncher
       btn_add_app     = (Gtk.Button)            gtkobj("btn_add_app");
       btn_remove_app  = (Gtk.Button)            gtkobj("btn_remove_app");
       ctx_menu        = (Gtk.Menu)              gtkobj("tv_files_rclick_menu");
-      
+
       tv_files        = (Gtk.TreeView)          gtkobj("tv_files");
       ls_files        = (Gtk.ListStore)         gtkobj("ls_files");
       tv_apps         = (Gtk.TreeView)          gtkobj("tv_apps");
@@ -109,7 +109,7 @@ namespace Roxenlauncher
             event.width  != winprops.width  ||
             event.height != winprops.height ||
             event.x      != winprops.x      ||
-            event.y      != winprops.y))
+            event.y      != winprops.y) && (event.x > -1 && event.y > -1))
         {
           save_window_properties(event.width, event.height, event.x, event.y);
           return false;
@@ -161,11 +161,11 @@ namespace Roxenlauncher
         tv_files.insert_column(cl, -1);
       }
 
-      var dummy_date = new DateTime().to_unixtime();
+      var dummy_date = new Poppa.DateTime().to_unixtime();
 
       foreach (LauncherFile lf in LauncherFile.get_files()) {
         Gtk.TreeIter iter;
-        ls_files.append(out iter);
+        ls_files.prepend(out iter);
 
         string last_upload = _("Not uploaded");
         if (lf.last_upload.to_unixtime() > dummy_date)
@@ -369,7 +369,7 @@ namespace Roxenlauncher
         LauncherFile f = (LauncherFile)v;
         if (f != null && lf.id == f.id) {
           ls_files.set(iter, 1, status);
-          if (f.last_upload.to_unixtime() > (new DateTime().to_unixtime()))
+          if (f.last_upload.to_unixtime() > (new Poppa.DateTime().to_unixtime()))
             ls_files.set(iter, 2, f.last_upload.format(App.DATE_FORMAT));
           return true;
         }
@@ -391,7 +391,7 @@ namespace Roxenlauncher
 #endif
       LauncherFile.add_file(lf);
       Gtk.TreeIter iter;
-      ls_files.append(out iter);
+      ls_files.prepend(out iter);
 
       string last_upload = "";
       if (lf.status == 0)
@@ -427,7 +427,7 @@ namespace Roxenlauncher
     }
 
     /**
-     * Shortcut for getting a Gtk object fron the Glade file
+     * Shortcut for getting a Gtk object from the Glade file
      *
      * @param name
      * @return
@@ -810,7 +810,7 @@ namespace Roxenlauncher
           case LauncherFile.NotifyType.DOWN:
             icon = get_ui_path("pixmap/down_48.png");
             break;
-            
+
           case LauncherFile.NotifyType.ERROR:
             icon = get_ui_path("pixmap/warning_48.png");
             break;
@@ -818,7 +818,7 @@ namespace Roxenlauncher
           default:
             break;
         }
-
+				
         var nf = new Notification(summary, text, null, null);
         // FIXME: This just simply doesn't work!
         nf.set_timeout(4000); 

@@ -59,8 +59,8 @@ namespace Roxenlauncher
 
     foreach (string s in GLib.Environment.list_variables()) {
       if ("KDE" in s) {
-	is_kde = true;
-	break;
+	      is_kde = true; // defined in main.vala
+	      break;
       }
     }
   }
@@ -184,7 +184,9 @@ namespace Roxenlauncher
      */    
     public static void save_list()
     {
+      message("save_list()\n");
       var list = to_gconf_list();
+      message("List length: %d\n", list.length);
       var cli = get_config();
       cli.set_string_list("app", "applications", list);
       cli.save();
@@ -212,8 +214,10 @@ namespace Roxenlauncher
     {
       string[] list = new string[]{};
       
-      foreach (Application app in applications)
+      foreach (Application app in applications) {
+        message("App: %s\n", app.to_gconf_string());
         list += app.to_gconf_string();
+      }
         
       return list;
     }
@@ -254,7 +258,7 @@ namespace Roxenlauncher
       this.mimetype = mimetype;
       this.arguments = arguments;
     }
-    
+
     public string to_gconf_string()
     {
       return name + "::" + command + "::" + mimetype + "::" + arguments;

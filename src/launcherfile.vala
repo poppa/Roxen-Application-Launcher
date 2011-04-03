@@ -95,7 +95,7 @@ public class LauncherFile : Object
         return;
       }
 
-    launcherfiles.append(lf);
+    launcherfiles.prepend(lf);
   }
   
   /**
@@ -230,9 +230,9 @@ public class LauncherFile : Object
   public string[]    bundle_paths   { get; private set; }
   public bool        is_downloading { get; private set; default = false; }
   public bool        is_uploading   { get; private set; default = false; }
-  public DateTime    last_upload    { get; private set; }
-  public DateTime    last_download  { get; private set; }
-  public DateTime    last_modified  { get; private set; }
+  public Poppa.DateTime    last_upload    { get; private set; }
+  public Poppa.DateTime    last_download  { get; private set; }
+  public Poppa.DateTime    last_modified  { get; private set; }
   public Roxenlauncher.Application application { get; private set; }
 
   /**
@@ -315,9 +315,9 @@ public class LauncherFile : Object
   {
   	var s = schema + "://" + host;
     if (schema == "https" && port != "443")
-      s += port;
+      s += ":" + port;
     else if (schema == "http" && port != "80")
-      s += port;
+      s += ":" + port;
       
     s += "/edit" + path;
     return s;
@@ -559,7 +559,7 @@ public class LauncherFile : Object
 				mess.request_body.append(Soup.MemoryUse.COPY, s, len);
 				sess.send_message(mess);
 
-				last_upload = DateTime.now();
+				last_upload = Poppa.DateTime.now();
 				win_set_status(Statuses.UPLOADED);
 				win.show_notification(NotifyType.UP,
 				                      _("Upload OK"), 
@@ -620,13 +620,13 @@ public class LauncherFile : Object
     sb_params    = a[6];
     
     if (a.length >= 9) {
-      last_upload = DateTime.unixtime((time_t)a[7].to_long());
+      last_upload = Poppa.DateTime.unixtime((time_t)a[7].to_long());
       status = a[8].to_int();
       if (a.length > 9 && a[9].length > 0)
       	bundle_paths = a[9].split(":");
     }
     else {
-      last_upload = new DateTime();
+      last_upload = new Poppa.DateTime();
       status = Statuses.NOT_DOWNLOADED;
     }
 
