@@ -1,4 +1,4 @@
-AC_INIT([roxenlauncher], [1.0.7], [pontus@poppa.se], [roxenlauncher])
+AC_INIT([roxenlauncher], [1.0.8], [pontus@poppa.se], [roxenlauncher])
 AC_CONFIG_SRCDIR([Makefile.am])
 AC_CONFIG_HEADERS(config.h)
 AM_INIT_AUTOMAKE([dist-bzip2])
@@ -45,7 +45,7 @@ LIBNOTIFY_REQUIRED=0.4
 
 if test "x$RL_WITH_VALA" != x
 then
-	VALA_REQUIRED=0.7.7
+	VALA_REQUIRED=0.12.0
 	echo ""
 	echo "		### MAINTAINER MODE ###"
 	echo ""

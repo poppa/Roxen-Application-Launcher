@@ -184,13 +184,28 @@ namespace Roxenlauncher
       tv_files.key_release_event.connect(on_tv_files_key_release_event);
       tv_files.button_press_event.connect(on_ctx_popup_menu);
 
-			// Right click in file list
+			// Right click in file list, view file in Sitebuilder
       ((Gtk.MenuItem)gtkobj("sb_view")).activate.connect(() => {
       	Gtk.TreeModel model;
       	Gtk.TreeIter iter;
       	LauncherFile lf = get_selected_file(out model, out iter);
       	if (lf != null) {
       		string uri = lf.get_sb_uri();
+      		string cmd = "xdg-open '" + uri.escape("") + "'";
+      		try { Process.spawn_command_line_async(cmd); }
+	 			  catch (GLib.Error e) {
+	 			  	warning("Unable to open file: %s", e.message);
+	 			  }
+      	}
+      });
+
+			// Right click in file list, view directory in Sitebuilder
+      ((Gtk.MenuItem)gtkobj("sb_view_dir")).activate.connect(() => {
+      	Gtk.TreeModel model;
+      	Gtk.TreeIter iter;
+      	LauncherFile lf = get_selected_file(out model, out iter);
+      	if (lf != null) {
+      		string uri = Path.get_dirname(lf.get_sb_uri());
       		string cmd = "xdg-open '" + uri.escape("") + "'";
       		try { Process.spawn_command_line_async(cmd); }
 	 			  catch (GLib.Error e) {
@@ -819,7 +834,7 @@ namespace Roxenlauncher
             break;
         }
 				
-        var nf = new Notification(summary, text, null, null);
+        var nf = new Notification(summary, text, null);
         // FIXME: This just simply doesn't work!
         nf.set_timeout(4000); 
 	      try {

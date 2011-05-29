@@ -14,7 +14,7 @@ gboolean save_soup_data(SoupMessageBody *data, const char *file)
 	if (wrote != (int)data->length) {
 	  fprintf(stderr, "wrote (%d) != data->length (%d). Data may have been "
 	                  "truncated", wrote, (int)data->length);
-	} 
+	}
 
 	fclose(fh);
 	return TRUE;

@@ -23,7 +23,7 @@
 
 namespace Poppa
 {
-  errordomain Error
+  public errordomain Error
   {
     ANY
   }

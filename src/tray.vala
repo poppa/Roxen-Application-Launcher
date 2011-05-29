@@ -72,9 +72,9 @@ namespace Roxenlauncher
     {
       var visible = win.get_window().visible;
       popmenu = new Menu();
-      var item_quit = new ImageMenuItem.from_stock(Gtk.STOCK_QUIT, null);
-      var img_hide = new Image.from_stock(STOCK_CLOSE, IconSize.MENU);
-      var img_show = new Image.from_stock(STOCK_OPEN, IconSize.MENU);
+      var item_quit = new ImageMenuItem.from_stock(Stock.QUIT, null);
+      var img_hide = new Image.from_stock(Stock.CLOSE, IconSize.MENU);
+      var img_show = new Image.from_stock(Stock.OPEN, IconSize.MENU);
       var item_toggle = new ImageMenuItem.with_label(visible ? t_hide : t_show);
       item_toggle.set_image(visible ? img_hide : img_show);
 
@@ -92,7 +92,7 @@ namespace Roxenlauncher
               lf.status == LauncherFile.Statuses.UPLOADED)
           {
             string img = lf.status == LauncherFile.Statuses.DOWNLOADED ?
-                                      STOCK_GO_DOWN : STOCK_GO_UP;
+                                      Stock.GO_DOWN : Stock.GO_UP;
             var imi = new ImageMenuItem.from_stock(img, null);
             imi.set_label(lf.get_uri());
             mi = (MenuItem)imi;
@@ -110,7 +110,7 @@ namespace Roxenlauncher
         }
       }
 
-      var finish_all = new ImageMenuItem.from_stock(STOCK_CLEAR, null);
+      var finish_all = new ImageMenuItem.from_stock(Stock.CLEAR, null);
       finish_all.activate.connect(() => {
         Idle.add(() => { win.finish_all_files(); return false; });
         popmenu.popdown();

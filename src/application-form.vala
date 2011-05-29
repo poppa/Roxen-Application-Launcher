@@ -172,8 +172,8 @@ namespace Roxenlauncher
       title = _("Select application...");
       action = FileChooserAction.OPEN;
       
-      add_button(STOCK_CANCEL, ResponseType.CANCEL);
-      add_button(STOCK_OPEN, ResponseType.ACCEPT);
+      add_button(Stock.CANCEL, ResponseType.CANCEL);
+      add_button(Stock.OPEN, ResponseType.ACCEPT);
       set_default_response(ResponseType.ACCEPT);
       set_current_folder(get_last_folder());
 

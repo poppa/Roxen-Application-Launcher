@@ -1,35 +1,104 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <interface>
   <requires lib="gtk+" version="2.16"/>
   <!-- interface-naming-policy project-wide -->
+  <object class="GtkAboutDialog" id="aboutdialog">
+    <property name="can_focus">False</property>
+    <property name="border_width">5</property>
+    <property name="title" translatable="yes">About %s</property>
+    <property name="resizable">False</property>
+    <property name="modal">True</property>
+    <property name="window_position">center-on-parent</property>
+    <property name="destroy_with_parent">True</property>
+    <property name="icon">pixmap/roxen-logo-small.png</property>
+    <property name="type_hint">normal</property>
+    <property name="program_name">Roxen™ Application Launcher</property>
+    <property name="version">0.1</property>
+    <property name="copyright" translatable="yes">Copyright © 2009 Pontus Östlund</property>
+    <property name="comments" translatable="yes">This is a Gnome port - written in Vala - of the Roxen™ 
+Application Launcher originally written in Pike.</property>
+    <property name="website">http://www.poppa.se</property>
+    <property name="website_label" translatable="yes">www.poppa.se</property>
+    <property name="license" translatable="yes">ROXEN™ APPLICATION LAUNCHER
+Copyright © 2009 Pontus Östlund
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see &lt;http://www.gnu.org/licenses/&gt;.
+</property>
+    <property name="authors">Pontus Östlund &lt;pontus@poppa.se&gt;</property>
+    <property name="logo">pixmap/roxen-logo.png</property>
+    <property name="logo_icon_name">Roxen</property>
+    <child internal-child="vbox">
+      <object class="GtkVBox" id="dialog-vbox1">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="spacing">2</property>
+        <child internal-child="action_area">
+          <object class="GtkHButtonBox" id="about-actions">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="layout_style">end</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="pack_type">end</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+      </object>
+    </child>
+  </object>
   <object class="GtkListStore" id="ls_apps"/>
   <object class="GtkListStore" id="ls_files"/>
   <object class="GtkWindow" id="mainwindow">
-    <property name="title" translatable="yes">Roxen&#x2122; Application Launcher</property>
+    <property name="can_focus">False</property>
+    <property name="title" translatable="yes">Roxen™ Application Launcher</property>
     <property name="default_width">650</property>
     <property name="default_height">400</property>
     <property name="icon">pixmap/roxen-logo.svg</property>
     <child>
       <object class="GtkVBox" id="vbox1">
         <property name="visible">True</property>
+        <property name="can_focus">False</property>
         <child>
           <object class="GtkAlignment" id="alignment1">
             <property name="visible">True</property>
+            <property name="can_focus">False</property>
             <child>
               <object class="GtkMenuBar" id="menubar1">
                 <property name="visible">True</property>
+                <property name="can_focus">False</property>
                 <child>
                   <object class="GtkMenuItem" id="menuitem1">
                     <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="use_action_appearance">False</property>
                     <property name="label" translatable="yes">_File</property>
                     <property name="use_underline">True</property>
                     <child type="submenu">
                       <object class="GtkMenu" id="menu1">
                         <property name="visible">True</property>
+                        <property name="can_focus">False</property>
                         <child>
                           <object class="GtkImageMenuItem" id="im_quit">
                             <property name="label">gtk-quit</property>
                             <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="use_action_appearance">False</property>
                             <property name="use_underline">True</property>
                             <property name="use_stock">True</property>
                           </object>
@@ -41,15 +110,20 @@
                 <child>
                   <object class="GtkMenuItem" id="menuitem4">
                     <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="use_action_appearance">False</property>
                     <property name="label" translatable="yes">_Help</property>
                     <property name="use_underline">True</property>
                     <child type="submenu">
                       <object class="GtkMenu" id="menu3">
                         <property name="visible">True</property>
+                        <property name="can_focus">False</property>
                         <child>
                           <object class="GtkImageMenuItem" id="im_about">
                             <property name="label">gtk-about</property>
                             <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="use_action_appearance">False</property>
                             <property name="use_underline">True</property>
                             <property name="use_stock">True</property>
                           </object>
@@ -70,6 +144,7 @@
         <child>
           <object class="GtkAlignment" id="alignment2">
             <property name="visible">True</property>
+            <property name="can_focus">False</property>
             <property name="top_padding">5</property>
             <property name="bottom_padding">5</property>
             <property name="left_padding">5</property>
@@ -81,9 +156,11 @@
                 <child>
                   <object class="GtkVBox" id="vbox5">
                     <property name="visible">True</property>
+                    <property name="can_focus">False</property>
                     <child>
                       <object class="GtkAlignment" id="alignment9">
                         <property name="visible">True</property>
+                        <property name="can_focus">False</property>
                         <child>
                           <object class="GtkScrolledWindow" id="sw_files">
                             <property name="visible">True</property>
@@ -101,12 +178,15 @@
                         </child>
                       </object>
                       <packing>
+                        <property name="expand">True</property>
+                        <property name="fill">True</property>
                         <property name="position">0</property>
                       </packing>
                     </child>
                     <child>
                       <object class="GtkAlignment" id="alignment5">
                         <property name="visible">True</property>
+                        <property name="can_focus">False</property>
                         <property name="top_padding">5</property>
                         <property name="bottom_padding">5</property>
                         <property name="left_padding">5</property>
@@ -114,6 +194,7 @@
                         <child>
                           <object class="GtkHButtonBox" id="hbuttonbox2">
                             <property name="visible">True</property>
+                            <property name="can_focus">False</property>
                             <property name="layout_style">end</property>
                             <child>
                               <object class="GtkButton" id="btn_edit_file">
@@ -122,6 +203,7 @@
                                 <property name="sensitive">False</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">True</property>
+                                <property name="use_action_appearance">False</property>
                                 <property name="use_stock">True</property>
                               </object>
                               <packing>
@@ -137,6 +219,7 @@
                                 <property name="sensitive">False</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">True</property>
+                                <property name="use_action_appearance">False</property>
                                 <property name="use_stock">True</property>
                               </object>
                               <packing>
@@ -152,6 +235,7 @@
                                 <property name="sensitive">False</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">True</property>
+                                <property name="use_action_appearance">False</property>
                                 <property name="use_stock">True</property>
                               </object>
                               <packing>
@@ -165,6 +249,7 @@
                       </object>
                       <packing>
                         <property name="expand">False</property>
+                        <property name="fill">True</property>
                         <property name="position">1</property>
                       </packing>
                     </child>
@@ -173,6 +258,7 @@
                 <child type="tab">
                   <object class="GtkLabel" id="label1">
                     <property name="visible">True</property>
+                    <property name="can_focus">False</property>
                     <property name="label" translatable="yes">Files</property>
                   </object>
                   <packing>
@@ -182,12 +268,15 @@
                 <child>
                   <object class="GtkHBox" id="hbox2">
                     <property name="visible">True</property>
+                    <property name="can_focus">False</property>
                     <child>
                       <object class="GtkVBox" id="vbox2">
                         <property name="visible">True</property>
+                        <property name="can_focus">False</property>
                         <child>
                           <object class="GtkAlignment" id="alignment4">
                             <property name="visible">True</property>
+                            <property name="can_focus">False</property>
                             <child>
                               <object class="GtkScrolledWindow" id="scrolledwindow2">
                                 <property name="visible">True</property>
@@ -205,18 +294,22 @@
                             </child>
                           </object>
                           <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
                             <property name="position">0</property>
                           </packing>
                         </child>
                         <child>
                           <object class="GtkAlignment" id="alignment6">
                             <property name="visible">True</property>
+                            <property name="can_focus">False</property>
                             <property name="top_padding">5</property>
                             <property name="bottom_padding">5</property>
                             <property name="left_padding">5</property>
                             <child>
                               <object class="GtkHButtonBox" id="hbuttonbox1">
                                 <property name="visible">True</property>
+                                <property name="can_focus">False</property>
                                 <property name="layout_style">start</property>
                                 <child>
                                   <object class="GtkButton" id="btn_edit_app">
@@ -225,6 +318,7 @@
                                     <property name="sensitive">False</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">True</property>
+                                    <property name="use_action_appearance">False</property>
                                     <property name="use_stock">True</property>
                                   </object>
                                   <packing>
@@ -239,6 +333,7 @@
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">True</property>
+                                    <property name="use_action_appearance">False</property>
                                     <property name="use_stock">True</property>
                                   </object>
                                   <packing>
@@ -254,6 +349,7 @@
                                     <property name="sensitive">False</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">True</property>
+                                    <property name="use_action_appearance">False</property>
                                     <property name="use_stock">True</property>
                                   </object>
                                   <packing>
@@ -273,29 +369,35 @@
                         </child>
                       </object>
                       <packing>
+                        <property name="expand">True</property>
+                        <property name="fill">True</property>
                         <property name="position">0</property>
                       </packing>
                     </child>
                     <child>
                       <object class="GtkVBox" id="vbox3">
                         <property name="visible">True</property>
+                        <property name="can_focus">False</property>
                         <child>
                           <placeholder/>
                         </child>
                         <child>
                           <object class="GtkAlignment" id="alignment10">
                             <property name="visible">True</property>
+                            <property name="can_focus">False</property>
                             <property name="top_padding">10</property>
                             <property name="left_padding">5</property>
                             <property name="right_padding">5</property>
                             <child>
                               <object class="GtkFrame" id="frame2">
                                 <property name="visible">True</property>
+                                <property name="can_focus">False</property>
                                 <property name="label_xalign">0</property>
                                 <property name="shadow_type">in</property>
                                 <child>
                                   <object class="GtkAlignment" id="alignment11">
                                     <property name="visible">True</property>
+                                    <property name="can_focus">False</property>
                                     <property name="top_padding">3</property>
                                     <property name="bottom_padding">3</property>
                                     <property name="left_padding">3</property>
@@ -303,12 +405,14 @@
                                     <child>
                                       <object class="GtkVBox" id="vbox6">
                                         <property name="visible">True</property>
+                                        <property name="can_focus">False</property>
                                         <child>
                                           <object class="GtkCheckButton" id="cb_notify">
                                             <property name="label" translatable="yes">Enable notifications</property>
                                             <property name="visible">True</property>
                                             <property name="can_focus">True</property>
                                             <property name="receives_default">False</property>
+                                            <property name="use_action_appearance">False</property>
                                             <property name="draw_indicator">True</property>
                                           </object>
                                           <packing>
@@ -324,6 +428,7 @@
                                             <property name="can_focus">True</property>
                                             <property name="receives_default">False</property>
                                             <property name="tooltip_text" translatable="yes">Window close button minimizes the application to the tray</property>
+                                            <property name="use_action_appearance">False</property>
                                             <property name="draw_indicator">True</property>
                                           </object>
                                           <packing>
@@ -339,6 +444,7 @@
                                 <child type="label">
                                   <object class="GtkLabel" id="label4">
                                     <property name="visible">True</property>
+                                    <property name="can_focus">False</property>
                                     <property name="label" translatable="yes">&lt;b&gt;Settings&lt;/b&gt;</property>
                                     <property name="use_markup">True</property>
                                   </object>
@@ -348,6 +454,7 @@
                           </object>
                           <packing>
                             <property name="expand">False</property>
+                            <property name="fill">True</property>
                             <property name="position">1</property>
                           </packing>
                         </child>
@@ -357,6 +464,7 @@
                       </object>
                       <packing>
                         <property name="expand">False</property>
+                        <property name="fill">True</property>
                         <property name="position">1</property>
                       </packing>
                     </child>
@@ -368,6 +476,7 @@
                 <child type="tab">
                   <object class="GtkLabel" id="label2">
                     <property name="visible">True</property>
+                    <property name="can_focus">False</property>
                     <property name="label" translatable="yes">Applications</property>
                   </object>
                   <packing>
@@ -385,15 +494,19 @@
             </child>
           </object>
           <packing>
+            <property name="expand">True</property>
+            <property name="fill">True</property>
             <property name="position">1</property>
           </packing>
         </child>
         <child>
           <object class="GtkAlignment" id="alignment3">
             <property name="visible">True</property>
+            <property name="can_focus">False</property>
             <child>
               <object class="GtkStatusbar" id="statusbar1">
                 <property name="visible">True</property>
+                <property name="can_focus">False</property>
                 <property name="spacing">2</property>
               </object>
             </child>
@@ -407,80 +520,38 @@
       </object>
     </child>
   </object>
-  <object class="GtkAboutDialog" id="aboutdialog">
-    <property name="border_width">5</property>
-    <property name="title" translatable="yes">About %s</property>
-    <property name="resizable">False</property>
-    <property name="modal">True</property>
-    <property name="window_position">center-on-parent</property>
-    <property name="destroy_with_parent">True</property>
-    <property name="icon">pixmap/roxen-logo-small.png</property>
-    <property name="type_hint">normal</property>
-    <property name="has_separator">False</property>
-    <property name="program_name">Roxen&#x2122; Application Launcher</property>
-    <property name="version">0.1</property>
-    <property name="copyright" translatable="yes">Copyright &#xA9; 2009 Pontus &#xD6;stlund</property>
-    <property name="comments" translatable="yes">This is a Gnome port - written in Vala - of the Roxen&#x2122; 
-Application Launcher originally written in Pike.</property>
-    <property name="website">http://www.poppa.se</property>
-    <property name="website_label" translatable="yes">www.poppa.se</property>
-    <property name="license" translatable="yes">ROXEN&#x2122; APPLICATION LAUNCHER
-Copyright &#xA9; 2009 Pontus &#xD6;stlund
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see &lt;http://www.gnu.org/licenses/&gt;.
-</property>
-    <property name="authors">Pontus &#xD6;stlund &lt;pontus@poppa.se&gt;</property>
-    <property name="logo">pixmap/roxen-logo.png</property>
-    <property name="logo_icon_name">Roxen</property>
-    <child internal-child="vbox">
-      <object class="GtkVBox" id="dialog-vbox1">
-        <property name="visible">True</property>
-        <property name="spacing">2</property>
-        <child>
-          <placeholder/>
-        </child>
-        <child internal-child="action_area">
-          <object class="GtkHButtonBox" id="about-actions">
-            <property name="visible">True</property>
-            <property name="layout_style">end</property>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="pack_type">end</property>
-            <property name="position">0</property>
-          </packing>
-        </child>
-      </object>
-    </child>
-  </object>
   <object class="GtkMenu" id="tv_files_rclick_menu">
     <property name="visible">True</property>
+    <property name="can_focus">False</property>
     <child>
       <object class="GtkMenuItem" id="sb_view">
         <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="use_action_appearance">False</property>
         <property name="label" translatable="yes">_View in Sitebuilder</property>
+        <property name="use_underline">True</property>
+      </object>
+    </child>
+    <child>
+      <object class="GtkMenuItem" id="sb_view_dir">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="use_action_appearance">False</property>
+        <property name="label" translatable="yes">V_iew directory in Sitebuilder</property>
         <property name="use_underline">True</property>
       </object>
     </child>
     <child>
       <object class="GtkSeparatorMenuItem" id="menuitem2">
         <property name="visible">True</property>
+        <property name="can_focus">False</property>
       </object>
     </child>
     <child>
       <object class="GtkMenuItem" id="ctx_menu_edit">
         <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="use_action_appearance">False</property>
         <property name="label" translatable="yes">_Edit</property>
         <property name="use_underline">True</property>
       </object>
@@ -488,6 +559,8 @@ along with this program.  If not, see &lt;http://www.gnu.org/licenses/&gt;.
     <child>
       <object class="GtkMenuItem" id="ctx_menu_delete">
         <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="use_action_appearance">False</property>
         <property name="label" translatable="yes">_Delete</property>
         <property name="use_underline">True</property>
       </object>

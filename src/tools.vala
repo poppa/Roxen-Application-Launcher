@@ -24,7 +24,7 @@ using Poppa;
 
 namespace Roxenlauncher
 {
-  errordomain RoxenError
+  public errordomain RoxenError
   { 
     BAD_LAUNCHERFILE,
     GENERIC

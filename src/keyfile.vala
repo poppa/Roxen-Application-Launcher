@@ -271,7 +271,7 @@ public class Poppa.KeyFile : Object
 	public int get_integer(string index, string key)
 	{
 		Index.Value v = get_value(index, key);
-		return v == null ? 0 : v.val.to_int();
+		return v == null ? 0 : int.parse(v.val);
 	}
 
 	/**
@@ -288,7 +288,7 @@ public class Poppa.KeyFile : Object
 	public double get_double(string index, string key)
 	{
 		Index.Value v = get_value(index, key);
-		return v == null ? 0 : v.val.to_double();
+		return v == null ? 0 : double.parse(v.val);
 	}
 	
 	/**
@@ -346,7 +346,7 @@ public class Poppa.KeyFile : Object
 			int[] r = new int[]{};
 			string[] s = v.val.split(delimiter);
 			for (uint i = 0; i < s.length; i++)
-				r += s[i].to_int();
+				r += int.parse(s[i]);
 				
 			return r;
 		}
@@ -372,7 +372,7 @@ public class Poppa.KeyFile : Object
 			double[] r = new double[]{};
 			string[] s = v.val.split(delimiter);
 			for (uint i = 0; i < s.length; i++)
-				r += s[i].to_double();
+				r += double.parse(s[i]);
 				
 			return r;
 		}

@@ -131,6 +131,8 @@ public class LauncherFile : Object
   {
     foreach (LauncherFile l in launcherfiles)
     	launcherfiles.remove(l);
+
+    launcherfiles = new GLib.List<LauncherFile>();
   }
 
   /**
@@ -215,24 +217,24 @@ public class LauncherFile : Object
     ERROR
   }
 
-  public string      rawdata        { get; private set; }
-  public string      schema         { get; private set; }
-  public string      host           { get; private set; }
-  public string      port           { get; private set; }
-  public string      auth_cookie    { get; private set; }
-  public string      content_type   { get; private set; }
-  public string      sb_params      { get; private set; }
-  public string      id             { get; private set; }
-  public string      path           { get; private set; }
-  public string      local_dir      { get; private set; }
-  public string      local_file     { get; private set; }
-  public int         status         { get; private set; default = -1; }
-  public string[]    bundle_paths   { get; private set; }
-  public bool        is_downloading { get; private set; default = false; }
-  public bool        is_uploading   { get; private set; default = false; }
-  public Poppa.DateTime    last_upload    { get; private set; }
-  public Poppa.DateTime    last_download  { get; private set; }
-  public Poppa.DateTime    last_modified  { get; private set; }
+  public string         rawdata        { get; private set; }
+  public string         schema         { get; private set; }
+  public string         host           { get; private set; }
+  public string         port           { get; private set; }
+  public string         auth_cookie    { get; private set; }
+  public string         content_type   { get; private set; }
+  public string         sb_params      { get; private set; }
+  public string         id             { get; private set; }
+  public string         path           { get; private set; }
+  public string         local_dir      { get; private set; }
+  public string         local_file     { get; private set; }
+  public int            status         { get; private set; default = -1; }
+  public string[]       bundle_paths   { get; private set; }
+  public bool           is_downloading { get; private set; default = false; }
+  public bool           is_uploading   { get; private set; default = false; }
+  public Poppa.DateTime last_upload    { get; private set; }
+  public Poppa.DateTime last_download  { get; private set; }
+  public Poppa.DateTime last_modified  { get; private set; }
   public Roxenlauncher.Application application { get; private set; }
 
   /**
@@ -550,13 +552,15 @@ public class LauncherFile : Object
 				mess.request_headers.append("Cookie", get_cookie());
 				mess.request_headers.append("Translate", "f");
 
-				IOChannel ch = new IOChannel.file(local_file, "r");
-				ch.set_encoding(null); // Enables reading of binary data
-				string s;
-				size_t len;
-				ch.read_to_end(out s, out len);
+				var f = File.new_for_path(local_file);
+				var s = new DataInputStream(f.read());
+				var i = f.query_info("*", FileQueryInfoFlags.NONE);
+				int64 fsize = i.get_size();
+				uint8[] data = new uint8[fsize];
+				s.read(data);
+				s.close();
 
-				mess.request_body.append(Soup.MemoryUse.COPY, s, len);
+				mess.request_body.append(Soup.MemoryUse.COPY, data);
 				sess.send_message(mess);
 
 				last_upload = Poppa.DateTime.now();
@@ -620,8 +624,8 @@ public class LauncherFile : Object
     sb_params    = a[6];
     
     if (a.length >= 9) {
-      last_upload = Poppa.DateTime.unixtime((time_t)a[7].to_long());
-      status = a[8].to_int();
+      last_upload = Poppa.DateTime.unixtime((time_t)long.parse(a[7]));
+      status = int.parse(a[8]);
       if (a.length > 9 && a[9].length > 0)
       	bundle_paths = a[9].split(":");
     }
@@ -663,7 +667,7 @@ public class LauncherFile : Object
   /**
    * Creates a random ID to use as directory name for a new launcher file
    *
-   * @return 
+   * @return
    *  The ID created.
    */
   private void randid()
