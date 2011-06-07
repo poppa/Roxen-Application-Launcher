@@ -1,4 +1,4 @@
-AC_INIT([roxenlauncher], [1.0.8], [pontus@poppa.se], [roxenlauncher])
+AC_INIT([roxenlauncher], [1.0.9], [pontus@poppa.se], [roxenlauncher])
 AC_CONFIG_SRCDIR([Makefile.am])
 AC_CONFIG_HEADERS(config.h)
 AM_INIT_AUTOMAKE([dist-bzip2])
@@ -41,7 +41,7 @@ SOUP24_REQUIRED=2.28.1
 GIO_REQUIRED=2.22.2
 GDK_REQUIRED=2.18.3
 GDK_PIXBUF_REQUIRED=2.18.3
-LIBNOTIFY_REQUIRED=0.4
+LIBNOTIFY_REQUIRED=0.6
 
 if test "x$RL_WITH_VALA" != x
 then

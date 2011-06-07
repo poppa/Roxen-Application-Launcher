@@ -118,10 +118,22 @@ namespace Roxenlauncher
       });
 
       win.delete_event.connect(() => {
-        if (min_to_tray) tray.get_icon().activate();
-        else Gtk.main_quit();
+        Gtk.main_quit();
         return true;
       });
+
+		  win.window_state_event.connect((wnd, event) => {
+		    Gdk.WindowState ico = Gdk.WindowState.ICONIFIED;
+		    Gdk.WindowState max = Gdk.WindowState.MAXIMIZED;
+
+		    if (min_to_tray && event.changed_mask == ico && (
+				    event.new_window_state == ico ||
+				    event.new_window_state == (ico | max)))
+		    {
+					tray.get_icon().activate();
+		    }
+		    return true;
+		  });
 
       // Notifications check button
       cb_notify.active = get_enable_notifications();
