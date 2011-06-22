@@ -170,6 +170,7 @@ namespace Roxenlauncher
                                                         i, null);
         cl.set_resizable(true);
         cl.set_expand(true);
+        cl.set_sort_column_id((int)i);
         tv_files.insert_column(cl, -1);
       }
 
