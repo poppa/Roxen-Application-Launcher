@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: roxenlauncher 0.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-05-29 17:06+0100\n"
-"PO-Revision-Date: 2011-05-29 17:06+0100\n"
+"POT-Creation-Date: 2011-11-08 22:32+0100\n"
+"PO-Revision-Date: 2011-11-08 22:36+0100\n"
 "Last-Translator: Pontus Östlund <pontus@poppa.se>\n"
 "Language-Team: Swedish <pontus@poppa.se>\n"
 "Language: sv\n"
@@ -18,280 +18,248 @@ msgstr ""
 "X-Poedit-SearchPath-0: src\n"
 "X-Poedit-SearchPath-1: src/gui\n"
 
-#: src/mainwindow.c:275
-#: src/application.c:91
+#: src/tools.c:174
+#: src/tools.c:208
+#: src/DEBUG/tools.c:174
+#: src/DEBUG/tools.c:208
+msgid "Unable to create local directory"
+msgstr "Kunde inte skapa lokal katalog"
+
+#: src/main.c:172
+#: src/DEBUG/main.c:120
 msgid "Roxen Application Launcher"
 msgstr "Roxen Programstartare"
 
-#: src/mainwindow.c:916
+#: src/main.c:248
+#: src/mainwindow.c:3469
+#: src/DEBUG/main.c:238
+#: src/DEBUG/mainwindow.c:3469
+msgid "Roxen™ Application Launcher"
+msgstr "Roxen™ Programstartare"
+
+#: src/main.c:497
+#: src/DEBUG/main.c:488
+msgid " [FILE]"
+msgstr " [FIL]"
+
+#: src/main.c:548
+#: src/DEBUG/main.c:539
+msgid "Version"
+msgstr "Version"
+
+#: src/mainwindow.c:1205
+#: src/DEBUG/mainwindow.c:1205
 msgid "File"
 msgstr "Fil"
 
-#: src/mainwindow.c:918
+#: src/mainwindow.c:1207
+#: src/DEBUG/mainwindow.c:1207
 msgid "Status"
 msgstr "Status"
 
-#: src/mainwindow.c:920
+#: src/mainwindow.c:1209
+#: src/DEBUG/mainwindow.c:1209
 msgid "Last upload"
 msgstr "Senast uppladdad"
 
-#: src/mainwindow.c:989
-#: src/launcherfile.c:952
+#: src/mainwindow.c:1328
+#: src/launcherfile.c:1079
+#: src/DEBUG/mainwindow.c:1328
+#: src/DEBUG/launcherfile.c:1079
 msgid "Not uploaded"
 msgstr "Ej uppladdad"
 
-#: src/mainwindow.c:1042
+#: src/mainwindow.c:1403
+#: src/DEBUG/mainwindow.c:1403
 msgid "Content type"
 msgstr "Filtyp"
 
-#: src/mainwindow.c:1044
+#: src/mainwindow.c:1405
+#: src/DEBUG/mainwindow.c:1405
 msgid "Application"
 msgstr "Program"
 
-#: src/mainwindow.c:1788
-#: src/mainwindow.c:1828
+#: src/mainwindow.c:1744
+#: src/mainwindow.c:1784
+#: src/DEBUG/mainwindow.c:1744
+#: src/DEBUG/mainwindow.c:1784
 msgid "Do you want to delete the selected file?"
 msgstr "Vill du radera den valda filen?"
 
-#: src/mainwindow.c:1892
+#: src/mainwindow.c:1856
+#: src/DEBUG/mainwindow.c:1856
 msgid "Do you want to delete the selected application?"
 msgstr "Vill du ta bort det valda programmet?"
 
-#: src/mainwindow.c:2321
+#: src/mainwindow.c:3231
+#: src/DEBUG/mainwindow.c:3231
 msgid "No files"
 msgstr "Inga filer"
 
-#: src/mainwindow.c:2329
+#: src/mainwindow.c:3241
+#: src/DEBUG/mainwindow.c:3241
 msgid "One file"
 msgstr "En fil"
 
-#: src/mainwindow.c:2336
+#: src/mainwindow.c:3249
+#: src/DEBUG/mainwindow.c:3249
 #, c-format
 msgid "%d active files"
 msgstr "%d aktiva filer"
 
-#: src/mainwindow.c:2606
-msgid "Roxen™ Application Launcher"
-msgstr "Roxen™ Programstartare"
-
-#: src/tray.c:364
-msgid "No active files"
-msgstr "Inga aktiva filer"
-
-#: src/tray.c:450
-msgid "Enable notifications"
-msgstr "Aktivera notifieringar"
-
-#: src/tray.c:453
-msgid "Minimize to tray"
-msgstr "Minimera till notifieringsytan"
-
-#: src/tray.c:603
-msgid "Click to show the application launcher"
-msgstr "Klicka för att visa programstartaren"
-
-#: src/tray.c:606
-msgid "Click to hide the application launcher"
-msgstr "Klicka för att gömma programstartaren"
-
-#: src/tray.c:609
-msgid "Show application launcher"
-msgstr "Visa programstartaren"
-
-#: src/tray.c:612
-msgid "Hide application launcher"
-msgstr "Göm programstartaren"
-
-#: src/tools.c:168
-#: src/tools.c:198
-msgid "Unable to create local directory"
-msgstr "Kunde inte skapa lokal katalog"
-
-#: src/launcherfile.c:660
-#: src/launcherfile.c:798
-#: src/launcherfile.c:1901
+#: src/launcherfile.c:738
+#: src/launcherfile.c:911
+#: src/launcherfile.c:2518
+#: src/DEBUG/launcherfile.c:738
+#: src/DEBUG/launcherfile.c:911
+#: src/DEBUG/launcherfile.c:2518
 msgid "Bad data in launcher file!"
 msgstr "Felaktigt innehåll i filen"
 
-#: src/launcherfile.c:922
+#: src/launcherfile.c:1049
+#: src/DEBUG/launcherfile.c:1049
 msgid "Not downloaded"
 msgstr "Ej nerladdad"
 
-#: src/launcherfile.c:932
+#: src/launcherfile.c:1059
+#: src/DEBUG/launcherfile.c:1059
 msgid "Downloaded"
 msgstr "Nerladdad"
 
-#: src/launcherfile.c:942
+#: src/launcherfile.c:1069
+#: src/DEBUG/launcherfile.c:1069
 msgid "Uploaded"
 msgstr "Uppladdad"
 
-#: src/launcherfile.c:962
+#: src/launcherfile.c:1089
+#: src/DEBUG/launcherfile.c:1089
 msgid "Downloading..."
 msgstr "Laddar ner..."
 
-#: src/launcherfile.c:972
+#: src/launcherfile.c:1099
+#: src/DEBUG/launcherfile.c:1099
 msgid "Uploading..."
 msgstr "Laddar upp..."
 
-#: src/launcherfile.c:982
+#: src/launcherfile.c:1109
+#: src/DEBUG/launcherfile.c:1109
 msgid "Not changed"
 msgstr "Ej ändrad"
 
-#: src/launcherfile.c:1568
+#: src/launcherfile.c:1647
+#: src/DEBUG/launcherfile.c:1647
+msgid "Error starting application"
+msgstr "Kunde inte starta programmet"
+
+#: src/launcherfile.c:1958
+#: src/DEBUG/launcherfile.c:1958
 msgid "Download OK"
 msgstr "Hämtningen lyckades"
 
-#: src/launcherfile.c:1569
+#: src/launcherfile.c:1959
+#: src/DEBUG/launcherfile.c:1959
 #, c-format
 msgid "%s was downloaded OK from %s"
 msgstr "%s laddades ner OK från %s"
 
-#: src/launcherfile.c:1580
-#: src/launcherfile.c:1617
+#: src/launcherfile.c:1976
+#: src/launcherfile.c:2073
+#: src/DEBUG/launcherfile.c:1976
+#: src/DEBUG/launcherfile.c:2073
 msgid "Download failed"
 msgstr "Hämtningen misslyckades"
 
-#: src/launcherfile.c:1581
+#: src/launcherfile.c:1977
+#: src/DEBUG/launcherfile.c:1977
 msgid "Unable to write downloaded data to file!"
 msgstr "Kunde inte skriva nerladdad data till fil"
 
-#: src/launcherfile.c:1602
+#: src/launcherfile.c:2013
+#: src/DEBUG/launcherfile.c:2013
 msgid "Unhandled redirection"
 msgstr "Ej hanterad omdirigering"
 
-#: src/launcherfile.c:1603
+#: src/launcherfile.c:2014
+#: src/DEBUG/launcherfile.c:2014
 #, c-format
 msgid "%s was not downloaded OK from %s"
 msgstr "%s laddades inte ner OK från %s"
 
-#: src/launcherfile.c:1618
+#: src/launcherfile.c:2048
+#: src/DEBUG/launcherfile.c:2048
+#, c-format
+msgid "Requested file %s not found on %s"
+msgstr "Den efterfrågde filen %s hittades inte på %s"
+
+#: src/launcherfile.c:2062
+#: src/DEBUG/launcherfile.c:2062
 #, c-format
 msgid "%s was not downloaded from %s"
 msgstr "%s laddades inte ner från %s"
 
-#: src/launcherfile.c:1734
+#: src/launcherfile.c:2271
+#: src/DEBUG/launcherfile.c:2271
 msgid "Upload OK"
 msgstr "Uppladdningen lyckades"
 
-#: src/launcherfile.c:1735
+#: src/launcherfile.c:2272
+#: src/DEBUG/launcherfile.c:2272
 #, c-format
 msgid "%s was uploaded OK to %s"
 msgstr "%s laddades upp OK till %s"
 
-#: src/launcherfile.c:1755
+#: src/launcherfile.c:2308
+#: src/DEBUG/launcherfile.c:2308
 msgid "Upload failed"
 msgstr "Uppladdningen misslyckades"
 
-#: src/launcherfile.c:1756
+#: src/launcherfile.c:2309
+#: src/DEBUG/launcherfile.c:2309
 #, c-format
 msgid "%s was not uploaded OK to %s"
 msgstr "%s laddades inte upp OK till %s"
 
-#: src/launcherfile.c:1882
+#: src/launcherfile.c:2496
+#: src/DEBUG/launcherfile.c:2496
 msgid "No data in launcher file!"
 msgstr "Filen är tom"
 
-#: src/launcherfile.c:2149
+#: src/launcherfile.c:2888
+#: src/DEBUG/launcherfile.c:2888
 msgid "Unable to create directory for launcher file!"
 msgstr "Kunde inte skapa katalog för fil"
 
-#: src/application-form.c:634
+#: src/application-form.c:798
 msgid "Select application..."
 msgstr "Välj program..."
 
-#: src/gui/mainwindow.ui:8
-msgid "About %s"
-msgstr "Om %s"
+#: src/tray.c:448
+msgid "No active files"
+msgstr "Inga aktiva filer"
 
-#: src/gui/mainwindow.ui:17
-msgid "Copyright © 2009 Pontus Östlund"
-msgstr "Copyright © 2009 Pontus Östlund"
+#: src/tray.c:585
+msgid "Enable notifications"
+msgstr "Aktivera notifieringar"
 
-#: src/gui/mainwindow.ui:18
-msgid ""
-"This is a Gnome port - written in Vala - of the Roxen™ \n"
-"Application Launcher originally written in Pike."
-msgstr ""
-"Det här är en Gnome-variant - skriven i Vala - av Roxen™\n"
-"Application Launcher ursprungligen skriven i Pike."
+#: src/tray.c:588
+msgid "Minimize to tray"
+msgstr "Minimera till notifieringsytan"
 
-#: src/gui/mainwindow.ui:21
-msgid "www.poppa.se"
-msgstr "www.poppa.se"
+#: src/tray.c:776
+msgid "Click to show the application launcher"
+msgstr "Klicka för att visa programstartaren"
 
-#: src/gui/mainwindow.ui:22
-msgid ""
-"ROXEN™ APPLICATION LAUNCHER\n"
-"Copyright © 2009 Pontus Östlund\n"
-"\n"
-"This program is free software: you can redistribute it and/or modify\n"
-"it under the terms of the GNU General Public License as published by\n"
-"the Free Software Foundation, either version 3 of the License, or\n"
-"(at your option) any later version.\n"
-"\n"
-"This program is distributed in the hope that it will be useful,\n"
-"but WITHOUT ANY WARRANTY; without even the implied warranty of\n"
-"MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n"
-"GNU General Public License for more details.\n"
-"\n"
-"You should have received a copy of the GNU General Public License\n"
-"along with this program.  If not, see <http://www.gnu.org/licenses/>.\n"
-msgstr ""
-"ROXEN™ APPLICATION LAUNCHER\n"
-"Copyright © 2009 Pontus Östlund\n"
-"\n"
-"This program is free software: you can redistribute it and/or modify\n"
-"it under the terms of the GNU General Public License as published by\n"
-"the Free Software Foundation, either version 3 of the License, or\n"
-"(at your option) any later version.\n"
-"\n"
-"This program is distributed in the hope that it will be useful,\n"
-"but WITHOUT ANY WARRANTY; without even the implied warranty of\n"
-"MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n"
-"GNU General Public License for more details.\n"
-"\n"
-"You should have received a copy of the GNU General Public License\n"
-"along with this program.  If not, see <http://www.gnu.org/licenses/>.\n"
+#: src/tray.c:779
+msgid "Click to hide the application launcher"
+msgstr "Klicka för att gömma programstartaren"
 
-#: src/gui/mainwindow.ui:90
-msgid "_File"
-msgstr "_Arkiv"
+#: src/tray.c:782
+msgid "Show application launcher"
+msgstr "Visa programstartaren"
 
-#: src/gui/mainwindow.ui:115
-msgid "_Help"
-msgstr "_Hjälp"
-
-#: src/gui/mainwindow.ui:262
-msgid "Files"
-msgstr "Filer"
-
-#: src/gui/mainwindow.ui:430
-msgid "Window close button minimizes the application to the tray"
-msgstr "Fönstrets stängknapp minimerar applikationen till notifieringsytan"
-
-#: src/gui/mainwindow.ui:448
-msgid "<b>Settings</b>"
-msgstr "<b>Inställningar</b>"
-
-#: src/gui/mainwindow.ui:480
-msgid "Applications"
-msgstr "Program"
-
-#: src/gui/mainwindow.ui:531
-msgid "_View in Sitebuilder"
-msgstr "_Visa i Sitebuilder"
-
-#: src/gui/mainwindow.ui:540
-msgid "V_iew directory in Sitebuilder"
-msgstr "V_isa mapp i Sitebuilder"
-
-#: src/gui/mainwindow.ui:555
-msgid "_Edit"
-msgstr "_Redigera"
-
-#: src/gui/mainwindow.ui:564
-msgid "_Delete"
-msgstr "_Radera"
+#: src/tray.c:785
+msgid "Hide application launcher"
+msgstr "Göm programstartaren"
 
 #: src/gui/application-form.ui:47
 msgid "<b>Content type</b>"
@@ -308,6 +276,115 @@ msgstr "<b>Programkommando</b>"
 #: src/gui/application-form.ui:185
 msgid "<b>Editor extra arguments</b>"
 msgstr "<b>Extra argument</b>"
+
+#: src/gui/mainwindow.ui:7
+#: src/gui/mainwindow (kopia).ui:7
+msgid "About %s"
+msgstr "Om %s"
+
+#: src/gui/mainwindow.ui:16
+#: src/gui/mainwindow (kopia).ui:16
+msgid "Copyright © 2009 Pontus Östlund"
+msgstr "Copyright © 2009 Pontus Östlund"
+
+#: src/gui/mainwindow.ui:17
+#: src/gui/mainwindow (kopia).ui:17
+msgid ""
+"This is a Gnome port - written in Vala - of the Roxen™ \n"
+"Application Launcher originally written in Pike."
+msgstr ""
+"Det här är en Gnome-variant - skriven i Vala - av Roxen™\n"
+"Application Launcher ursprungligen skriven i Pike."
+
+#: src/gui/mainwindow.ui:20
+#: src/gui/mainwindow (kopia).ui:20
+msgid "www.poppa.se"
+msgstr "www.poppa.se"
+
+#: src/gui/mainwindow.ui:21
+#: src/gui/mainwindow (kopia).ui:21
+msgid ""
+"ROXEN™ APPLICATION LAUNCHER\n"
+"Copyright © 2009 Pontus Östlund\n"
+"\n"
+"This program is free software: you can redistribute it and/or modify\n"
+"it under the terms of the GNU General Public License as published by\n"
+"the Free Software Foundation, either version 3 of the License, or\n"
+"(at your option) any later version.\n"
+"\n"
+"This program is distributed in the hope that it will be useful,\n"
+"but WITHOUT ANY WARRANTY; without even the implied warranty of\n"
+"MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n"
+"GNU General Public License for more details.\n"
+"\n"
+"You should have received a copy of the GNU General Public License\n"
+"along with this program.  If not, see <http://www.gnu.org/licenses/>.\n"
+msgstr ""
+"ROXEN™ APPLICATION LAUNCHER\n"
+"Copyright © 2009 Pontus Östlund\n"
+"\n"
+"This program is free software: you can redistribute it and/or modify\n"
+"it under the terms of the GNU General Public License as published by\n"
+"the Free Software Foundation, either version 3 of the License, or\n"
+"(at your option) any later version.\n"
+"\n"
+"This program is distributed in the hope that it will be useful,\n"
+"but WITHOUT ANY WARRANTY; without even the implied warranty of\n"
+"MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n"
+"GNU General Public License for more details.\n"
+"\n"
+"You should have received a copy of the GNU General Public License\n"
+"along with this program.  If not, see <http://www.gnu.org/licenses/>.\n"
+
+#: src/gui/mainwindow.ui:81
+#: src/gui/mainwindow (kopia).ui:89
+msgid "_File"
+msgstr "_Arkiv"
+
+#: src/gui/mainwindow.ui:106
+#: src/gui/mainwindow (kopia).ui:114
+msgid "_Help"
+msgstr "_Hjälp"
+
+#: src/gui/mainwindow.ui:254
+#: src/gui/mainwindow (kopia).ui:262
+msgid "Files"
+msgstr "Filer"
+
+#: src/gui/mainwindow.ui:423
+#: src/gui/mainwindow (kopia).ui:431
+msgid "Window close button minimizes the application to the tray"
+msgstr "Fönstrets stängknapp minimerar applikationen till notifieringsytan"
+
+#: src/gui/mainwindow.ui:441
+#: src/gui/mainwindow (kopia).ui:449
+msgid "<b>Settings</b>"
+msgstr "<b>Inställningar</b>"
+
+#: src/gui/mainwindow.ui:473
+#: src/gui/mainwindow (kopia).ui:481
+msgid "Applications"
+msgstr "Program"
+
+#: src/gui/mainwindow.ui:522
+#: src/gui/mainwindow (kopia).ui:532
+msgid "_View in Sitebuilder"
+msgstr "_Visa i Sitebuilder"
+
+#: src/gui/mainwindow.ui:531
+#: src/gui/mainwindow (kopia).ui:541
+msgid "V_iew directory in Sitebuilder"
+msgstr "V_isa mapp i Sitebuilder"
+
+#: src/gui/mainwindow.ui:546
+#: src/gui/mainwindow (kopia).ui:556
+msgid "_Edit"
+msgstr "_Redigera"
+
+#: src/gui/mainwindow.ui:555
+#: src/gui/mainwindow (kopia).ui:565
+msgid "_Delete"
+msgstr "_Radera"
 
 #~ msgid "Enable logging"
 #~ msgstr "Aktivera loggning"

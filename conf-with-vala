@@ -11,7 +11,7 @@ case $1 in
 		echo 
 		echo "	### Setting debug flag ###"
 		echo
-		export RL_DEBUG="-D DEBUG"
+		export RL_DEBUG="-d DEBUG"
 		;;
 esac
 

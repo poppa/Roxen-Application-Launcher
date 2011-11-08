@@ -26,9 +26,8 @@ roxenlauncher_SOURCES =                                                  \
 
 roxenlauncher_VALAFLAGS =                                                \
 	--thread                                                               \
-	--pkg=gtk+-2.0                                                         \
-	--pkg=gdk-2.0                                                          \
-	--pkg=unique-1.0                                                       \
+	--pkg=gmodule-2.0                                                      \
+	--pkg=gtk+-3.0                                                         \
 	--pkg=libsoup-2.4                                                      \
 	--pkg=gio-2.0                                                          \
 	--pkg=gdk-pixbuf-2.0                                                   \

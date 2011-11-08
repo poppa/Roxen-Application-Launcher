@@ -69,7 +69,7 @@ namespace Roxenlauncher
     public void run()
     {
       builder = new Gtk.Builder();
-      string filename = get_ui_path(App.EDITOR_UI_FILENAME);
+      string filename = get_ui_path(EDITOR_UI_FILENAME);
 
       if (filename == null) {
         warning("Unable to load GUI for main window");

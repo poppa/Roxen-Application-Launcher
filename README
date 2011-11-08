@@ -24,23 +24,20 @@ To build run:
 Requirements
 ================================================================================
 
-  GLib        2.22.2    libglib
-  GTK         2.18.3    libgtk2.0
-  Unique      1.1.2     libunique
-  SOUP        2.28.1    libsoup2.4
-  GIO         2.22.2    libgio
-  GDK         2.18.3
-  GDK Pixbuf  2.18.3
+  GLib        2.30.0    libglib
+  GTK         3.2.0     libgtk2.0
+  SOUP        2.36.0    libsoup2.4
+  GIO         2.3.0     glib-networking
+  GDK Pixbuf  2.24.0    libgdk-pixbuf2.0
+  Notify      0.7.4     libnotify
 
-I can't say these versions actually is required, they are the versions I have
-built against and that's a standard Ubuntu 9.10. (I think GIO, GDK and GDK 
-Pixbuf is part of GLib and GTK)
+This is what's in Ubuntu 11.10.
 
 
 Build from Vala sources
 ================================================================================
 
-If you build from the Vala sources Vala 0.7.7 is required. Before running
+If you build from the Vala sources Vala 0.14 is required. Before running
 `./autogen.sh` you need to export the variable `RL_WITH_VALA` like
 
   name@machine:~$ export RL_WITH_VALA=true
@@ -51,5 +48,6 @@ or run
 
 if you have downloaded the development branch.
 
+# Pontus Östlund - 2011-11-08
 # Pontus Östlund - 2010-09-22
 # Pontus Östlund - 2009-12-18

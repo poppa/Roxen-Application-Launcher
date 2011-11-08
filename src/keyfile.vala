@@ -20,7 +20,7 @@
  */
 
 /**
- * Class for creating and reading key files:
+ * Class for creating and reading key files
  *
  * <code>
  * [application]
@@ -169,7 +169,9 @@ public class Poppa.KeyFile : Object
 			sections.append(idx);
 		}
 
-		debug("String list delimiter is: %s\n", delimiter);
+#if DEBUG
+		message("String list delimiter is: %s\n", delimiter);
+#endif
 
 		int len = val.length;
 		string s = "";
@@ -444,9 +446,9 @@ public class Poppa.KeyFile : Object
 	{
 		File f = File.new_for_path(path);
 		try {
-			string data;
-			if (f.load_contents(null, out data, null, null)) {
-				string[] lines = data.split("\n");
+			uint8[] data;
+			if (f.load_contents(null, out data)) {
+				string[] lines = ((string)data).split("\n");
 				Index idx = null;
 				foreach (string line in lines) {
 					line = line.strip();
@@ -523,8 +525,8 @@ public class Poppa.KeyFile : Object
 		 */
 		internal class Value
 		{
-			public string? key;
-			public string val;
+			public string key;
+			public string? val;
 
 			public Value(string k, string? v)
 			{

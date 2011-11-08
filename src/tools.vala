@@ -38,7 +38,7 @@ namespace Roxenlauncher
       case "$HOME": return Environment.get_home_dir();
       case "$TMP": return Environment.get_tmp_dir();
       case "APPLICATION":
-        var f = Path.build_filename(getdir("$home"), App.DIR);
+        var f = Path.build_filename(getdir("$home"), DIR);
 
         if (!FileUtils.test(f, FileTest.EXISTS))
           if (DirUtils.create(f, 0750) == -1)
@@ -47,7 +47,7 @@ namespace Roxenlauncher
         return f;
 
       case "FILES":
-        var f = Path.build_filename(getdir("$home"), App.DIR, App.FILES_DIR);
+        var f = Path.build_filename(getdir("$home"), DIR, FILES_DIR);
 
         if (!FileUtils.test(f, FileTest.EXISTS)) 
           if (DirUtils.create_with_parents(f, 0750) == -1)
@@ -59,7 +59,7 @@ namespace Roxenlauncher
     return null;
   }
 
-  public static class Alert
+  class Alert
   {
     public static bool confirm(Gtk.Window parent, string message)
     {

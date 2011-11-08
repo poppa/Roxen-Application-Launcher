@@ -1,4 +1,4 @@
-AC_INIT([roxenlauncher], [1.0.10], [pontus@poppa.se], [roxenlauncher])
+AC_INIT([roxenlauncher], [1.1], [pontus@poppa.se], [roxenlauncher])
 AC_CONFIG_SRCDIR([Makefile.am])
 AC_CONFIG_HEADERS(config.h)
 AM_INIT_AUTOMAKE([dist-bzip2])
@@ -6,8 +6,8 @@ AM_MAINTAINER_MODE
 
 AC_PROG_CC
 AM_PROG_CC_C_O
-AC_DISABLE_STATIC
-AC_PROG_LIBTOOL
+#AC_DISABLE_STATIC
+#AC_PROG_LIBTOOL
 
 AC_PATH_PROG(VALAC, valac, valac)
 AC_SUBST(VALAC)
@@ -34,18 +34,16 @@ AC_SUBST(CFLAGS)
 AC_SUBST(CPPFLAGS)
 AC_SUBST(LDFLAGS)
 
-GLIB_REQUIRED=2.22.2
-GTK_REQUIRED=2.18.3
-UNIQUE_REQUIRED=1.1.2
-SOUP24_REQUIRED=2.28.1
-GIO_REQUIRED=2.22.2
-GDK_REQUIRED=2.18.3
-GDK_PIXBUF_REQUIRED=2.18.3
-LIBNOTIFY_REQUIRED=0.6
+GLIB_REQUIRED=2.30.0
+GTK_REQUIRED=3.0
+SOUP24_REQUIRED=2.36.0
+GIO_REQUIRED=2.3.0
+GDK_PIXBUF_REQUIRED=2.24.0
+LIBNOTIFY_REQUIRED=0.7.4
 
 if test "x$RL_WITH_VALA" != x
 then
-	VALA_REQUIRED=0.12.0
+	VALA_REQUIRED=0.14.0
 	echo ""
 	echo "		### MAINTAINER MODE ###"
 	echo ""
@@ -58,11 +56,9 @@ fi
 PKG_CHECK_MODULES(ROXENLAUNCHER,         \
 	glib-2.0       >= $GLIB_REQUIRED       \
 	gobject-2.0    >= $GLIB_REQUIRED       \
-	gtk+-2.0       >= $GTK_REQUIRED        \
-	unique-1.0     >= $UNIQUE_REQUIRED     \
+	gtk+-3.0       >= $GTK_REQUIRED        \
 	libsoup-2.4    >= $SOUP24_REQUIRED     \
 	gio-2.0        >= $GIO_REQUIRED        \
-	gdk-2.0        >= $GDK_REQUIRED        \
 	libnotify      >= $LIBNOTIFY_REQUIRED  \
 	gdk-pixbuf-2.0 >= $GDK_PIXBUF_REQUIRED)
 

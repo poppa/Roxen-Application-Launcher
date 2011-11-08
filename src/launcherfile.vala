@@ -91,7 +91,9 @@ public class LauncherFile : Object
   {
     foreach (LauncherFile l in launcherfiles)
       if (l.get_uri() == lf.get_uri()) {
+#if DEBUG
         message("Launcher file exists. Skip adding!");
+#endif
         return;
       }
 
@@ -302,10 +304,10 @@ public class LauncherFile : Object
     var s = schema + "://" + host;
     
     if (schema == "https" && port != "443")
-      s += port;
+      s += ":" + port;
     else if (schema == "http" && port != "80")
-      s += port;
-      
+      s += ":" + port;
+
     s += _path == null ? path : _path;
     return s;
   }
@@ -380,7 +382,7 @@ public class LauncherFile : Object
     if (application == null) {
       var app = Roxenlauncher.Application.get_for_mimetype(content_type);
       if (app == null) {
-        application = win.editor_dialog_new(content_type);
+        application = Main.window.editor_dialog_new(content_type);
         if (application == null)
           return;
       }
@@ -404,7 +406,10 @@ public class LauncherFile : Object
 	    Process.spawn_command_line_async(cmd);
     }
     catch (GLib.Error e) {
-      warning("Error starting application: %s", e.message); 
+      warning("Error starting application: %s", e.message);
+      Main.window.show_notification(NotifyType.ERROR,
+                                    _("Error starting application"),
+                                    e.message);
     }
   }
 
@@ -478,7 +483,9 @@ public class LauncherFile : Object
 
         				string[] parts = lp.split("/");
         				lp = local_dir + "/" + parts[parts.length-1];
+#if DEBUG
         				message("Saving bundle: %s", lp);
+#endif
         				Soppa.save_soup_data(mess.response_body, lp);
         			}
         			else {
@@ -488,18 +495,19 @@ public class LauncherFile : Object
         	}
         
           win_set_status(Statuses.DOWNLOADED);
-          win.show_notification(NotifyType.DOWN,
-                                _("Download OK"),
-                                _("%s was downloaded OK from %s")
-                                .printf(path, host));
+          Main.window.show_notification(NotifyType.DOWN,
+                                        _("Download OK"),
+                                        _("%s was downloaded OK from %s")
+                                        .printf(path, host));
           launch_editor();
         }
         else {
-          message("Unable to write downloaded data to file!");
+          warning("Unable to write downloaded data to file!");
           win_set_status(Statuses.NOT_DOWNLOADED);
-          win.show_notification(NotifyType.ERROR,
-                                _("Download failed"),
-                                _("Unable to write downloaded data to file!"));
+          Main.window.show_notification(
+          	NotifyType.ERROR,
+            _("Download failed"),
+            _("Unable to write downloaded data to file!"));
         }
 
         save();
@@ -507,19 +515,32 @@ public class LauncherFile : Object
       else if (mess.status_code == Soup.KnownStatusCode.MOVED_PERMANENTLY ||
                mess.status_code == Soup.KnownStatusCode.MOVED_TEMPORARILY)
       {
+#if DEBUG
         message("Redirection...follow!");
-        win.show_notification(NotifyType.ERROR,
-                              _("Unhandled redirection"), 
-                              _("%s was not downloaded OK from %s")
-                              .printf(path, host));
+#endif
+        Main.window.show_notification(NotifyType.ERROR,
+                                      _("Unhandled redirection"), 
+                                      _("%s was not downloaded OK from %s")
+                                      .printf(path, host));
         win_set_status(Statuses.NOT_DOWNLOADED);
       }
       else {
         warning("Bad status (%ld) in download!", mess.status_code);
-        win.show_notification(NotifyType.ERROR,
-                              _("Download failed"), 
-                              _("%s was not downloaded from %s")
-                              .printf(path, host));
+
+        string s;
+
+        switch (mess.status_code)
+        {
+        	case 404:
+        		s = _("Requested file %s not found on %s").printf(path, host);
+        		break;
+
+        	default:
+        		s = _("%s was not downloaded from %s").printf(path, host);
+        		break;
+        }
+        
+        Main.window.show_notification(NotifyType.ERROR,_("Download failed"), s);
         win_set_status(Statuses.NOT_DOWNLOADED);
         save();
       }
@@ -539,9 +560,8 @@ public class LauncherFile : Object
       return;
     }
 
-    win_set_status(Statuses.UPLOADING);
-
     Idle.add(() => {
+      win_set_status(Statuses.UPLOADING);
 			try {
 				var sess = new Soup.SessionSync();
 #if DEBUG
@@ -557,6 +577,7 @@ public class LauncherFile : Object
 				var i = f.query_info("*", FileQueryInfoFlags.NONE);
 				int64 fsize = i.get_size();
 				uint8[] data = new uint8[fsize];
+
 				s.read(data);
 				s.close();
 
@@ -565,18 +586,18 @@ public class LauncherFile : Object
 
 				last_upload = Poppa.DateTime.now();
 				win_set_status(Statuses.UPLOADED);
-				win.show_notification(NotifyType.UP,
-				                      _("Upload OK"), 
-				                      _("%s was uploaded OK to %s")
-				                      .printf(path, host));
+				Main.window.show_notification(NotifyType.UP,
+				                              _("Upload OK"), 
+				                              _("%s was uploaded OK to %s")
+				                              .printf(path, host));
 			}
 			catch (GLib.Error e) {
-				message("Unable to upload file: %s", e.message);
+				warning("Unable to upload file: %s", e.message);
 				win_set_status(Statuses.NOT_UPLOADED);
-				win.show_notification(NotifyType.ERROR,
-		                          _("Upload failed"), 
-		                          _("%s was not uploaded OK to %s")
-		                          .printf(path, host));
+				Main.window.show_notification(NotifyType.ERROR,
+		                                  _("Upload failed"), 
+		                                  _("%s was not uploaded OK to %s")
+		                                  .printf(path, host));
 			}
 
       save();
@@ -593,7 +614,7 @@ public class LauncherFile : Object
   {
     status = st;
     Idle.add(() => {
-      win.set_file_status(this, status_as_string());
+      Main.window.set_file_status(this, status_as_string());
       return false;
     });
   }
@@ -622,7 +643,7 @@ public class LauncherFile : Object
     path         = a[4];
     content_type = a[5];
     sb_params    = a[6];
-    
+
     if (a.length >= 9) {
       last_upload = Poppa.DateTime.unixtime((time_t)long.parse(a[7]));
       status = int.parse(a[8]);
@@ -644,15 +665,16 @@ public class LauncherFile : Object
     // No local copy available - first download
     if (_id == null) {
       Idle.add(() => {
-        win.add_launcher_file(this);
+        Main.window.add_launcher_file(this);
         return false;
       });
       save();
       download();
     }
     else {
-      if (!file_exists(local_file)) 
-        download();
+      if (!file_exists(local_file)) {
+        //download();
+      }
     
       var lm = filemtime(local_file);
       if (lm != null)
@@ -787,3 +809,4 @@ public class LauncherFile : Object
       monitor.cancel();
   }
 }
+

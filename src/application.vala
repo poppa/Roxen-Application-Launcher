@@ -22,246 +22,126 @@
 using Roxenlauncher;
 using Poppa;
 
-namespace Roxenlauncher
+public class Roxenlauncher.Application : Object
 {
-  namespace App
+  private static GLib.List<Application> applications; 
+
+  /**
+   * Returns the list of applications
+   */
+  public static unowned GLib.List<Application> get_applications()
   {
-    public const string VERSION = Config.VERSION;
-    public const string NAME = _("Roxen Application Launcher");
-    public const string LIB_UNIQUE_PATH = "com.roxen.launcher";
-    public const string DIR = ".config/roxenlauncher";
-    public const string FILES_DIR = "files";
-    public const string CONFIG = DIR + "/ral.conf";
-    public const string MAIN_UI_FILENAME = "mainwindow.ui";
-    public const string EDITOR_UI_FILENAME = "application-form.ui";
-    public const string GCONF_ROOT = "/apps/roxenlauncher/";
-    public const string DATE_FORMAT = "%Y-%m-%d %H:%M";
-    public const string USER_AGENT = "Roxen Application Launcher for Linux (" + 
-                                     VERSION + ")";
-  }
-  
-  public struct WindowsProperties
-  {
-    public int width;
-    public int height;
-    public int x;
-    public int y;
+    return applications;
   }
 
-  public void init()
+  /**
+   * Add an application
+   *
+   * @param app
+   */
+  public static bool add_application(Application app)
   {
-    winprops = { 0, 0, 0, 0 };
-    var cfg = get_config();
-    winprops.width  = cfg.get_integer("winprops", "width");
-    winprops.height = cfg.get_integer("winprops", "height");
-    winprops.x      = cfg.get_integer("winprops", "left");;
-    winprops.y      = cfg.get_integer("winprops", "top");
+    Application a = null;
+    if ((a = get_for_mimetype(app.mimetype)) != null)
+      return false;
 
-    foreach (string s in GLib.Environment.list_variables()) {
-      if ("KDE" in s) {
-	      is_kde = true; // defined in main.vala
-	      break;
-      }
-    }
+    applications.append(app);
+    save_list();
+    return true;
   }
 
-  public Poppa.KeyFile get_config()
+  /**
+   * Removes the given application from the list
+   */
+  public static void remove_application(Application app)
   {
-    string p = getdir("$home") + "/" + App.CONFIG;
-    Poppa.KeyFile c = new Poppa.KeyFile(p);
-    c.delimiter = "¤";
-    return c;
+    applications.remove(app);
+    save_list();
   }
-  
-  public string? get_ui_path(string local_path)
-  {
-    // The first index is for local usage during development
-    string[] paths = { "gui", "src/gui", Config.DATADIR+"/roxenlauncher/gui" };
-    string full_path = null;
-    foreach (string path in paths) {
-      full_path = Path.build_filename(path, local_path);
-      if (file_exists(full_path))
-        return full_path;
-    }
 
+  /**
+   * Saves the list of applications to GConf
+   */    
+  public static void save_list()
+  {
+    message("save_list()\n");
+    var list = to_gconf_list();
+    message("List length: %d\n", list.length);
+    var cli = get_config();
+    cli.set_string_list("app", "applications", list);
+    cli.save();
+  }
+
+  /**
+   * Tries to find an application for mimetype
+   *
+   * @param mimetype
+   * @return
+   */
+  public static Application? get_for_mimetype(string mimetype)
+  {
+    foreach (Application app in applications)
+      if (app.mimetype == mimetype)
+        return app;
+        
     return null;
   }
-
-  public void save_window_properties(int width, int height, int x, int y)
-  {
-    winprops.width = width;
-    winprops.height = height;
-    winprops.x = x;
-    winprops.y = y;
-
-    var cli = get_config();
-    cli.set_integer("winprops", "width",  winprops.width);
-    cli.set_integer("winprops", "height", winprops.height);
-    cli.set_integer("winprops", "left",   winprops.x);
-    cli.set_integer("winprops", "top",    winprops.y);
-    cli.save();
-  }
   
-  public string get_last_folder()
+  /**
+   * Creates a list of the applications saveable to GConf
+   */
+  public static string[] to_gconf_list()
   {
-    string k = get_config().get_string("app", "last-folder");
-    if (k == null) k = getdir("$home"); 
-    return k;
-  }
-
-  public void set_last_folder(string path)
-  {
-    var cli = get_config();
-    cli.set_string("app", "last-folder", path);
-    cli.save();
-  }
-  
-  public bool get_enable_notifications()
-  {
-    bool v = get_config().get_boolean("app", "notifications");
-    return v;
-  }
-
-  public void set_enable_notifications(bool val)
-  {
-    var cli = get_config();
-    cli.set_boolean("app", "notifications", val);
-    cli.save();
-  }
-
-  public bool get_minimize_to_tray()
-  {
-    bool v = get_config().get_boolean("app", "minimize-to-tray");
-    return v;
-  }
-
-  public void set_minimize_to_tray(bool val)
-  {
-    var cli = get_config();
-    cli.set_boolean("app", "minimize-to-tray", val);
-    cli.save();
-  }
-
-  public class Application : Object
-  {
-    private static GLib.List<Application> applications; 
-
-    /**
-     * Returns the list of applications
-     */
-    public static unowned GLib.List<Application> get_applications()
-    {
-      return applications;
-    }
-
-    /**
-     * Add an application
-     *
-     * @param app
-     */
-    public static bool add_application(Application app)
-    {
-      Application a = null;
-      if ((a = get_for_mimetype(app.mimetype)) != null)
-        return false;
-
-      applications.append(app);
-      save_list();
-      return true;
-    }
-
-    /**
-     * Removes the given application from the list
-     */
-    public static void remove_application(Application app)
-    {
-      applications.remove(app);
-      save_list();
-    }
-
-    /**
-     * Saves the list of applications to GConf
-     */    
-    public static void save_list()
-    {
-      message("save_list()\n");
-      var list = to_gconf_list();
-      message("List length: %d\n", list.length);
-      var cli = get_config();
-      cli.set_string_list("app", "applications", list);
-      cli.save();
-    }
-
-    /**
-     * Tries to find an application for mimetype
-     *
-     * @param mimetype
-     * @return
-     */
-    public static Application? get_for_mimetype(string mimetype)
-    {
-      foreach (Application app in applications)
-        if (app.mimetype == mimetype)
-          return app;
-          
-      return null;
-    }
+    string[] list = new string[]{};
     
-    /**
-     * Creates a list of the applications saveable to GConf
-     */
-    public static string[] to_gconf_list()
-    {
-      string[] list = new string[]{};
+    foreach (Application app in applications) {
+      message("App: %s\n", app.to_gconf_string());
+      list += app.to_gconf_string();
+    }
       
-      foreach (Application app in applications) {
-        message("App: %s\n", app.to_gconf_string());
-        list += app.to_gconf_string();
-      }
-        
-      return list;
-    }
+    return list;
+  }
 
-    /**
-     * Load applications from GConf
-     */
-    public static void load_from_gconf()
-    {
-      if (applications == null)
-        applications = new GLib.List<Application>();
-    
-      var cli = get_config();
-      string[] list = cli.get_string_list("app", "applications");
+  /**
+   * Load applications from GConf
+   */
+  public static void load_from_gconf()
+  {
+    if (applications == null)
+      applications = new GLib.List<Application>();
+  
+    var cli = get_config();
+    string[] list = cli.get_string_list("app", "applications");
 
-      if (list != null) {
-        foreach (string s in list) {
-          string[] pts = s.split("::");
-          var app = new Application(pts[0], pts[1], pts[2]);
-          if (pts.length > 3 && pts[3].length > 0)
-            app.arguments = pts[3];
+    if (list != null) {
+      foreach (string s in list) {
+        string[] pts = s.split("::");
+        var app = new Application(pts[0], pts[1], pts[2]);
+        if (pts.length > 3 && pts[3].length > 0)
+          app.arguments = pts[3];
 
-          applications.append(app);
-        }
+        applications.append(app);
       }
     }
+  }
 
-    public string name { get; set; }
-    public string command { get; set; }
-    public string mimetype { get; set; }
-    public string arguments { get; set; }
+  public string name { get; set; }
+  public string command { get; set; }
+  public string mimetype { get; set; }
+  public string arguments { get; set; }
 
-    public Application(string name, string command, string mimetype,
-                       string arguments="")
-    {
-      this.name = name;
-      this.command = command;
-      this.mimetype = mimetype;
-      this.arguments = arguments;
-    }
+  public Application(string name, string command, string mimetype,
+                     string arguments="")
+  {
+    this.name = name;
+    this.command = command;
+    this.mimetype = mimetype;
+    this.arguments = arguments;
+  }
 
-    public string to_gconf_string()
-    {
-      return name + "::" + command + "::" + mimetype + "::" + arguments;
-    }
+  public string to_gconf_string()
+  {
+    return name + "::" + command + "::" + mimetype + "::" + arguments;
   }
 }
+
