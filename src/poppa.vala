@@ -1,8 +1,9 @@
+/* -*- Mode: Vala; indent-tabs-mode: t; c-basic-offset: 2; tab-width: 2 -*- */
 /* poppa.vala
  *
  * This file contains various utility methods and classes
  *
- * Copyright (C) 2010  Pontus Östlund
+ * Copyright (C) 2010 Pontus Östlund
  *
  * This library is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -33,18 +34,19 @@ namespace Poppa
    *
    * @param file
    */
-  public string? file_get_contents(string file)
+  public string? file_get_contents (string file)
   {
-    if (!FileUtils.test(file, FileTest.EXISTS)) {
-      warning("No such file: %s", file);
+    if (!FileUtils.test (file, FileTest.EXISTS)) {
+      warning ("No such file: %s", file);
       return null;
     }
 
     string output;
-    try { FileUtils.get_contents(file, out output, null); }
+    try { FileUtils.get_contents (file, out output, null); }
     catch (GLib.Error e) {
-      warning("%s", e.message);
+      warning ("%s", e.message);
     }
+
     return output;
   }
   
@@ -53,9 +55,9 @@ namespace Poppa
    *
    * @param file
    */
-  public bool file_exists(string file)
+  public bool file_exists (string file)
   {
-    return FileUtils.test(file, FileTest.EXISTS);
+    return FileUtils.test (file, FileTest.EXISTS);
   }
 
   /**
@@ -64,7 +66,7 @@ namespace Poppa
    * param s
    * param glue
    */
-  public string array_implode(string[] s, string glue)
+  public string array_implode (string[] s, string glue)
   {
     long len = s.length;
     var str = "";
@@ -88,13 +90,13 @@ namespace Poppa
    * @throw
    *  Throws an error if //to// is larger than  //s// length
    */
-  public string[] array_slice(string[] s, uint from, uint to=0) 
+  public string[] array_slice (string[] s, uint from, uint to=0) 
   	throws Poppa.Error
   {
     if (to == 0) to = s.length - from;
     if (from+to > s.length) {
-      throw new Poppa.Error.ANY("array_slice(): \"to\" is larger than " +
-                                "array length");
+      throw new Poppa.Error.ANY ("array_slice(): \"to\" is larger than " +
+                                 "array length");
     }
 
     string[] ss = {};
@@ -112,15 +114,15 @@ namespace Poppa
    * @param s
    * @param tail
    */
-  public string rtrim(string s, string tail="")
+  public string rtrim (string s, string tail="")
   {
     if (tail == "")
-      return s.chomp();
+      return s.chomp ();
 
-    var str = s.dup();
+    var str = s.dup ();
     long len = tail.length;
-    while (str.has_suffix(tail))
-      str = str.substring(0, str.length-len);
+    while (str.has_suffix (tail))
+      str = str.substring (0, str.length-len);
       
     return str; 
   }
@@ -132,15 +134,15 @@ namespace Poppa
    * @param s
    * @param head
    */
-  public string ltrim(string s, string head="")
+  public string ltrim (string s, string head="")
   {
     if (head == "")
-      return s.chug();
+      return s.chug ();
 
-    var str = s.dup();
+    var str = s.dup ();
     long len = head.length;
-    while (str.has_prefix(head))
-      str = str.substring(len);
+    while (str.has_prefix (head))
+      str = str.substring (len);
       
     return str;
   }
@@ -152,12 +154,12 @@ namespace Poppa
    * @param s
    * @param tail
    */  
-  public string trim(string s, string chars="")
+  public string trim (string s, string chars="")
   {
     if (chars == "")
-      return s.strip();
+      return s.strip ();
 
-    return ltrim(rtrim(s, chars), chars);
+    return ltrim (rtrim (s, chars), chars);
   }
   
   /**
@@ -165,20 +167,20 @@ namespace Poppa
    *
    * @param path
    */
-  public DateTime? filemtime(string path)
+  public DateTime? filemtime (string path)
   {
     try {
-      var f = File.new_for_path(path);
-      if (f.query_exists(null)) {
-        var fi = f.query_info(FILE_ATTRIBUTE_TIME_MODIFIED, 
-                              FileQueryInfoFlags.NONE, null);
+      var f = File.new_for_path (path);
+      if (f.query_exists (null)) {
+        var fi = f.query_info (FILE_ATTRIBUTE_TIME_MODIFIED, 
+                               FileQueryInfoFlags.NONE, null);
         TimeVal tv;
-        fi.get_modification_time(out tv);
-        return DateTime.timeval(tv);
+        fi.get_modification_time (out tv);
+        return DateTime.timeval (tv);
       }
     }
     catch (GLib.Error e) {
-      warning("get_fileinfo(): %s", e.message);
+      warning ("get_fileinfo(): %s", e.message);
     }
     
     return null;
@@ -189,20 +191,20 @@ namespace Poppa
    *
    * @param path
    */ 
-  public DateTime? filectime(string path)
+  public DateTime? filectime (string path)
   {
     try {
-      var f = File.new_for_path(path);
-      if (f.query_exists(null)) {
-        var fi = f.query_info(FILE_ATTRIBUTE_TIME_CREATED,
-                              FileQueryInfoFlags.NONE, null);
+      var f = File.new_for_path (path);
+      if (f.query_exists (null)) {
+        var fi = f.query_info (FILE_ATTRIBUTE_TIME_CREATED,
+                               FileQueryInfoFlags.NONE, null);
 
-        var ts = fi.get_attribute_uint64(FILE_ATTRIBUTE_TIME_CREATED);
-        return DateTime.unixtime((time_t)ts);
+        var ts = fi.get_attribute_uint64 (FILE_ATTRIBUTE_TIME_CREATED);
+        return DateTime.unixtime ((time_t) ts);
       }
     }
     catch (GLib.Error e) {
-      warning("get_fileinfo(): %s", e.message);
+      warning ("get_fileinfo(): %s", e.message);
     }
     
     return null;
@@ -213,7 +215,7 @@ namespace Poppa
    */
   public class DateTime : Object
   {
-    TimeVal tv = TimeVal();
+    TimeVal tv = TimeVal ();
     Time time;
 
     /**
@@ -221,9 +223,9 @@ namespace Poppa
      *
      * @return
      */
-    public static DateTime now()
+    public static DateTime now ()
     {
-      return new DateTime.from_now();
+      return new DateTime.from_now ();
     }
 
     /**
@@ -232,9 +234,9 @@ namespace Poppa
      * @param timestamp
      * @return
      */
-    public static DateTime unixtime(time_t timestamp)
+    public static DateTime unixtime (time_t timestamp)
     {
-      return new DateTime.from_unixtime(timestamp);
+      return new DateTime.from_unixtime (timestamp);
     }
     
     /**
@@ -243,9 +245,9 @@ namespace Poppa
      * @param timeval
      * @return
      */
-    public static DateTime timeval(TimeVal timeval)
+    public static DateTime timeval (TimeVal timeval)
     {
-      return new DateTime.from_timeval(timeval);
+      return new DateTime.from_timeval (timeval);
     }
 
     /**
@@ -258,42 +260,42 @@ namespace Poppa
      * @param minute
      * @param second
      */
-    public DateTime(uint year=1970, uint month=1, uint date=1, uint hour=1,
-                    uint minute=0, uint second=0)
+    public DateTime (uint year=1970, uint month=1, uint date=1, uint hour=1,
+                     uint minute=0, uint second=0)
     {
-      var a = "%ld-%ld-%ld %ld:%ld:%ld".printf(year, month, date, hour,
-                                               minute, second);
+      var a = "%ld-%ld-%ld %ld:%ld:%ld".printf (year, month, date, hour,
+                                                minute, second);
       var s = "%Y-%m-%d %T.000000Z";
-      time = Time();
-      time.strptime(a,s);
-      tv.from_iso8601(time.format(s).replace(" ", "T"));
+      time = Time ();
+      time.strptime (a,s);
+      tv.from_iso8601 (time.format (s).replace (" ", "T"));
     }
     
     /**
      * Creates a new DateTime object from the current time
      */
-    public DateTime.from_now()
+    public DateTime.from_now ()
     {
-      tv.get_current_time();
-      time = Time.local(tv.tv_sec);
+      tv.get_current_time ();
+      time = Time.local (tv.tv_sec);
     }
     
     /**
      * Creates a new DateTime object from a unix timestamp
      */
-    public DateTime.from_unixtime(time_t unixtime)
+    public DateTime.from_unixtime (time_t unixtime)
     {
-      time = Time.local(unixtime);
-      tv.tv_sec = time.mktime();
+      time = Time.local (unixtime);
+      tv.tv_sec = time.mktime ();
     }
     
     /**
      * Creates a new DateTime object from a {@see TimeVal} struct
      */
-    public DateTime.from_timeval(TimeVal timeval)
+    public DateTime.from_timeval (TimeVal timeval)
     {
       tv = timeval;
-      time = Time.local(tv.tv_sec);
+      time = Time.local (tv.tv_sec);
     }
 
     /**
@@ -302,9 +304,9 @@ namespace Poppa
      * @param fmt
      * @return
      */
-    public string format(string fmt)
+    public string format (string fmt)
     {
-      return time.format(fmt);
+      return time.format (fmt);
     }
     
     /**
@@ -312,9 +314,9 @@ namespace Poppa
      *
      * @return
      */
-    public string to_string()
+    public string to_string ()
     {
-      return time.to_string();
+      return time.to_string ();
     }
     
     /**
@@ -322,18 +324,17 @@ namespace Poppa
      *
      * @return
      */
-    public string to_iso8601()
+    public string to_iso8601 ()
     {
-      return tv.to_iso8601();
+      return tv.to_iso8601 ();
     }
 
     /**
      * Returns the date as a unix timestamp struct
      */
-    public time_t to_unixtime()
+    public time_t to_unixtime ()
     {
-      return time.mktime();
+      return time.mktime ();
     }
   }
 }
-

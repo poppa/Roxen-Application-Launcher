@@ -1,8 +1,13 @@
-AC_INIT([roxenlauncher], [1.1], [pontus@poppa.se], [roxenlauncher])
-AC_CONFIG_SRCDIR([Makefile.am])
-AC_CONFIG_HEADERS(config.h)
-AM_INIT_AUTOMAKE([dist-bzip2])
-AM_MAINTAINER_MODE
+AC_INIT([roxenlauncher], 
+        [1.2],
+        [pontus@poppa.se], 
+        [roxenlauncher],
+        [https://github.com/poppa/Roxen-Application-Launcher])
+AC_CONFIG_SRCDIR([configure.ac])
+AC_CONFIG_HEADERS([config.h])
+AC_CONFIG_MACRO_DIR([m4])
+AM_INIT_AUTOMAKE([1.1 -Wall])
+AM_MAINTAINER_MODE([enable])
 
 AC_PROG_CC
 AM_PROG_CC_C_O
@@ -65,8 +70,13 @@ PKG_CHECK_MODULES(ROXENLAUNCHER,         \
 AC_SUBST(ROXENLAUNCHER_CFLAGS)
 AC_SUBST(ROXENLAUNCHER_LIBS)
 
-AC_CONFIG_FILES([Makefile
+GLIB_GSETTINGS
+
+AC_CONFIG_FILES([
+	Makefile
 	src/Makefile
-	po/Makefile])
+	src/data/Makefile
+	po/Makefile
+])
 
 AC_OUTPUT

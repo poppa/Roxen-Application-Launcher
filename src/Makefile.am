@@ -1,3 +1,5 @@
+SUBDIRS = data
+
 NULL = 
 
 AM_CPPFLAGS =                                                            \
@@ -13,15 +15,15 @@ bin_PROGRAMS = roxenlauncher
 
 roxenlauncher_SOURCES =                                                  \
 	main.vala                                                              \
-	application.vala                                                       \
 	launcherfile.vala                                                      \
 	tools.vala                                                             \
 	tray.vala                                                              \
 	mainwindow.vala                                                        \
-	application-form.vala                                                  \
-	keyfile.vala                                                           \
 	poppa.vala                                                             \
-	soppa.c                                                                \
+	editor.vala                                                            \
+	content-type.vala                                                      \
+	roxelauncher.vala                                                      \
+	content-type-form.vala                                                 \
 	$(NULL)
 
 roxenlauncher_VALAFLAGS =                                                \
@@ -34,34 +36,12 @@ roxenlauncher_VALAFLAGS =                                                \
 	--pkg=libnotify                                                        \
 	--vapidir=.                                                            \
 	--pkg=config                                                           \
-	--pkg=soppa                                                            \
 	$(NULL)
 
 roxenlauncher_LDADD =                                                    \
 	$(ROXENLAUNCHER_LIBS)                                                  \
 	$(NULL)
 
-roxenlauncherextradir = ${datadir}/roxenlauncher/gui
-roxenlauncherextra_DATA =                                                \
-	gui/mainwindow.ui                                                      \
-	gui/application-form.ui                                                \
-	$(NULL)
-
-roxenlauncherpixmapsdir = ${datadir}/roxenlauncher/gui/pixmap
-roxenlauncherpixmaps_DATA =                                              \
-	gui/pixmap/roxen-logo.png                                              \
-	gui/pixmap/roxen-logo-small.png                                        \
-	gui/pixmap/roxen-logo.svg                                              \
-	gui/pixmap/down_48.png                                                 \
-	gui/pixmap/up_48.png                                                   \
-	gui/pixmap/warning_48.png                                              \
-	$(NULL)
-
-EXTRA_DIST =                                                             \
-	$(roxenlauncherextra_DATA)                                             \
-	$(roxenlauncherpixmaps_DATA)                                           \
-	soppa.h \
-	$(NULL)
 
 DISTCLEANFILES =                                                         \
 	$(NULL)

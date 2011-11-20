@@ -6,6 +6,7 @@
 po/*.mo
 *.tar.bz2
 *.tar.gz
+*.valid
 aclocal.m4
 autom4te.cache
 compile
@@ -31,3 +32,5 @@ mkinstalldirs
 roxenlauncher
 stamp-*
 !src/soppa.c
+*.anjuta
+*.anjuta*.db
