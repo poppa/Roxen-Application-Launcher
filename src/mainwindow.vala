@@ -1,4 +1,4 @@
-/* -*- Mode: Vala; indent-tabs-mode: t; c-basic-offset: 2; tab-width: 2 -*- */
+/* -*- Mode: Vala; indent-tabs-mode: s; c-basic-offset: 2; tab-width: 2 -*- */
 /*
  * mainwindow.vala
  * Copyright (C) Pontus Östlund 2009-2011 <pontus@poppa.se>
@@ -29,44 +29,44 @@ public class Roxenlauncher.MainWindow : Gtk.Window
   Gtk.ScrolledWindow    sw_files;
   Gtk.CheckButton       cb_notify;
   Gtk.CheckButton       cb_minimize;
-	Gtk.CheckButton       cb_logging;
+  Gtk.CheckButton       cb_logging;
   Gtk.Button            btn_edit_file;
   Gtk.Button            btn_finish_file;
   Gtk.Button            btn_finish_all;
   Gtk.Button            btn_edit_app;
   Gtk.Button            btn_add_app;
   Gtk.Button            btn_remove_app;
-	Gtk.Button            btn_clear_log;
+  Gtk.Button            btn_clear_log;
   Gtk.TreeView          tv_files;
   Gtk.TreeView          tv_apps;
   Gtk.ListStore         ls_files;
   Gtk.ListStore         ls_apps;
   Gtk.Statusbar         statusbar;
   Gtk.Menu              ctx_menu;
-	Gtk.FileChooserButton fcb_logfile;
-	Gtk.TextView          logview;
+  Gtk.FileChooserButton fcb_logfile;
+  Gtk.TextView          logview;
 
   bool min_to_tray = false;
 
-	enum TVCtCols {
-		MIMETYPE,
-		ICON,
-		EDITOR,
-		CONTENT_TYPE,
-		N_COLS
-	}
+  enum TVCtCols {
+    MIMETYPE,
+    ICON,
+    EDITOR,
+    CONTENT_TYPE,
+    N_COLS
+  }
 
-	enum TVFileCols {
-		URI,
-		STATUS,
-		LAST_UPLOAD,
-		LAUNCHERFILE,
-		N_COLS
-	}
+  enum TVFileCols {
+    URI,
+    STATUS,
+    LAST_UPLOAD,
+    LAUNCHERFILE,
+    N_COLS
+  }
 
-	public bool setup_ui ()
-	{
-		builder = new Gtk.Builder ();
+  public bool setup_ui ()
+  {
+    builder = new Gtk.Builder ();
     string? filename = get_ui_path (MAIN_UI_FILENAME);
 
     if (filename == null)
@@ -75,7 +75,7 @@ public class Roxenlauncher.MainWindow : Gtk.Window
     try {
       builder.set_translation_domain (Config.GETTEXT_PACKAGE);
       builder.add_from_file (filename);
-			set_default_icon_from_file (get_ui_path ("pixmap/roxen-logo.svg"));
+      set_default_icon_from_file (get_ui_path ("pixmap/roxen-logo.svg"));
     }
     catch (GLib.Error e) {
       error ("GUI load error: %s", e.message);
@@ -85,43 +85,43 @@ public class Roxenlauncher.MainWindow : Gtk.Window
     sw_files        = g ("sw_files")             as Gtk.ScrolledWindow;
     cb_notify       = g ("cb_notify")            as Gtk.CheckButton;
     cb_minimize     = g ("cb_minimize")          as Gtk.CheckButton;
-		cb_logging      = g ("cb_logging")           as Gtk.CheckButton;
+    cb_logging      = g ("cb_logging")           as Gtk.CheckButton;
     btn_edit_file   = g ("btn_edit_file")        as Gtk.Button;
     btn_finish_file = g ("btn_finish_file")      as Gtk.Button;
     btn_finish_all  = g ("btn_finish_all")       as Gtk.Button;
     btn_edit_app    = g ("btn_edit_app")         as Gtk.Button;
     btn_add_app     = g ("btn_add_app")          as Gtk.Button;
     btn_remove_app  = g ("btn_remove_app")       as Gtk.Button;
-		btn_clear_log   = g ("btn_clear_log")        as Gtk.Button;
+    btn_clear_log   = g ("btn_clear_log")        as Gtk.Button;
     ctx_menu        = g ("tv_files_rclick_menu") as Gtk.Menu;
     tv_files        = g ("tv_files")             as Gtk.TreeView;
     ls_files        = g ("ls_files")             as Gtk.ListStore;
     tv_apps         = g ("tv_apps")              as Gtk.TreeView;
     ls_apps         = g ("ls_apps")              as Gtk.ListStore;
     statusbar       = g ("statusbar1")           as Gtk.Statusbar;
-		fcb_logfile     = g ("fcb_logfile")          as Gtk.FileChooserButton;
-		logview         = g ("logview")              as Gtk.TextView;
+    fcb_logfile     = g ("fcb_logfile")          as Gtk.FileChooserButton;
+    logview         = g ("logview")              as Gtk.TextView;
 
     if (Main.is_kde) {
-			try {
-				string rlogo = get_ui_path ("pixmap/roxen-logo.png");
-				set_icon_from_file (rlogo);
-			}
-			catch (GLib.Error e) {
-				warning ("Unable to set icon: %s", e.message);
-			}
+      try {
+        string rlogo = get_ui_path ("pixmap/roxen-logo.png");
+        set_icon_from_file (rlogo);
+      }
+      catch (GLib.Error e) {
+        warning ("Unable to set icon: %s", e.message);
+      }
     }
 
     if (Main.winprops.width > 0 && Main.winprops.height > 0)
       set_default_size (Main.winprops.width, Main.winprops.height);
     else
-    	set_default_size (600, 400);
+      set_default_size (600, 400);
 
     if (Main.winprops.x > 0 || Main.winprops.y > 0)
       move (Main.winprops.x, Main.winprops.y);
 
-		// Window moved/resized
-		configure_event.connect ((widget, event) => {
+    // Window moved/resized
+    configure_event.connect ((widget, event) => {
       // Save new window properties
       if (event.type == Gdk.EventType.CONFIGURE && (
           event.width  != Main.winprops.width  ||
@@ -136,24 +136,24 @@ public class Roxenlauncher.MainWindow : Gtk.Window
     });
 
     delete_event.connect (() => {
-			Gtk.main_quit();
-			return true;
-		});
+      Gtk.main_quit();
+      return true;
+    });
 
-		// Window minimized
-	  window_state_event.connect ((wnd, event) => {
-	    Gdk.WindowState ico = Gdk.WindowState.ICONIFIED;
-	    Gdk.WindowState max = Gdk.WindowState.MAXIMIZED;
+    // Window minimized
+    window_state_event.connect ((wnd, event) => {
+      Gdk.WindowState ico = Gdk.WindowState.ICONIFIED;
+      Gdk.WindowState max = Gdk.WindowState.MAXIMIZED;
 
-	    if (min_to_tray && event.changed_mask == ico && (
-			    event.new_window_state == ico ||
-			    event.new_window_state == (ico | max)))
-	    {
-				Main.tray.get_icon ().activate ();
-	    }
-	    return true;
-	  });
-	  
+      if (min_to_tray && event.changed_mask == ico && (
+          event.new_window_state == ico ||
+          event.new_window_state == (ico | max)))
+      {
+        Main.tray.get_icon ().activate ();
+      }
+      return true;
+    });
+    
     // Notifications check button
     cb_notify.active = get_enable_notifications ();
     cb_notify.toggled.connect (() => { toggle_notifications (); });
@@ -162,26 +162,26 @@ public class Roxenlauncher.MainWindow : Gtk.Window
     cb_minimize.active = min_to_tray = get_minimize_to_tray ();
     cb_minimize.toggled.connect (() => { toggle_minimize_to_tray (); });
 
-		// Enable logging check button
-		cb_logging.active = get_enable_logging ();
-		cb_logging.toggled.connect (() => { toggle_enable_logging (); });
+    // Enable logging check button
+    cb_logging.active = get_enable_logging ();
+    cb_logging.toggled.connect (() => { toggle_enable_logging (); });
 
-		btn_clear_log.sensitive = cb_logging.active;
-		btn_clear_log.clicked.connect (() => {
-			logger.truncate ();
-			logview.buffer.text = "";
-			Logger.message (_("Log file truncated"));
-		});
+    btn_clear_log.sensitive = cb_logging.active;
+    btn_clear_log.clicked.connect (() => {
+      logger.truncate ();
+      logview.buffer.text = "";
+      Logger.message (_("Log file truncated"));
+    });
 
-		var filter = new Gtk.FileFilter ();
-		filter.add_pattern ("*.log");
+    var filter = new Gtk.FileFilter ();
+    filter.add_pattern ("*.log");
 
-		fcb_logfile.sensitive = cb_logging.active;
-		fcb_logfile.filter = filter;
-		fcb_logfile.set_filename (get_log_file ());
+    fcb_logfile.sensitive = cb_logging.active;
+    fcb_logfile.filter = filter;
+    fcb_logfile.set_filename (get_log_file ());
 
-		logview.sensitive = cb_logging.active;
-		load_logfile();
+    logview.sensitive = cb_logging.active;
+    load_logfile();
 
     btn_edit_file.clicked.connect (on_btn_edit_file_clicked);
     btn_finish_file.clicked.connect (on_btn_finish_file_clicked);
@@ -211,7 +211,7 @@ public class Roxenlauncher.MainWindow : Gtk.Window
       var cl = new Gtk.TreeViewColumn.with_attributes (cols[i], ct, "text", 
                                                        i, null);
       cl.resizable = true;
-			if (i == 0) cl.expand = true;
+      if (i == 0) cl.expand = true;
 
       cl.sort_column_id = (int) i;
       tv_files.insert_column (cl, -1);
@@ -245,39 +245,39 @@ public class Roxenlauncher.MainWindow : Gtk.Window
     tv_files.key_release_event.connect (on_tv_files_key_release_event);
     tv_files.button_press_event.connect (on_ctx_popup_menu);
 
-		// Right click in file list, view file in Sitebuilder
+    // Right click in file list, view file in Sitebuilder
     ((Gtk.MenuItem) g ("sb_view")).activate.connect (() => {
-    	Gtk.TreeModel model;
-    	Gtk.TreeIter iter;
+      Gtk.TreeModel model;
+      Gtk.TreeIter iter;
 
-    	LauncherFile lf = get_selected_file (out model, out iter);
+      LauncherFile lf = get_selected_file (out model, out iter);
 
-    	if (lf != null) {
-    		string uri = lf.get_sb_uri ();
-    		string cmd = "xdg-open '" + uri.escape ("") + "'";
+      if (lf != null) {
+        string uri = lf.get_sb_uri ();
+        string cmd = "xdg-open '" + uri.escape ("") + "'";
 
-    		try { Process.spawn_command_line_async (cmd); }
- 			  catch (GLib.Error e) {
- 			  	warning("Unable to open file: %s", e.message);
- 			  }
-    	}
+        try { Process.spawn_command_line_async (cmd); }
+        catch (GLib.Error e) {
+          warning("Unable to open file: %s", e.message);
+        }
+      }
     });
 
-		// Right click in file list, view directory in Sitebuilder
+    // Right click in file list, view directory in Sitebuilder
     ((Gtk.MenuItem) g ("sb_view_dir")).activate.connect (() => {
-    	Gtk.TreeModel model;
-    	Gtk.TreeIter iter;
-    	LauncherFile lf = get_selected_file (out model, out iter);
+      Gtk.TreeModel model;
+      Gtk.TreeIter iter;
+      LauncherFile lf = get_selected_file (out model, out iter);
 
-    	if (lf != null) {
-    		string uri = Path.get_dirname (lf.get_sb_uri ());
-    		string cmd = "xdg-open '" + uri.escape ("") + "'";
+      if (lf != null) {
+        string uri = Path.get_dirname (lf.get_sb_uri ());
+        string cmd = "xdg-open '" + uri.escape ("") + "'";
 
-    		try { Process.spawn_command_line_async (cmd); }
- 			  catch (GLib.Error e) {
- 			  	warning("Unable to open file: %s", e.message);
- 			  }
-    	}
+        try { Process.spawn_command_line_async (cmd); }
+        catch (GLib.Error e) {
+          warning("Unable to open file: %s", e.message);
+        }
+      }
     });
 
     Gtk.MenuItem md = (Gtk.MenuItem) g ("ctx_menu_delete");
@@ -292,11 +292,11 @@ public class Roxenlauncher.MainWindow : Gtk.Window
                                  typeof (Gdk.Pixbuf),
                                  typeof (string),
                                  typeof (ContentType));
-		
+    
     tv_apps.set_model (ls_apps);
 
-		tv_apps.insert_column (get_ct_col (_("Content type")), -1);
-		tv_apps.insert_column (get_ct_col (_("Application"), true), -1);
+    tv_apps.insert_column (get_ct_col (_("Content type")), -1);
+    tv_apps.insert_column (get_ct_col (_("Application"), true), -1);
 
     foreach (ContentType ct in ContentType.content_types) {
       append_ct (ct);
@@ -311,35 +311,35 @@ public class Roxenlauncher.MainWindow : Gtk.Window
     tv_apps.key_release_event.connect (on_tv_ct_key_release_event);
 
     destroy.connect (on_window_destroy);
-		add (main_vbox);
-		
+    add (main_vbox);
+    
     return true;
-	}
+  }
 
-	int ct_col_pos = 0;
+  int ct_col_pos = 0;
 
-	Gtk.TreeViewColumn get_ct_col (string title, bool with_icon=false)
-	{
-		var col = new Gtk.TreeViewColumn ();
-		col.title = title;
-		col.expand = true;
-		col.resizable = true;
-		
-		if (with_icon) {
-			var crp = new Gtk.CellRendererPixbuf ();
-			col.pack_start (crp, false);
-			col.add_attribute (crp, "pixbuf", ct_col_pos++);
-		}
+  Gtk.TreeViewColumn get_ct_col (string title, bool with_icon=false)
+  {
+    var col = new Gtk.TreeViewColumn ();
+    col.title = title;
+    col.expand = true;
+    col.resizable = true;
+    
+    if (with_icon) {
+      var crp = new Gtk.CellRendererPixbuf ();
+      col.pack_start (crp, false);
+      col.add_attribute (crp, "pixbuf", ct_col_pos++);
+    }
 
-		col.sort_column_id = ct_col_pos;
-		
-		var crt = new Gtk.CellRendererText ();
-		col.pack_start (crt, false);
-		col.add_attribute (crt, "text", ct_col_pos++);
+    col.sort_column_id = ct_col_pos;
+    
+    var crt = new Gtk.CellRendererText ();
+    col.pack_start (crt, false);
+    col.add_attribute (crt, "text", ct_col_pos++);
 
-		return col;
-	}
-	
+    return col;
+  }
+  
   /**
    * Shortcut for getting a Gtk object from the Glade file
    *
@@ -351,23 +351,23 @@ public class Roxenlauncher.MainWindow : Gtk.Window
   {
     return builder.get_object (name);
   }
-	
-	// Callbacks
+  
+  // Callbacks
 
   /**
    * Callback for when the main window is destroyed. Quits the application
    */
-	public void on_window_destroy ()
-	{
-		Gtk.main_quit ();
-	}
+  public void on_window_destroy ()
+  {
+    Gtk.main_quit ();
+  }
 
   /**
    * Callback for the edit application button
    */
   void on_btn_edit_ct_clicked ()
   {
-  	ct_edit ();
+    ct_edit ();
   }
 
   /**
@@ -439,7 +439,7 @@ public class Roxenlauncher.MainWindow : Gtk.Window
    */
   void on_tv_apps_activated (Gtk.TreePath path, Gtk.TreeViewColumn col)
   {
-		ct_edit ();
+    ct_edit ();
   }  
 
   /**
@@ -473,13 +473,13 @@ public class Roxenlauncher.MainWindow : Gtk.Window
    */
   void on_ctx_popup_menu_delete ()
   {
-  	Gtk.TreeModel model;
-  	Gtk.TreeIter iter;
+    Gtk.TreeModel model;
+    Gtk.TreeIter iter;
 
-  	if (get_selected_file (out model, out iter) == null)
-  		return;
+    if (get_selected_file (out model, out iter) == null)
+      return;
 
-  	if (Alert.confirm (this, _("Do you want to delete the selected file?"))) {
+    if (Alert.confirm (this, _("Do you want to delete the selected file?"))) {
       finish_file ();
       return;
     }
@@ -515,27 +515,27 @@ public class Roxenlauncher.MainWindow : Gtk.Window
     return false;
   }
 
-	/** 
-	 * Callback for right click in file treeview
-	 *
-	 * @param w
-	 * @param e
-	 */
-	public bool on_ctx_popup_menu (Gtk.Widget w, Gdk.EventButton e)
-	{
-		if (e.button == 3 && e.type == Gdk.EventType.BUTTON_PRESS) {
+  /** 
+   * Callback for right click in file treeview
+   *
+   * @param w
+   * @param e
+   */
+  public bool on_ctx_popup_menu (Gtk.Widget w, Gdk.EventButton e)
+  {
+    if (e.button == 3 && e.type == Gdk.EventType.BUTTON_PRESS) {
       Gtk.TreeModel model;
       Gtk.TreeIter iter;
 
       LauncherFile f = get_selected_file (out model, out iter);
 
       if (f != null) {
-		    ctx_menu.popup (null, null, null, e.button, e.time);
- 			  return false;
-	    }
-		}
-		return false;
-	}
+        ctx_menu.popup (null, null, null, e.button, e.time);
+        return false;
+      }
+    }
+    return false;
+  }
 
   /**
    * Callback for the about menu item
@@ -546,14 +546,14 @@ public class Roxenlauncher.MainWindow : Gtk.Window
     a = null;
   }
 
-	// Api
-	
+  // Api
+  
   /**
    * Add a launcher file to the treeview
    *
    * @param lf
    */
-	public void add_launcher_file (LauncherFile lf)
+  public void add_launcher_file (LauncherFile lf)
   {
     LauncherFile.add_file (lf);
     Gtk.TreeIter iter;
@@ -573,8 +573,8 @@ public class Roxenlauncher.MainWindow : Gtk.Window
 
     set_file_selection (lf);
     set_file_count ();
-	}
-	
+  }
+  
   /**
    * Removes the selected application from the list
    */
@@ -596,23 +596,23 @@ public class Roxenlauncher.MainWindow : Gtk.Window
     }
   }
 
-	/**
-	 * Append content type to treeview
-	 * 
-	 * @param ct
-	 */
-	void append_ct (ContentType ct)
-	{
-		Gtk.TreeIter iter;
-		ls_apps.append (out iter);
-		ls_apps.set (iter, 
-		             TVCtCols.MIMETYPE,     ct.mimetype, 
-		             TVCtCols.ICON,         ct.editor.pixbuf,
-		             TVCtCols.EDITOR,       ct.editor.name, 
-		             TVCtCols.CONTENT_TYPE, ct, 
-		             -1);
-	}
-	
+  /**
+   * Append content type to treeview
+   * 
+   * @param ct
+   */
+  void append_ct (ContentType ct)
+  {
+    Gtk.TreeIter iter;
+    ls_apps.append (out iter);
+    ls_apps.set (iter, 
+                 TVCtCols.MIMETYPE,     ct.mimetype, 
+                 TVCtCols.ICON,         ct.editor.pixbuf,
+                 TVCtCols.EDITOR,       ct.editor.name, 
+                 TVCtCols.CONTENT_TYPE, ct, 
+                 -1);
+  }
+  
   /**
    * Downloads the currently selected file and launches the corresponding
    * editor.
@@ -626,7 +626,7 @@ public class Roxenlauncher.MainWindow : Gtk.Window
     if (lf != null)
       lf.download ();
   }
-	
+  
   /**
    * Returns the currently selected file in the files tree view
    *
@@ -640,9 +640,9 @@ public class Roxenlauncher.MainWindow : Gtk.Window
     Gtk.TreeIter iter;
     Gtk.TreeModel model;
 
-		_model = null;
-		_iter = { 0, null, null, null };
-		
+    _model = null;
+    _iter = { 0, null, null, null };
+    
     bool has_sel = sel.get_selected (out model, out iter);
 
     if (!has_sel) return null;
@@ -658,7 +658,7 @@ public class Roxenlauncher.MainWindow : Gtk.Window
     return lf;
   }
 
-	
+  
   /**
    * Returns the currently selected content type if any.
    *
@@ -675,8 +675,8 @@ public class Roxenlauncher.MainWindow : Gtk.Window
     Gtk.TreeIter iter;
     Gtk.TreeModel model;
 
-		_model = null;
-		_iter = { 0, null, null, null };
+    _model = null;
+    _iter = { 0, null, null, null };
 
     bool has_sel = sel.get_selected (out model, out iter);
 
@@ -703,7 +703,7 @@ public class Roxenlauncher.MainWindow : Gtk.Window
   {
     bool state = istate == 2 ? cb_notify.active : (bool) istate;
     cb_notify.set_active (state);
-		
+    
     set_enable_notifications (state);
   }
 
@@ -732,93 +732,93 @@ public class Roxenlauncher.MainWindow : Gtk.Window
     // In roxenlauncher.vala
     set_enable_logging (state);
 
-		btn_clear_log.sensitive = state; 
-		fcb_logfile.sensitive = state;
-		logview.sensitive = state;
+    btn_clear_log.sensitive = state; 
+    fcb_logfile.sensitive = state;
+    logview.sensitive = state;
   }
 
-	/**
-	 * Show the dialog for adding a new content type
-	 * 
-	 * @param ct
-	 */
-	public ContentType? ct_new (string? ct)
-	{
-		if (ContentType.get_by_ct (ct) != null)
-			return null;
+  /**
+   * Show the dialog for adding a new content type
+   * 
+   * @param ct
+   */
+  public ContentType? ct_new (string? ct)
+  {
+    if (ContentType.get_by_ct (ct) != null)
+      return null;
 
-		var cf = new ContentTypeForm (_("Add content type"));
+    var cf = new ContentTypeForm (_("Add content type"));
 
-		if (cf.run (null, ct) == Gtk.ResponseType.OK) {
-			string nct = cf.content_type;
-			Editor ed = cf.editor;
-			Editor ex;
+    if (cf.run (null, ct) == Gtk.ResponseType.OK) {
+      string nct = cf.content_type;
+      Editor ed = cf.editor;
+      Editor ex;
 
-			if ((ex = Editor.get_by_name (ed.name)) != null)
-			  ed = ex;
-			else
-				Editor.add_editor (ed);
+      if ((ex = Editor.get_by_name (ed.name)) != null)
+        ed = ex;
+      else
+        Editor.add_editor (ed);
 
-			ContentType cto = new ContentType (nct, ed);
+      ContentType cto = new ContentType (nct, ed);
 
-			if (ContentType.add_content_type (cto)) {
-				if (Main.do_debug) {
-					message ("Content type added: %s (%s, %s, %s)",
-							     nct, ed.name, ed.command, ed.icon);
-				}
+      if (ContentType.add_content_type (cto)) {
+        if (Main.do_debug) {
+          message ("Content type added: %s (%s, %s, %s)",
+                   nct, ed.name, ed.command, ed.icon);
+        }
 
-				append_ct (cto);
-			}
-			
-			cf = null;
-			return cto;
-		}
+        append_ct (cto);
+      }
+      
+      cf = null;
+      return cto;
+    }
 
-		cf = null;
-		return null;
-	}
+    cf = null;
+    return null;
+  }
 
-	/**
-	 * Show the dialog for editing a content type
-	 * 
-	 * @param ct
-	 */
-	public void ct_edit ()
-	{
-		var cf = new ContentTypeForm (_("Edit content type"));
+  /**
+   * Show the dialog for editing a content type
+   * 
+   * @param ct
+   */
+  public void ct_edit ()
+  {
+    var cf = new ContentTypeForm (_("Edit content type"));
 
-		Gtk.TreeModel model;
-		Gtk.TreeIter iter;
-		ContentType ct = get_selected_ct (out model, out iter);
-		
-		if (ct != null && cf.run(ct) == Gtk.ResponseType.OK) {
-			if (cf.content_type != ct.mimetype &&
-			    (ContentType.get_by_ct (cf.content_type) != null)) 
-			{
-				if (Main.do_debug) 
-					message ("Content type %s already exist", cf.content_type);
+    Gtk.TreeModel model;
+    Gtk.TreeIter iter;
+    ContentType ct = get_selected_ct (out model, out iter);
+    
+    if (ct != null && cf.run(ct) == Gtk.ResponseType.OK) {
+      if (cf.content_type != ct.mimetype &&
+          (ContentType.get_by_ct (cf.content_type) != null)) 
+      {
+        if (Main.do_debug) 
+          message ("Content type %s already exist", cf.content_type);
 
-				return;
-			}
+        return;
+      }
 
-			ct.mimetype = cf.content_type;
+      ct.mimetype = cf.content_type;
 
-			if (Editor.get_by_name (cf.editor.name) == null) {
-				var ed = new Editor (cf.editor.name, cf.editor.command, cf.editor.icon);
-				Editor.add_editor (ed);
-				ct.editor = ed;
-			}
-			else
-				ct.editor = cf.editor;
+      if (Editor.get_by_name (cf.editor.name) == null) {
+        var ed = new Editor (cf.editor.name, cf.editor.command, cf.editor.icon);
+        Editor.add_editor (ed);
+        ct.editor = ed;
+      }
+      else
+        ct.editor = cf.editor;
 
-			ls_apps.set (iter, 
-			             TVCtCols.MIMETYPE, cf.content_type,
-			             TVCtCols.ICON,     ct.editor.pixbuf,
-			             TVCtCols.EDITOR,   ct.editor.name);
+      ls_apps.set (iter, 
+                   TVCtCols.MIMETYPE, cf.content_type,
+                   TVCtCols.ICON,     ct.editor.pixbuf,
+                   TVCtCols.EDITOR,   ct.editor.name);
 
-			conf.set_strv ("content-types", ContentType.to_array ());
-		}
-	}
+      conf.set_strv ("content-types", ContentType.to_array ());
+    }
+  }
 
   /**
    * Set the file status in the treeview
@@ -835,9 +835,9 @@ public class Roxenlauncher.MainWindow : Gtk.Window
 
         if (f.last_upload.to_unixtime () > 
             (new Poppa.DateTime ().to_unixtime ())) 
-				{
+        {
           ls_files.set (iter, 2, f.last_upload.format (DATE_FORMAT));
-				}
+        }
 
         return true;
       }
@@ -884,15 +884,15 @@ public class Roxenlauncher.MainWindow : Gtk.Window
       switch (type)
       {
         case LauncherFile.NotifyType.UP:
-					icon = Gtk.Stock.GO_UP;
+          icon = Gtk.Stock.GO_UP;
           break;
 
         case LauncherFile.NotifyType.DOWN:
-					icon = Gtk.Stock.GO_DOWN;
+          icon = Gtk.Stock.GO_DOWN;
           break;
 
         case LauncherFile.NotifyType.ERROR:
-					icon = Gtk.Stock.DIALOG_ERROR;
+          icon = Gtk.Stock.DIALOG_ERROR;
           break;
 
         default:
@@ -1001,29 +1001,29 @@ public class Roxenlauncher.MainWindow : Gtk.Window
     statusbar.push (0, text);
   }
 
-	public void load_logfile ()
-	{
-		if (get_enable_logging ()) {
-			logview.buffer.text = "";
-			update_logview (logger.get_content ());
-		}
-	}
+  public void load_logfile ()
+  {
+    if (get_enable_logging ()) {
+      logview.buffer.text = "";
+      update_logview (logger.get_content ());
+    }
+  }
 
-	public void update_logview (string text)
-	{
-		if (get_enable_logging ()) {
-			Gtk.TextBuffer buf = logview.buffer;
-			Gtk.TextMark mark;
-			Gtk.TextIter iter;
+  public void update_logview (string text)
+  {
+    if (get_enable_logging ()) {
+      Gtk.TextBuffer buf = logview.buffer;
+      Gtk.TextMark mark;
+      Gtk.TextIter iter;
 
-			buf.get_end_iter (out iter);
-			buf.insert (iter, text, -1);
-			buf.get_end_iter (out iter);
-			mark = buf.get_insert ();
-			buf.place_cursor (iter);
-			logview.scroll_to_mark (mark, 0.0, true, 0.0, 1.0);
-		}
-	}
+      buf.get_end_iter (out iter);
+      buf.insert (iter, text, -1);
+      buf.get_end_iter (out iter);
+      mark = buf.get_insert ();
+      buf.place_cursor (iter);
+      logview.scroll_to_mark (mark, 0.0, true, 0.0, 1.0);
+    }
+  }
 }
 
 class Roxenlauncher.About : GLib.Object

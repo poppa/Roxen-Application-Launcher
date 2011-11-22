@@ -1,4 +1,4 @@
-/* -*- Mode: Vala; indent-tabs-mode: t; c-basic-offset: 2; tab-width: 2 -*- */
+/* -*- Mode: Vala; indent-tabs-mode: s; c-basic-offset: 2; tab-width: 2 -*- */
 /* content-type-form.vala
  * 
  * Copyright (C) Pontus Östlund 2009-2011 <pontus@poppa.se>
@@ -24,171 +24,171 @@ using Gtk;
 
 class Roxenlauncher.ContentTypeForm : GLib.Object
 {
-	Builder          builder;
-	Dialog           dialog;
-	Entry            tf_content_type;
-	Button           btn_app_chooser;
-	Button           btn_ok;
-	Button           btn_cancel;
-	AppChooserButton btn_app_chooser2;
+  Builder          builder;
+  Dialog           dialog;
+  Entry            tf_content_type;
+  Button           btn_app_chooser;
+  Button           btn_ok;
+  Button           btn_cancel;
+  AppChooserButton btn_app_chooser2;
 
-	public Editor? editor { get; private set; default = null; }
+  public Editor? editor { get; private set; default = null; }
 
-	enum PreviousAction {
-		NONE,
-		LOAD,
-		NEW
-	}
+  enum PreviousAction {
+    NONE,
+    LOAD,
+    NEW
+  }
 
-	PreviousAction prevaction = PreviousAction.NONE;
-	
-	string? _content_type;
-	public string? content_type { 
-		get { 
-			return _content_type; 
-		}
-		private set { 
-			_content_type = value;
-			tf_content_type.text = value; 
-		}
-	}
+  PreviousAction prevaction = PreviousAction.NONE;
+  
+  string? _content_type;
+  public string? content_type { 
+    get { 
+      return _content_type; 
+    }
+    private set { 
+      _content_type = value;
+      tf_content_type.text = value; 
+    }
+  }
 
-	public ContentTypeForm (string title)
-	{
-		builder = new Builder ();
+  public ContentTypeForm (string title)
+  {
+    builder = new Builder ();
 
-		try {
-			builder.set_translation_domain (Config.GETTEXT_PACKAGE);
-			builder.add_from_file (get_ui_path ("content-type.ui"));
-		}
-		catch (GLib.Error e) {
-			error (_("Error: %s\n").printf(e.message)); 
-		}
+    try {
+      builder.set_translation_domain (Config.GETTEXT_PACKAGE);
+      builder.add_from_file (get_ui_path ("content-type.ui"));
+    }
+    catch (GLib.Error e) {
+      error (_("Error: %s\n").printf(e.message)); 
+    }
 
-		prevaction = PreviousAction.LOAD;
+    prevaction = PreviousAction.LOAD;
 
-		dialog           = g ("dialog")           as Dialog;
-		tf_content_type  = g ("tf_content_type")  as Entry;
-		btn_app_chooser  = g ("btn_app_chooser")  as Button;
-		btn_ok           = g ("btn_ok")           as Button;
-		btn_cancel       = g ("btn_cancel")       as Button;
-		btn_app_chooser2 = g ("btn_app_chooser2") as AppChooserButton;
+    dialog           = g ("dialog")           as Dialog;
+    tf_content_type  = g ("tf_content_type")  as Entry;
+    btn_app_chooser  = g ("btn_app_chooser")  as Button;
+    btn_ok           = g ("btn_ok")           as Button;
+    btn_cancel       = g ("btn_cancel")       as Button;
+    btn_app_chooser2 = g ("btn_app_chooser2") as AppChooserButton;
 
-		btn_ok.sensitive = false;
-		tf_content_type.sensitive = true;
+    btn_ok.sensitive = false;
+    tf_content_type.sensitive = true;
 
     tf_content_type.changed.connect (on_tf_changed);
-		
-		btn_app_chooser.clicked.connect (() => {
-			AppInfo app = app_chooser (tf_content_type.text);
+    
+    btn_app_chooser.clicked.connect (() => {
+      AppInfo app = app_chooser (tf_content_type.text);
 
-			if (Main.do_debug) message ("AppInfo: %s", app.get_name());
+      if (Main.do_debug) message ("AppInfo: %s", app.get_name());
 
-			if (app != null) {
-				editor = new Editor (app.get_name (), app.get_commandline (),
-				                     app.get_icon ().to_string ());
+      if (app != null) {
+        editor = new Editor (app.get_name (), app.get_commandline (),
+                             app.get_icon ().to_string ());
 
-				try {
-					prevaction = PreviousAction.NEW;
-					var ico = Icon.new_for_string (editor.icon);
-					btn_app_chooser2.append_custom_item (editor.name, editor.name, ico);
-					btn_app_chooser2.set_active_custom_item (editor.name);
-				}
-				catch (Error e) {
-					Logger.message (_("Failed adding application to button: %s")
-					                .printf(e.message));
-				}
-			}
-		});
+        try {
+          prevaction = PreviousAction.NEW;
+          var ico = Icon.new_for_string (editor.icon);
+          btn_app_chooser2.append_custom_item (editor.name, editor.name, ico);
+          btn_app_chooser2.set_active_custom_item (editor.name);
+        }
+        catch (Error e) {
+          Logger.message (_("Failed adding application to button: %s")
+                          .printf(e.message));
+        }
+      }
+    });
 
-		foreach (Editor ed in Editor.editors) {
-			try {
-				btn_app_chooser2.append_custom_item (ed.name, ed.name, 
-				                                     Icon.new_for_string (ed.icon));
-			}
-			catch (GLib.Error e) {
-				Logger.warning (_("Error adding application to button: %s")
-				                .printf (e.message));
-			}
-		}
+    foreach (Editor ed in Editor.editors) {
+      try {
+        btn_app_chooser2.append_custom_item (ed.name, ed.name, 
+                                             Icon.new_for_string (ed.icon));
+      }
+      catch (GLib.Error e) {
+        Logger.warning (_("Error adding application to button: %s")
+                        .printf (e.message));
+      }
+    }
 
-		btn_app_chooser2.show_dialog_item = true;
+    btn_app_chooser2.show_dialog_item = true;
 
-		btn_app_chooser2.changed.connect (() => {
-			if (!(prevaction == PreviousAction.LOAD ||
-			      prevaction == PreviousAction.NEW))
-			{
-				string name = get_app_btn_value ();
-				editor = Editor.get_by_name (name);
-			}
-			
-			on_tf_changed (null);
-			prevaction = PreviousAction.NONE;
-		});
-	}
+    btn_app_chooser2.changed.connect (() => {
+      if (!(prevaction == PreviousAction.LOAD ||
+            prevaction == PreviousAction.NEW))
+      {
+        string name = get_app_btn_value ();
+        editor = Editor.get_by_name (name);
+      }
+      
+      on_tf_changed (null);
+      prevaction = PreviousAction.NONE;
+    });
+  }
 
-	public int run (ContentType? ct=null, string? cts=null)
-	{
-		if (ct == null && cts == null) {
+  public int run (ContentType? ct=null, string? cts=null)
+  {
+    if (ct == null && cts == null) {
 
-		}
-		else if (ct == null) {
-			content_type = cts;
-		}
-		else {
-			btn_app_chooser2.set_active_custom_item (ct.editor.name);
-			tf_content_type.text = ct.mimetype;
-			editor = ct.editor;
-		}
+    }
+    else if (ct == null) {
+      content_type = cts;
+    }
+    else {
+      btn_app_chooser2.set_active_custom_item (ct.editor.name);
+      tf_content_type.text = ct.mimetype;
+      editor = ct.editor;
+    }
 
-		prevaction = PreviousAction.NONE;
-		
-		btn_ok.sensitive = false;
+    prevaction = PreviousAction.NONE;
+    
+    btn_ok.sensitive = false;
 
-		int resp = dialog.run();
+    int resp = dialog.run();
 
-		if (resp == Gtk.ResponseType.OK)
-			_content_type = tf_content_type.text;
-		
-		dialog.destroy ();
-		return resp;
-	}
+    if (resp == Gtk.ResponseType.OK)
+      _content_type = tf_content_type.text;
+    
+    dialog.destroy ();
+    return resp;
+  }
 
-	AppInfo? app_chooser (string content_type)
-	{
-		AppInfo app = null;
+  AppInfo? app_chooser (string content_type)
+  {
+    AppInfo app = null;
 
-		Gtk.AppChooserDialog ac = 
-			new Gtk.AppChooserDialog.for_content_type (Main.window, 
-			                                           Gtk.DialogFlags.MODAL, 
-				                                         content_type);
+    Gtk.AppChooserDialog ac = 
+      new Gtk.AppChooserDialog.for_content_type (Main.window, 
+                                                 Gtk.DialogFlags.MODAL, 
+                                                 content_type);
 
-		if (ac.run () == Gtk.ResponseType.OK)
-			app = ac.get_app_info ();
+    if (ac.run () == Gtk.ResponseType.OK)
+      app = ac.get_app_info ();
 
-		ac.destroy ();
+    ac.destroy ();
 
-		return app;
-	}
+    return app;
+  }
 
-	GLib.Object g (string p)
-	{
-		return builder.get_object (p);
-	}
+  GLib.Object g (string p)
+  {
+    return builder.get_object (p);
+  }
 
-	string? get_app_btn_value ()
-	{
-		Gtk.TreeIter iter;
+  string? get_app_btn_value ()
+  {
+    Gtk.TreeIter iter;
 
-		if (btn_app_chooser2.get_active_iter (out iter)) {
-			string v;
-			btn_app_chooser2.model.get (iter, 1, out v, -1);
-			return v;
-		}
+    if (btn_app_chooser2.get_active_iter (out iter)) {
+      string v;
+      btn_app_chooser2.model.get (iter, 1, out v, -1);
+      return v;
+    }
 
-		return null;
-	}
-	
+    return null;
+  }
+  
   void on_tf_changed (Gtk.Editable? src)
   {
     int ok = 0;
@@ -196,8 +196,8 @@ class Roxenlauncher.ContentTypeForm : GLib.Object
     if (tf_content_type.text.contains ("/"))
       ok++;
 
-		if (get_app_btn_value () != null)
-			ok++;
+    if (get_app_btn_value () != null)
+      ok++;
 
     btn_ok.sensitive = ok == 2;
   }

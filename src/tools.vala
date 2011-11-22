@@ -1,4 +1,4 @@
-/* -*- Mode: Vala; indent-tabs-mode: t; c-basic-offset: 2; tab-width: 2 -*- */
+/* -*- Mode: Vala; indent-tabs-mode: s; c-basic-offset: 2; tab-width: 2 -*- */
 /* tools.vala
  * 
  * Copyright (C) Pontus Östlund 2009-2011 <pontus@poppa.se>
@@ -30,7 +30,7 @@ class Roxenlauncher.Alert : Object
       Gtk.ButtonsType.YES_NO,
       message, ""
     );
-
+    
     Gtk.ResponseType resp = (Gtk.ResponseType) md.run ();
     md.destroy ();
     return resp == Gtk.ResponseType.YES;
@@ -39,76 +39,76 @@ class Roxenlauncher.Alert : Object
 
 class Roxenlauncher.Logger : Object
 {
-	public static void warning (string s)
-	{
-		if (enable_logging)
-			logger.log ("[warning] %s".printf (s));
-	}
+  public static void warning (string s)
+  {
+    if (enable_logging)
+      logger.log ("[warning] %s".printf (s));
+  }
+  
+  public static void message (string s) 
+  {
+    if (enable_logging)
+      logger.log ("[message] %s".printf (s));
+  }
 
-	public static void message (string s) 
-	{
-		if (enable_logging)
-			logger.log ("[message] %s".printf (s));
-	}
+  public string path { get; private set; }
+  public File file { get; private set; }
 
-	public string path { get; private set; }
-	public File file { get; private set; }
+  public Logger (string path)
+  {
+    this.path = path;
+    file = File.new_for_path (path);
 
-	public Logger (string path)
-	{
-		this.path = path;
-		file = File.new_for_path (path);
+    if (!FileUtils.test (path, FileTest.EXISTS)) {
+      log (_("Creating log file %s").printf (path));
+    }
+  }
 
-		if (!FileUtils.test (path, FileTest.EXISTS)) {
-			log (_("Creating log file %s").printf (path));
-		}
-	}
+  public string get_content ()
+  {
+    try {
+      uint8[] content;
+      if (file.load_contents (null, out content))
+        return (string) content;
+    }
+    catch (GLib.Error e) {
+      warning (_("Unable to load log file contents"));
+    }
 
-	public string get_content ()
-	{
-		try {
-			uint8[] content;
-			if (file.load_contents (null, out content))
-				return (string) content;
-		}
-		catch (GLib.Error e) {
-			warning (_("Unable to load log file contents"));
-		}
+    return "";
+  }
 
-		return "";
-	}
+  public void log (string message)
+  {
+    try {
+      Poppa.DateTime now = Poppa.DateTime.now ();
+      string mess = now.to_string () + ": " + message + "\n";
 
-	public void log (string message)
-	{
-		try {
-			Poppa.DateTime now = Poppa.DateTime.now ();
-			string mess = now.to_string () + ": " + message + "\n";
+      {
+        var fs = file.append_to (FileCreateFlags.PRIVATE);
+        var ds = new DataOutputStream (fs);
+        ds.put_string (mess);
+      } // streams will close
 
-			{
-				var fs = file.append_to (FileCreateFlags.PRIVATE);
-				var ds = new DataOutputStream (fs);
-			  ds.put_string (mess);
-			} // streams will close
+      Idle.add (() => {
+        Main.window.update_logview (mess);
+        return false;
+      });
+    }
+    catch (GLib.Error e) {
+      GLib.warning (_("Unable to write to logfile %s: %s"), path, e.message); 
+    }
+  }
 
-			Idle.add (() => {
-				Main.window.update_logview (mess);
-				return false;
-			});
-		}
-		catch (GLib.Error e) {
-			GLib.warning (_("Unable to write to logfile %s: %s"), path, e.message); 
-		}
-	}
-
-	public void truncate ()
-	{
-		try {
-			var fs = file.open_readwrite (null);
-			fs.truncate_fn (0, null);
-			fs.close ();
-		}
-		catch (GLib.Error e) {
-			GLib.warning (_("Unable to truncate log file %s: %s"), path, e.message);
-		}
-	}
+  public void truncate ()
+  {
+    try {
+      var fs = file.open_readwrite (null);
+      fs.truncate_fn (0, null);
+      fs.close ();
+    }
+    catch (GLib.Error e) {
+      GLib.warning (_("Unable to truncate log file %s: %s"), path, e.message);
+    }
+  }
 }

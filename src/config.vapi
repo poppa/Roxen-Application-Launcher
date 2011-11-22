@@ -1,4 +1,4 @@
-/* -*- Mode: Vala; indent-tabs-mode: t; c-basic-offset: 2; tab-width: 2 -*- */
+/* -*- Mode: Vala; indent-tabs-mode: s; c-basic-offset: 2; tab-width: 2 -*- */
 /*
  * config.vapi
  * Copyright (C) Pontus Östlund 2009 <pontus@poppa.se>

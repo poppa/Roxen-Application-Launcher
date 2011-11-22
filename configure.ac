@@ -1,5 +1,5 @@
 AC_INIT([roxenlauncher], 
-        [1.2],
+        [1.2.1],
         [pontus@poppa.se], 
         [roxenlauncher],
         [https://github.com/poppa/Roxen-Application-Launcher])

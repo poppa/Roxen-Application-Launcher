@@ -22,6 +22,6 @@ roxenlauncherpixmaps_DATA =                                              \
 EXTRA_DIST =                                                             \
 	$(roxenlauncherextra_DATA)                                             \
 	$(roxenlauncherpixmaps_DATA)                                           \
-	$(gsettings_SCHEMA)                                                    \
+	$(gsettings_SCHEMAS)                                                   \
 	$(NULL)
 

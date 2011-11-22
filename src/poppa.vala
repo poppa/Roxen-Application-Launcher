@@ -1,4 +1,4 @@
-/* -*- Mode: Vala; indent-tabs-mode: t; c-basic-offset: 2; tab-width: 2 -*- */
+/* -*- Mode: Vala; indent-tabs-mode: s; c-basic-offset: 2; tab-width: 2 -*- */
 /* poppa.vala
  *
  * This file contains various utility methods and classes
@@ -19,7 +19,7 @@
  * along with this library.  If not, see <http://www.gnu.org/licenses/>.
  *
  * Author:
- * 	Pontus Östlund <pontus@poppa.se>
+ *  Pontus Östlund <pontus@poppa.se>
  */
 
 namespace Poppa
@@ -91,7 +91,7 @@ namespace Poppa
    *  Throws an error if //to// is larger than  //s// length
    */
   public string[] array_slice (string[] s, uint from, uint to=0) 
-  	throws Poppa.Error
+    throws Poppa.Error
   {
     if (to == 0) to = s.length - from;
     if (from+to > s.length) {

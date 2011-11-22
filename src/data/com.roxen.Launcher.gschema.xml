@@ -21,13 +21,13 @@
     <key name="editors" type='as'>
       <summary>Added editors</summary>
       <description>List of added editors</description>
-      <default>['Gedit\\1gedit %U\\1gedit']</default>
+      <default>[]</default>
     </key>
 
     <key name="content-types" type='as'>
       <summary>Added content types</summary>
       <description>List of registered content types.</description>
-      <default>['text/plain\\1gedit']</default>
+      <default>[]</default>
     </key>
 
     <key name='minimize-to-tray' type='b'>

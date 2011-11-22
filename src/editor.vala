@@ -1,4 +1,4 @@
-/* -*- Mode: Vala; indent-tabs-mode: t; c-basic-offset: 2; tab-width: 2 -*- */
+/* -*- Mode: Vala; indent-tabs-mode: s; c-basic-offset: 2; tab-width: 2 -*- */
 /* editor.vala
  *
  * Copyright (C) Pontus Östlund 2009-2011 <pontus@poppa.se>
@@ -21,163 +21,163 @@
 
 public class Roxenlauncher.Editor : Object
 {
-	/**
-	 * List of available editors
-	 */
-	public static unowned List<Editor> editors { 
-		get; 
-		private set; 
-		default = new List<Editor>(); 
-	}
+  /**
+   * List of available editors
+   */
+  public static unowned List<Editor> editors { 
+    get; 
+    private set; 
+    default = new List<Editor>(); 
+  }
 
-	/**
-	 * Append editor to list of editors
-	 * 
-	 * @param editor
-	 */
-	public static void add_editor (Editor editor)
-	{
-		foreach (Editor e in editors) {
-			if (e.name.down () == editor.name.down ()) {
-				if (Main.do_debug)
-					message ("Editor %s already in list", editor.name);
-				return;
-			}
-		}
+  /**
+   * Append editor to list of editors
+   * 
+   * @param editor
+   */
+  public static void add_editor (Editor editor)
+  {
+    foreach (Editor e in editors) {
+      if (e.name.down () == editor.name.down ()) {
+        if (Main.do_debug)
+          message ("Editor %s already in list", editor.name);
+        return;
+      }
+    }
 
-		editors.append (editor);
-		conf.set_strv ("editors", Editor.to_array ());
-	}
+    editors.append (editor);
+    conf.set_strv ("editors", Editor.to_array ());
+  }
 
-	/**
-	 * Remove editor from list
-	 * 
-	 * @param editor
-	 */
-	public static void remove_editor (Editor editor)
-	{
-		editors.remove (editor);
-		conf.set_strv ("editors", Editor.to_array ());
-	}
+  /**
+   * Remove editor from list
+   * 
+   * @param editor
+   */
+  public static void remove_editor (Editor editor)
+  {
+    editors.remove (editor);
+    conf.set_strv ("editors", Editor.to_array ());
+  }
 
-	/**
-	 * Tries to find Editor by name
-	 * 
-	 * @param name
-	 * @return
-	 *  null if no Editor is found
-	 */
-	public static Editor? get_by_name (string name)
-	{
-		foreach (Editor e in editors)
-			if (e.name.down() == name.down())
-				return e;
+  /**
+   * Tries to find Editor by name
+   * 
+   * @param name
+   * @return
+   *  null if no Editor is found
+   */
+  public static Editor? get_by_name (string name)
+  {
+    foreach (Editor e in editors)
+      if (e.name.down() == name.down())
+        return e;
 
-		return null;
-	}
+    return null;
+  }
 
-	/**
-	 * Turns the list of editors into an array of string representations of the
-	 * objects. Suitable for storing in GSettings
-	 */
-	public static string[] to_array ()
-	{
-		string[] s = new string[] {};
+  /**
+   * Turns the list of editors into an array of string representations of the
+   * objects. Suitable for storing in GSettings
+   */
+  public static string[] to_array ()
+  {
+    string[] s = new string[] {};
 
-		foreach (Editor e in editors)
-			s += e.to_string ();
+    foreach (Editor e in editors)
+      s += e.to_string ();
 
-		return s;
-	}
+    return s;
+  }
 
-	/**
-	 * Name of the editor
-	 */
-	public string name { get; private set; }
-	/**
-	 * Editor command line command
-	 */
-	public string command { get; private set; }
-	/**
-	 * Editor icon name (if any)
-	 */
-	public string? icon { get; private set; }
+  /**
+   * Name of the editor
+   */
+  public string name { get; private set; }
+  /**
+   * Editor command line command
+   */
+  public string command { get; private set; }
+  /**
+   * Editor icon name (if any)
+   */
+  public string? icon { get; private set; }
 
-	private Gdk.Pixbuf _pixbuf = null;
+  private Gdk.Pixbuf _pixbuf = null;
 
-	public Gdk.Pixbuf? pixbuf {
-		get {
-			if (_pixbuf != null)
-				return _pixbuf;
+  public Gdk.Pixbuf? pixbuf {
+    get {
+      if (_pixbuf != null)
+        return _pixbuf;
 
-			try { _pixbuf = Gtk.IconTheme.get_default ().load_icon (icon, 16, 0); }
-			catch (GLib.Error e) {
-				message ("Failed getting icon for %s: %s", name, e.message);
-			}
+      try { _pixbuf = Gtk.IconTheme.get_default ().load_icon (icon, 16, 0); }
+      catch (GLib.Error e) {
+        message ("Failed getting icon for %s: %s", name, e.message);
+      }
 
-			return _pixbuf;
-		}
-		private set {}
-	}
-	
-	/**
-	 * Creates a new Editor object
-	 *
-	 * @param name
-	 * @param command
-	 * @param icon
-	 *  This should be the icon name as given by GLib.AppInfo (GIO)
-	 */
-	public Editor (string name, string command, string? icon=null)
-	{
-		this.name = name;
-		this.command = command;
-		this.icon = icon;
-	}
+      return _pixbuf;
+    }
+    private set {}
+  }
+  
+  /**
+   * Creates a new Editor object
+   *
+   * @param name
+   * @param command
+   * @param icon
+   *  This should be the icon name as given by GLib.AppInfo (GIO)
+   */
+  public Editor (string name, string command, string? icon=null)
+  {
+    this.name = name;
+    this.command = command;
+    this.icon = icon;
+  }
 
-	/**
-	 * Creates a new instance from a string created by calling editor.to_string()
-	 * on a previous Editor object
-	 *
-	 * @param s
-	 * @throws
-	 *  A RoxenError if the string is badly formatted
-	 */
-	public Editor.from_string (string s)
-		throws RoxenError
-	{
-		string[] pts = s.split ("\\1");
+  /**
+   * Creates a new instance from a string created by calling editor.to_string()
+   * on a previous Editor object
+   *
+   * @param s
+   * @throws
+   *  A RoxenError if the string is badly formatted
+   */
+  public Editor.from_string (string s)
+    throws RoxenError
+  {
+    string[] pts = s.split ("\\1");
 
-		if (pts.length != 3) {
-			throw new RoxenError.ANY ("Bad argument given to constructor! The "      +
-			                          "string should have been generated from "      +
-			                          "\"editor.to_string()\"!");
-		}
+    if (pts.length != 3) {
+      throw new RoxenError.ANY ("Bad argument given to constructor! The "      +
+                                "string should have been generated from "      +
+                                "\"editor.to_string()\"!");
+    }
 
-		if (pts[0].length == 0) {
-			throw new RoxenError.ANY ("Bad argument given to constructor! The  "     +
-			                          "first field in the string is of zero length");
-		}
+    if (pts[0].length == 0) {
+      throw new RoxenError.ANY ("Bad argument given to constructor! The  "     +
+                                "first field in the string is of zero length");
+    }
 
-		if (pts[1].length == 0) {
-			throw new RoxenError.ANY ("Bad argument given to constructor! The "      +
-			                          "second field in the string is of zero length");
-		}
+    if (pts[1].length == 0) {
+      throw new RoxenError.ANY ("Bad argument given to constructor! The "      +
+                                "second field in the string is of zero length");
+    }
 
-		name = pts[0];
-		command = pts[1];
+    name = pts[0];
+    command = pts[1];
 
-		if (pts[2].length > 0)
-			icon = pts[2];
-	}
-	
-	/**
-	 * Returns the object fields as a string.
-	 * Each field is \\1 separated
-	 */
-	public string to_string ()
-	{
-		string ico = icon == null ? "" : icon;
-		return name + "\\1" + command + "\\1" + ico;
-	}
+    if (pts[2].length > 0)
+      icon = pts[2];
+  }
+  
+  /**
+   * Returns the object fields as a string.
+   * Each field is \\1 separated
+   */
+  public string to_string ()
+  {
+    string ico = icon == null ? "" : icon;
+    return name + "\\1" + command + "\\1" + ico;
+  }
 }

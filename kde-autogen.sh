@@ -36,13 +36,18 @@ case `echo -n x` in
 esac
 
 # some terminal codes ...
-boldface="`tput bold 2>/dev/null`"
-normal="`tput sgr0 2>/dev/null`"
+if tty < /dev/null 1>/dev/null 2>&1; then
+    boldface="`tput bold 2>/dev/null`"
+    normal="`tput sgr0 2>/dev/null`"
+else
+    boldface=
+    normal=
+fi
 printbold() {
     echo $ECHO_N "$boldface" $ECHO_C
     echo "$@"
     echo $ECHO_N "$normal" $ECHO_C
-}
+}    
 printerr() {
     echo "$@" >&2
 }
@@ -296,6 +301,10 @@ for configure_ac in $configure_files; do
 	want_maintainer_mode=true
     fi
 
+    if grep "^YELP_HELP_INIT" $configure_ac >/dev/null; then
+        require_m4macro yelp.m4
+    fi
+
     # check to make sure gnome-common macros can be found ...
     if grep "^GNOME_COMMON_INIT" $configure_ac >/dev/null ||
        grep "^GNOME_DEBUG_CHECK" $configure_ac >/dev/null ||
@@ -385,7 +394,7 @@ if [ "$#" = 0 -a "x$NOCONFIGURE" = "x" ]; then
 fi
 
 topdir=`pwd`
-for configure_ac in $configure_files; do
+for configure_ac in $configure_files; do 
     dirname=`dirname $configure_ac`
     basename=`basename $configure_ac`
     if [ -f $dirname/NO-AUTO-GEN ]; then
@@ -504,4 +513,4 @@ if test x$NOCONFIGURE = x; then
 	&& echo Now type \`make\' to compile $PKG_NAME || exit 1
 else
     echo Skipping configure process.
-fi 
+fi
