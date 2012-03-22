@@ -1,20 +1,20 @@
 /* -*- Mode: Vala; indent-tabs-mode: s; c-basic-offset: 2; tab-width: 2 -*- */
 /* application.vala
- * 
+ *
  * Copyright (C) Pontus Östlund 2009-2011 <pontus@poppa.se>
  *
  * This file is part of Roxen Application Launcher (RAL)
- * 
+ *
  * RAL is free software: you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
  * Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * RAL is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License along
  * with RAL.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -32,14 +32,14 @@ public class Roxenlauncher.ContentType : Object
 
   /**
    * Add content type to list of content types
-   * 
+   *
    * @param ct
    */
   public static bool add_content_type (ContentType ct)
   {
     foreach (ContentType c in content_types) {
       if (ct.mimetype == c.mimetype) {
-        if (Main.do_debug) 
+        if (App.do_debug)
           message ("Content type %s already in list", c.mimetype);
 
         return false;
@@ -54,7 +54,7 @@ public class Roxenlauncher.ContentType : Object
 
   /**
    * Remove content type from list of content types
-   * 
+   *
    * @param ct
    */
   public static void remove_content_type (ContentType ct)
@@ -65,7 +65,7 @@ public class Roxenlauncher.ContentType : Object
 
   /**
    * Tries to find the ContentType object with content type ct
-   * 
+   *
    * @param ct
    * @return
    *  null if no object is found
@@ -84,7 +84,7 @@ public class Roxenlauncher.ContentType : Object
 
   /**
    * Tries to find the editor for content type //ct//
-   * 
+   *
    * @param ct
    * @return
    *  null if no editor if found
@@ -98,9 +98,9 @@ public class Roxenlauncher.ContentType : Object
 
     return null;
   }
-  
+
   /**
-   * Turns the list of content types into an array of string representations of 
+   * Turns the list of content types into an array of string representations of
    * the objects. Suitable for storing in GSettings.
    */
   public static string[] to_array ()
@@ -137,7 +137,7 @@ public class Roxenlauncher.ContentType : Object
 
   /**
    * Creates a new ContentType object
-   * 
+   *
    * @param mimetype
    * @param editor_name
    * @param editor
@@ -150,14 +150,14 @@ public class Roxenlauncher.ContentType : Object
   }
 
   /**
-   * Creates a new instance from a string created by calling 
+   * Creates a new instance from a string created by calling
    * content_type.to_string() on a previous ContentType object
    *
    * @param s
    * @throws
    *  A RoxenError if the string is badly formatted
    */
-  public ContentType.from_string (string s) 
+  public ContentType.from_string (string s)
     throws RoxenError
   {
     string[] pts = s.split ("\\1");
@@ -174,7 +174,7 @@ public class Roxenlauncher.ContentType : Object
     }
 
     if (pts[1].length == 0) {
-      throw new RoxenError.ANY ("Bad argument given to constructor. Editor " +
+      throw new RoxenError.ANY ("Bad argument given to constructor. Editor "   +
                                 "name part is empty!");
     }
 
@@ -182,7 +182,7 @@ public class Roxenlauncher.ContentType : Object
     editor   = Editor.get_by_name (pts[1]);
 
     if (editor != null)
-      editor_name = editor.name;    
+      editor_name = editor.name;
   }
 
   /**

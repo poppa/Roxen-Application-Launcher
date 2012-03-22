@@ -1,20 +1,20 @@
 /* -*- Mode: Vala; indent-tabs-mode: s; c-basic-offset: 2; tab-width: 2 -*- */
 /* roxenlauncher.vala
- * 
+ *
  * Copyright (C) Pontus Östlund 2009-2011 <pontus@poppa.se>
  *
  * This file is part of Roxen Application Launcher (RAL)
- * 
+ *
  * RAL is free software: you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
  * Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * RAL is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License along
  * with RAL.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -24,85 +24,132 @@ using Poppa;
 namespace Roxenlauncher
 {
   public errordomain RoxenError
-  { 
-    BAD_LAUNCHERFILE,
+  {
+    /**
+     * Generic error
+     */
     ANY
   }
 
+  /* Various globals */
+ 
+  // Main window, doh!
+  MainWindow window;
+
+  // Logfile object
   Logger logger;
+
+  // The GSettings object
   Settings conf;
 
-  const string NAME               = _("Roxen Application Launcher");
+  /* Various constants */
+
+  const string NAME               = _("Roxen™ Application Launcher");
   // The domain of the GSettings schema
   const string DOMAIN             = "com.roxen.Launcher";
   const string DIR                = ".config/roxenlauncher";
   const string FILES_DIR          = "files";
-  const string CONFIG             = DIR + "/ral.conf";
+  const string LOGFILE            = DIR + "/ral.log";
   const string MAIN_UI_FILENAME   = "mainwindow.ui";
   const string EDITOR_UI_FILENAME = "application-form.ui";
   const string DATE_FORMAT        = "%Y-%m-%d %H:%M";
-  const string USER_AGENT         = "Roxen Application Launcher for Linux (" + 
+  const string LOG_DATE_FORMAT    = "%Y-%m-%d %H:%M:%S";
+  const string USER_AGENT         = "Roxen™ Application Launcher for Linux (" +
                                     Config.VERSION + ")";
+  const int    WIN_WIDTH          = 650;
+  const int    WIN_HEIGHT         = 400;
 
-  public struct WindowProperties
+  /**
+   * Struct for storing the main window's width, height, x and y
+   */
+  struct WindowProps
   {
-    public int width;
-    public int height;
-    public int x;
-    public int y;
+    int width;
+    int height;
+    int x;
+    int y;
   }
-  
+
+  /**
+   * Write a message to the logfile
+   *
+   * @param m
+   */
+  void log_message (string m)
+  {
+    if (App.do_logging)
+      logger.log ("[message] %s".printf (m));
+  }
+
+  /**
+   * Write a warning to the logfile
+   *
+   * @param m
+   */
+  void log_warning (string m)
+  {
+    if (App.do_logging)
+      logger.log ("[warning] %s".printf (m));
+  }
+
+  /**
+   * Initialize application variables
+   */
   public void init ()
   {
     conf = new Settings (DOMAIN);
-
-    Main.winprops.width  = conf.get_int ("window-width");
-    Main.winprops.height = conf.get_int ("window-height");
-    Main.winprops.x      = conf.get_int ("window-left");
-    Main.winprops.y      = conf.get_int ("window-top");
+    App.winprops = { conf.get_int ("window-width"),
+                     conf.get_int ("window-height"),
+                     conf.get_int ("window-left"),
+                     conf.get_int ("window-top") };
 
     foreach (string s in Environment.list_variables ()) {
       if ("KDE" in s) {
-        Main.is_kde = true; // defined in main.vala
+        if (App.do_debug)
+          message ("Running in KDE (I guess)");
+          
+        App.is_kde = true;
         break;
       }
     }
 
-    string lf = get_log_file ();
-    if (!Poppa.file_exists (lf)) {
+    if (!Poppa.file_exists (App.logfile)) {
       try {
-        var fs = File.new_for_path (lf)
+        var fs = File.new_for_path (App.logfile)
                      .create_readwrite (FileCreateFlags.PRIVATE);
         fs.close ();
       }
       catch (GLib.Error e) {
-        warning ("Unable to create log file");
+        warning ("Unable to create log file \"%s\"", App.logfile);
       }
     }
 
-    if (get_enable_logging ()) 
-      logger = new Logger (lf);
+    if (App.do_logging)
+      logger = new Logger (App.logfile);
 
     setup_editors_and_cts ();
-
     LauncherFile.load_existing ();
+
     Notify.init (NAME);
   }
 
+  /**
+   * Set up the exitors and content types
+   */
   void setup_editors_and_cts ()
   {
     string[] eds = conf.get_strv ("editors");
     string[] cts = conf.get_strv ("content-types");
 
-    // NOTE: Editors must be loaded before ContentTypes 
-    
+    // NOTE: Editors must be loaded before ContentTypes
+
     foreach (string s in eds) {
       try {
         Editor.add_editor (new Editor.from_string (s));
       }
       catch (RoxenError e) {
-        Logger.warning ("Faild loading editor from string \"%s\": %s"
-                        .printf(s, e.message));          
+        log_warning ("Faild loading editor from string \"%s\": %s"
+                     .printf (s, e.message));
       }
     }
 
@@ -111,12 +158,17 @@ namespace Roxenlauncher
         ContentType.add_content_type (new ContentType.from_string (s));
       }
       catch (RoxenError e) {
-        Logger.warning ("Faild loading content type from string \"%s\": %s"
-                        .printf(s, e.message));          
+        log_warning ("Faild loading content type from string \"%s\": %s"
+                     .printf (s, e.message));
       }
     }
   }
 
+  /**
+   * Returns the full path to some predefined and named directories
+   *
+   * @param which
+   */
   public string? getdir (string which)
   {
     switch (which.up ())
@@ -129,16 +181,16 @@ namespace Roxenlauncher
 
         if (!FileUtils.test (f, FileTest.EXISTS))
           if (DirUtils.create (f, 0750) == -1)
-            error (_("Unable to create local directory")); 
+            error (_("Unable to create local directory \"%s\""), f);
 
         return f;
 
       case "FILES":
         var f = Path.build_filename (getdir ("$home"), DIR, FILES_DIR);
 
-        if (!FileUtils.test (f, FileTest.EXISTS)) 
+        if (!FileUtils.test (f, FileTest.EXISTS))
           if (DirUtils.create_with_parents (f, 0750) == -1)
-            error (_("Unable to create local directory"));
+            error (_("Unable to create local directory \"%s\""), f);
 
         return f;
     }
@@ -146,14 +198,22 @@ namespace Roxenlauncher
     return null;
   }
 
+  /**
+   * Constructs the full path to ui element //local_path// depending on if
+   * the app is run from the source directory during development, or if it's
+   * run installed.
+   *
+   * @param local_path
+   */
   public string? get_ui_path (string local_path)
   {
-    // The first second indices are for local usage during development
-    // "data" if executed in the "src" dir.
-    // "src/data" if executed in the project dir
-    // "..." executed elsewhere.
-    string[] paths = { "data", "src/data", 
+    // The first and second indices are for local usage during development:
+    //   * "data" if executed in the "src" dir.
+    //   * "src/data" if executed in the project dir
+    //   * "..." executed elsewhere.
+    string[] paths = { "data", "../data",
                        Config.DATADIR+"/roxenlauncher/data" };
+
     string full_path = null;
 
     foreach (string path in paths) {
@@ -165,84 +225,172 @@ namespace Roxenlauncher
     return null;
   }
 
+  /**
+   * Returns a DatTime object with earliest possible date set
+   */
+  public DateTime get_null_date ()
+  {
+    return new DateTime (new TimeZone.local (), 1, 1, 1, 0, 0, 0);
+  }
+
+  /**
+   * Save new window properties
+   *
+   * @param width
+   * @param height
+   * @param x
+   * @param y
+   */
   public void save_window_properties (int width, int height, int x, int y)
   {
-    Main.winprops.width = width;
-    Main.winprops.height = height;
-    Main.winprops.x = x;
-    Main.winprops.y = y;
+    App.winprops.width = width;
+    App.winprops.height = height;
+    App.winprops.x = x;
+    App.winprops.y = y;
 
-    conf.set_int ("window-width",  Main.winprops.width);
-    conf.set_int ("window-height", Main.winprops.height);
-    conf.set_int ("window-left",   Main.winprops.x);
-    conf.set_int ("window-top",    Main.winprops.y);
-  }
-  
-  public bool get_enable_notifications ()
-  {
-    return conf.get_boolean ("notifications");
+    conf.set_int ("window-width",  width);
+    conf.set_int ("window-height", height);
+    conf.set_int ("window-left",   x);
+    conf.set_int ("window-top",    y);
   }
 
-  public void set_enable_notifications (bool val)
+  /**
+   * Static class for runtime variables
+   */
+  class App
   {
-    conf.set_boolean ("notifications", val);
-  }
+    // Are we running in KDE? Checked in init()
+    public static bool is_kde = false;
 
-  public bool get_minimize_to_tray ()
-  {
-    return conf.get_boolean ("minimize-to-tray");
-  }
+    // Should we write debug messages? Set on command line
+    public static bool do_debug = false;
 
-  public void set_minimize_to_tray (bool val)
-  {
-    conf.set_boolean ("minimize-to-tray", val);
-  }
+    /* GSettings */
 
-  private bool enable_logging = false;
-  private bool init_enable_logging = false;
-  public bool get_enable_logging ()
-  {
-    if (init_enable_logging)
-      return enable_logging;
-
-    init_enable_logging = true;
-    enable_logging = conf.get_boolean ("enable-logging");
-    return enable_logging;
-  }
-
-  public void set_enable_logging (bool val)
-  {
-    conf.set_boolean ("enable-logging", val);
-
-    enable_logging = val;
-    
-    if (val) {
-      logger = new Logger (get_log_file ());
-      Main.window.load_logfile ();
+    // Should we show notifications or not?
+    public static bool do_notifications {
+      get { return conf.get_boolean ("notifications"); }
+      set { conf.set_boolean ("notifications", value); }
     }
-    else {
-      if (logger != null)
-        logger = null;
+
+    // Should we minimize to tray
+    public static bool do_minimize {
+      get { return conf.get_boolean ("minimize-to-tray"); }
+      set { conf.set_boolean ("minimize-to-tray", value); }
+    }
+
+    // Should we do logging?
+    // Like a cache since this can be looked up quite often
+    public static bool do_logging {
+      get {
+        return conf.get_boolean ("enable-logging");
+      }
+      set {
+        conf.set_boolean ("enable-logging", value);
+
+        if (value)
+          logger = new Logger (logfile);
+      }
+    }
+
+    // The logfile path
+    static string _logfile = null;
+    public static string logfile {
+      get {
+        if (_logfile == null) {
+          _logfile = conf.get_string ("logfile");
+          if (_logfile.length == 0)
+            _logfile = Path.build_filename (getdir ("$home"), LOGFILE);
+        }
+
+        return _logfile;
+      }
+      set {
+        conf.set_string ("logfile", value);
+        _logfile = value;
+      }
+    }
+
+    // Windows width and height, x and y position
+    public static WindowProps winprops = { 0, 0, 0, 0 };
+  }
+
+  /**
+   * Simple logger class
+   */
+  class Logger : Object
+  {
+    public string path { get; private set; }
+    public File file { get; private set; }
+
+    public Logger (string path)
+    {
+      this.path = path;
+      file = File.new_for_path (path);
+
+      if (!FileUtils.test (path, FileTest.EXISTS)) {
+        log (_("Creating log file %s").printf (path));
+      }
+    }
+
+    public string get_content ()
+    {
+      try {
+        uint8[] content;
+        if (file.load_contents (null, out content))
+          return (string) content;
+      }
+      catch (GLib.Error e) {
+        warning (_("Unable to load log file contents"));
+      }
+
+      return "";
+    }
+
+    public void log (string message)
+    {
+      try {
+        DateTime now = new DateTime.now_local ();
+        string mess = now.format (LOG_DATE_FORMAT) + ": " + message + "\n";
+
+        { var fs = file.append_to (FileCreateFlags.PRIVATE);
+          var ds = new DataOutputStream (fs);
+          ds.put_string (mess);
+        } // streams will close
+      }
+      catch (GLib.Error e) {
+        GLib.warning (_("Unable to write to logfile %s: %s"), path, e.message);
+      }
+    }
+
+    public void truncate ()
+    {
+      try {
+        var fs = file.open_readwrite (null);
+        fs.truncate_fn (0, null);
+        fs.close ();
+      }
+      catch (GLib.Error e) {
+        GLib.warning (_("Unable to truncate log file %s: %s"), path, e.message);
+      }
     }
   }
 
-  public string get_log_file ()
+  class Alert : Object
   {
-    string logfile = conf.get_string ("logfile");
+    public static bool confirm (Gtk.Window parent, string message)
+    {
+      var md = new Gtk.MessageDialog (
+        parent,
+        Gtk.DialogFlags.DESTROY_WITH_PARENT,
+        Gtk.MessageType.QUESTION,
+        Gtk.ButtonsType.YES_NO,
+        message, ""
+      );
 
-    if (logfile.length == 0)
-      logfile = Path.build_filename (getdir ("APPLICATION"), "ral.log");
-
-    return logfile;
-  }
-
-  public void set_log_file (string path)
-  {
-    conf.set_string ("logfile", path);
-
-    if (get_enable_logging ()) {
-      logger = new Logger (path);
-      Main.window.load_logfile ();
+      Gtk.ResponseType resp = (Gtk.ResponseType) md.run ();
+      md.destroy ();
+      return resp == Gtk.ResponseType.YES;
     }
   }
 }

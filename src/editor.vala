@@ -24,22 +24,22 @@ public class Roxenlauncher.Editor : Object
   /**
    * List of available editors
    */
-  public static unowned List<Editor> editors { 
-    get; 
-    private set; 
-    default = new List<Editor>(); 
+  public static unowned List<Editor> editors {
+    get;
+    private set;
+    default = new List<Editor>();
   }
 
   /**
    * Append editor to list of editors
-   * 
+   *
    * @param editor
    */
   public static void add_editor (Editor editor)
   {
     foreach (Editor e in editors) {
       if (e.name.down () == editor.name.down ()) {
-        if (Main.do_debug)
+        if (App.do_debug)
           message ("Editor %s already in list", editor.name);
         return;
       }
@@ -51,7 +51,7 @@ public class Roxenlauncher.Editor : Object
 
   /**
    * Remove editor from list
-   * 
+   *
    * @param editor
    */
   public static void remove_editor (Editor editor)
@@ -62,7 +62,7 @@ public class Roxenlauncher.Editor : Object
 
   /**
    * Tries to find Editor by name
-   * 
+   *
    * @param name
    * @return
    *  null if no Editor is found
@@ -70,7 +70,7 @@ public class Roxenlauncher.Editor : Object
   public static Editor? get_by_name (string name)
   {
     foreach (Editor e in editors)
-      if (e.name.down() == name.down())
+      if (e.name.down () == name.down ())
         return e;
 
     return null;
@@ -105,6 +105,9 @@ public class Roxenlauncher.Editor : Object
 
   private Gdk.Pixbuf _pixbuf = null;
 
+  /**
+   * Getter for getting the icon as a Pixbuf
+   */
   public Gdk.Pixbuf? pixbuf {
     get {
       if (_pixbuf != null)
@@ -119,7 +122,7 @@ public class Roxenlauncher.Editor : Object
     }
     private set {}
   }
-  
+
   /**
    * Creates a new Editor object
    *
@@ -170,7 +173,7 @@ public class Roxenlauncher.Editor : Object
     if (pts[2].length > 0)
       icon = pts[2];
   }
-  
+
   /**
    * Returns the object fields as a string.
    * Each field is \\1 separated

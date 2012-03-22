@@ -71,11 +71,14 @@ public class Roxenlauncher.Tray : GLib.Object
   {
     popmenu = new Menu ();
       
-    var visible     = Main.window.visible;
+    var visible     = window.visible;
     var item_quit   = new ImageMenuItem.from_stock (Stock.QUIT, null);
     var img_hide    = new Image.from_stock (Stock.CLOSE, IconSize.MENU);
     var img_show    = new Image.from_stock (Stock.OPEN, IconSize.MENU);
     var item_toggle = new ImageMenuItem.with_label (visible ? t_hide : t_show);
+
+    if (!App.do_minimize)
+      item_toggle.sensitive = false;
 
     item_toggle.set_image (visible ? img_hide : img_show);
 
@@ -114,30 +117,31 @@ public class Roxenlauncher.Tray : GLib.Object
 
     var finish_all = new ImageMenuItem.from_stock (Stock.CLEAR, null);
     finish_all.activate.connect (() => {
-      Idle.add(() => { Main.window.finish_all_files (); return false; });
+      Idle.add(() => { window.finish_all_files (); return false; });
       popmenu.popdown ();
     });
 
     if (lfs.length () == 0)
       finish_all.sensitive = false;
 
-    item_quit.activate.connect (Main.window.on_window_destroy);
+    item_quit.activate.connect (window.on_window_destroy);
     item_toggle.activate.connect (set_window_visibility);
 
     var t_notify    = _("Enable notifications");
     var t_tray      = _("Minimize to tray");
     var item_notify = new CheckMenuItem.with_label (t_notify);
 
-    item_notify.set_active (get_enable_notifications ());
+    item_notify.set_active (App.do_notifications);
     item_notify.activate.connect (() => {
-      Main.window.toggle_notifications ((int) (!get_enable_notifications ()));
+      window.toggle_notifications ((int) (!App.do_notifications));
     });
 
     var item_minimize = new CheckMenuItem.with_label (t_tray);
 
-    item_minimize.set_active (get_minimize_to_tray ());
+    item_minimize.set_active (App.do_minimize);
     item_minimize.activate.connect (() => {
-      Main.window.toggle_minimize_to_tray ((int) (!get_minimize_to_tray ()));
+      window.toggle_minimize_to_tray ((int) (!App.do_minimize));
+      item_minimize.sensitive = App.do_minimize;
     });
 
     popmenu.add (new SeparatorMenuItem ());
@@ -153,8 +157,8 @@ public class Roxenlauncher.Tray : GLib.Object
 
   void set_window_visibility ()
   {
-    var v = Main.window.visible;
-    Main.window.visible = !v;
+    var v = window.visible;
+    window.visible = !v;
     icon.tooltip_text = v ? m_show : m_hide;
   }
 }

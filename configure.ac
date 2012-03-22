@@ -1,43 +1,54 @@
-AC_INIT([roxenlauncher], 
-        [1.2.1],
+AC_PREREQ([2.64])
+AC_INIT(roxenlauncher, 
+        2.0,
         [pontus@poppa.se], 
         [roxenlauncher],
         [https://github.com/poppa/Roxen-Application-Launcher])
-AC_CONFIG_SRCDIR([configure.ac])
 AC_CONFIG_HEADERS([config.h])
+AC_CONFIG_SRCDIR([configure.ac])
 AC_CONFIG_MACRO_DIR([m4])
+
 AM_INIT_AUTOMAKE([1.1 -Wall])
 AM_MAINTAINER_MODE([enable])
 
 AC_PROG_CC
-AM_PROG_CC_C_O
-#AC_DISABLE_STATIC
-#AC_PROG_LIBTOOL
+AM_PROG_CC_STDC
+AC_HEADER_STDC
+AM_PROG_VALAC([0.14])
 
-AC_PATH_PROG(VALAC, valac, valac)
-AC_SUBST(VALAC)
+# Initialize libtool
+LT_PREREQ([2.2])
+LT_INIT
 
-AH_TEMPLATE([GETTEXT_PACKAGE], [Package name for gettext])
-GETTEXT_PACKAGE='roxenlauncher'
-AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE, "$GETTEXT_PACKAGE")
+CFLAGS="${CFLAGS} -Wall"
+CFLAGS+=" -DGSEAL_ENABLE"
+
+GNOME_MAINTAINER_MODE_DEFINES
+GNOME_COMPILE_WARNINGS([maximum])
+
+#*******************************************************************************
+#
+# Internationalization
+#
+#*******************************************************************************
+AM_GNU_GETTEXT([external])
+AM_GNU_GETTEXT_VERSION([0.17])
+
+GETTEXT_PACKAGE=roxenlauncher
 AC_SUBST(GETTEXT_PACKAGE)
-AM_GLIB_GNU_GETTEXT
-IT_PROG_INTLTOOL([0.35.0])
+AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE,"$GETTEXT_PACKAGE", [GETTEXT package name])
+IT_PROG_INTLTOOL([0.40.0])
 
-AH_TEMPLATE([RL_DEBUG], [Debug flags])
-AC_DEFINE(RL_DEBUG, "$RL_DEBUG")
-AC_SUBST(RL_DEBUG)
-
-if test "x$localedir" == x
-then
-	localedir='${datadir}/locale'
-	AC_SUBST(localedir)
-	AM_GLIB_DEFINE_LOCALEDIR([localedir])
-fi
 
 AC_SUBST(CFLAGS)
 AC_SUBST(CPPFLAGS)
 AC_SUBST(LDFLAGS)
+
+#*******************************************************************************
+#
+# Check libraries
+#
+#*******************************************************************************
 
 GLIB_REQUIRED=2.30.0
 GTK_REQUIRED=3.0
@@ -45,18 +56,6 @@ SOUP24_REQUIRED=2.36.0
 GIO_REQUIRED=2.3.0
 GDK_PIXBUF_REQUIRED=2.24.0
 LIBNOTIFY_REQUIRED=0.7.4
-
-if test "x$RL_WITH_VALA" != x
-then
-	VALA_REQUIRED=0.14.0
-	echo ""
-	echo "		### MAINTAINER MODE ###"
-	echo ""
-	if test "`$VALAC --version`" \< "Vala $VALA_REQUIRED"
-	then
-		AC_MSG_ERROR([Vala >= $VALA_REQUIRED is required.])
-	fi
-fi
 
 PKG_CHECK_MODULES(ROXENLAUNCHER,         \
 	glib-2.0       >= $GLIB_REQUIRED       \
@@ -75,8 +74,9 @@ GLIB_GSETTINGS
 AC_CONFIG_FILES([
 	Makefile
 	src/Makefile
-	src/data/Makefile
+	data/Makefile
 	po/Makefile
 ])
 
 AC_OUTPUT
+

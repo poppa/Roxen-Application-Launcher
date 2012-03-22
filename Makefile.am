@@ -5,19 +5,20 @@ ACLOCAL_AMFLAGS = -I m4 --install
 #Build in these directories:
 
 SUBDIRS =                                                          \
+	data                                                             \
 	src                                                              \
 	po                                                               \
 	$(NULL)
 
 roxenlauncherdocdir = ${prefix}/doc/roxenlauncher
 roxenlauncherdoc_DATA =                                            \
-	ChangeLog                                                        \
-	README                                                           \
-	COPYING                                                          \
-	AUTHORS                                                          \
-	INSTALL                                                          \
-	NEWS                                                             \
 	$(NULL)
+#	ChangeLog                                                        \
+#	README                                                           \
+#	COPYING                                                          \
+#	AUTHORS                                                          \
+#	INSTALL                                                          \
+#	$(NULL)
 
 EXTRA_DIST =                                                       \
 	$(roxenlauncherdoc_DATA)                                         \

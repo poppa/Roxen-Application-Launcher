@@ -1,9 +1,13 @@
 [encoding: UTF-8]
 # List of source files which contain translatable strings.
-src/mainwindow.vala
+src/content-type.vala
+src/content-type-form.vala
+src/editor.vala
 src/launcherfile.vala
-src/application.vala
-src/application-form.vala
+src/main.vala
+src/mainwindow.vala
+src/poppa.vala
+src/roxenlauncher.vala
 src/tray.vala
-src/gui/mainwindow.ui
-src/gui/application-form.ui
+data/mainwindow.ui
+data/content-type.ui

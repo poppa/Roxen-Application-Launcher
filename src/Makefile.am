@@ -1,5 +1,3 @@
-SUBDIRS = data
-
 NULL = 
 
 AM_CPPFLAGS =                                                            \
@@ -14,16 +12,15 @@ BUILT_SOURCES = roxenlauncher_vala.stamp
 bin_PROGRAMS = roxenlauncher
 
 roxenlauncher_SOURCES =                                                  \
-	main.vala                                                              \
+	content-type.vala                                                      \
+	editor.vala                                                            \
 	launcherfile.vala                                                      \
-	tools.vala                                                             \
-	tray.vala                                                              \
+	main.vala                                                              \
 	mainwindow.vala                                                        \
 	poppa.vala                                                             \
-	editor.vala                                                            \
-	content-type.vala                                                      \
 	roxelauncher.vala                                                      \
 	content-type-form.vala                                                 \
+	tray.vala                                                              \
 	$(NULL)
 
 roxenlauncher_VALAFLAGS =                                                \
@@ -41,7 +38,6 @@ roxenlauncher_VALAFLAGS =                                                \
 roxenlauncher_LDADD =                                                    \
 	$(ROXENLAUNCHER_LIBS)                                                  \
 	$(NULL)
-
 
 DISTCLEANFILES =                                                         \
 	$(NULL)

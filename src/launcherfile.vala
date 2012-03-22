@@ -1,42 +1,36 @@
 /* -*- Mode: Vala; indent-tabs-mode: s; c-basic-offset: 2; tab-width: 2 -*- */
 /* launcherfile.vala
- * 
- * Copyright (C) Pontus Östlund 2009-2011 <pontus@poppa.se>
  *
- * This file is part of Roxen Application Launcher (RAL)
- * 
- * RAL is free software: you can redistribute it and/or modify it
- * under the terms of the GNU General Public License as published by the
- * Free Software Foundation, either version 3 of the License, or
+ * This file contains various utility methods and classes
+ *
+ * Copyright (C) 2010 Pontus Östlund
+ *
+ * This library is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
- * RAL is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License along
- * with RAL.  If not, see <http://www.gnu.org/licenses/>.
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * Author:
+ *  Pontus Östlund <pontus@poppa.se>
  */
 
-using Poppa;
-
 public class Roxenlauncher.LauncherFile : Object
-{   
+{
   /**
-   * Array of LauncherFiles
+   * Storage for all current files
    */
-  private static GLib.List<LauncherFile> launcherfiles =
-    new GLib.List<LauncherFile> ();
-
-  /**
-   * Returns the list of launcher files
-   * 
-   * @return
-   */
-  public static unowned GLib.List<LauncherFile> get_files ()
-  {
-    return launcherfiles;
+  public static unowned List<LauncherFile> files {
+    get;
+    private set;
+    default = new List<LauncherFile> ();
   }
 
   /**
@@ -47,65 +41,26 @@ public class Roxenlauncher.LauncherFile : Object
   {
     GLib.List<LauncherFile> nlist = new GLib.List<LauncherFile> ();
 
-    for (uint i = launcherfiles.length (); i > 0;)
-      nlist.append (launcherfiles.nth_data (--i));
+    for (uint i = files.length (); i > 0;)
+      nlist.append (files.nth_data (--i));
 
-    return nlist; 
-  }
-  
-  /**
-   * Adds a launcher file object to the list of files
-   *
-   * @param lf
-   */
-  public static void add_file (LauncherFile lf)
-  {
-    foreach (LauncherFile l in launcherfiles)
-      if (l.get_uri () == lf.get_uri ()) {
-#if DEBUG
-        message ("Launcher file exists. Skip adding!");
-#endif
-        return;
-      }
-
-    launcherfiles.prepend (lf);
-  }
-  
-  /**
-   * Remove file from the list of launcher files
-   *
-   * @param file
-   */
-  public static void remove_file (LauncherFile file)
-  {
-    launcherfiles.remove (file);
+    return nlist;
   }
 
   /**
    * Find the launcher file with URI uri
    *
    * @param uri
-   * @return 
+   * @return
    *  The found LauncherFile object or null
    */
   public static LauncherFile? find_by_uri (string uri)
   {
-    foreach (LauncherFile lf in launcherfiles)
+    foreach (LauncherFile lf in files)
       if (lf.get_uri () == uri)
         return lf;
 
     return null;
-  }
-  
-  /**
-   * Clear the list of launcher files
-   */
-  public static void clear_files ()
-  {
-    foreach (LauncherFile l in launcherfiles)
-      launcherfiles.remove (l);
-
-    launcherfiles = new GLib.List<LauncherFile> ();
   }
 
   /**
@@ -113,67 +68,208 @@ public class Roxenlauncher.LauncherFile : Object
    */
   public static void load_existing ()
   {
-    if (launcherfiles == null)
-      launcherfiles = new GLib.List<LauncherFile> ();
-
     var p = getdir ("files");
 
     try {
-      var f = File.new_for_path (p).enumerate_children ("standard::name", 
+      var f = File.new_for_path (p).enumerate_children ("standard::name",
                                                         FileQueryInfoFlags.NONE,
                                                         null);
       FileInfo fi;
+
       while ((fi = f.next_file (null)) != null) {
-        var lf = new LauncherFile.from_existing (fi.get_name (), null);
-        launcherfiles.append (lf);
+        var lf = new LauncherFile.from_existing (fi.get_name ());
+        files.append (lf);
       }
     }
     catch (GLib.Error e) {
       warning ("Failed to load launcher files: %s", e.message);
     }
+
+    if (App.do_debug)
+      message ("Num files: %ld", files.length ());
   }
-  
+
   /**
-   * Handle incomming files
+   * Called from main when a new file is arriving
    *
    * @param data
-   *  The raw file contents of a launcher stub file
-   * @param file
-   *  
+   *  Contents of the downloaded .rxl2 file
+   *
    * @return
-   *  false if the file already exists, true otherwise 
+   *  True if the file is new, false if it already exists locally
    */
-  public static bool incomming (string data, out LauncherFile file) 
+  public static bool handle_file (string data, out LauncherFile lf)
     throws RoxenError
   {
-    string[] s = data.split ("\r\n");
-    
-    if (s.length < 6) 
-      throw new RoxenError.BAD_LAUNCHERFILE (_("Bad data in launcher file!"));
+    lf = null;
+    string[] lines = data.split ("\r\n");
 
-    try {
-      string ss = array_implode (array_slice (s, 0, 6), "\r\n");
+    if (lines.length < 7)
+      throw new RoxenError.ANY(_("Bad data in launcher file!"));
 
-      foreach (LauncherFile lf in launcherfiles) {
-        var raw = array_implode (array_slice (lf.rawdata.split ("\r\n"), 0, 6), 
-                                 "\r\n");
-        if (raw == ss) {
-          file = lf;
-          file.download ();
+    string part = string.joinv ("", lines[0:6]);
+
+    foreach (LauncherFile file in files) {
+      if (file.rawdata != null) {
+        string rawdata = string.joinv ("", file.rawdata.split ("\r\n")[0:6]);
+
+        // File exists locally
+        if (rawdata == part) {
+          if (App.do_debug) message ("File exists");
+          lf = file;
           return false;
         }
       }
-
-      file = new LauncherFile (data);
-
-      return true;
     }
-    catch (Poppa.Error e) {
-      throw new RoxenError.BAD_LAUNCHERFILE (_("Bad data in launcher file!"));
-    }
+
+    lf = new LauncherFile (data);
+
+    return true;
   }
 
-  enum Statuses {
+  /**
+   * Adds a launcher file object to the list of files
+   *
+   * @param lf
+   */
+  public static void add_file (LauncherFile lf)
+  {
+    foreach (LauncherFile l in files)
+      if (l.get_uri () == lf.get_uri ()) {
+        if (App.do_debug)
+          message ("Launcher file exists. Skip adding!");
+        return;
+      }
+
+    files.prepend (lf);
+  }
+
+  /**
+   * Clear the list of launcher files
+   */
+  public static void clear_files ()
+  {
+    foreach (LauncherFile l in files)
+      files.remove (l);
+
+    files = new GLib.List<LauncherFile> ();
+  }
+
+  /**
+   * Remove file from the list of launcher files
+   *
+   * @param file
+   */
+  public static void remove_file (LauncherFile file)
+  {
+    files.remove (file);
+  }
+
+  /**
+   * Raw file content
+   */
+  public string? rawdata { get; private set; default = null; }
+
+  /**
+   * HTTP schema used for this file
+   */
+  public string schema { get; private set; }
+
+  /**
+   * Host the file was downloaded from
+   */
+  public string host { get; private set; }
+
+  /**
+   * Port used for this file
+   */
+  public int port { get; private set; }
+
+  /**
+   * Authentication cookie
+   */
+  public string auth_cookie { get; private set; }
+
+  /**
+   * Content type of the file on the Roxen server
+   */
+  public string content_type { get; private set; }
+
+  /**
+   * Params cookie for the SiteBuilder
+   */
+  public string sb_params { get; private set; }
+
+  /**
+   * The directory name where the file exists on the local FS
+   */
+  public string? id { get; private set; default = null; }
+
+  /**
+   * File path on the Roxen server
+   */
+  public string path { get; private set; }
+
+  /**
+   * Path to the local directory
+   */
+  public string local_dir { get; private set; }
+
+  /**
+   * Path to the local file
+   */
+  public string local_file { get; private set; }
+
+  /**
+   * File status
+   */
+  public int status { get; private set; default = -1; }
+
+  /**
+   * List of bundled files (used by Roxen Editorial Portal)
+   */
+  public string[] bundle_paths { get; private set; }
+
+  /**
+   * Is the file being downloaded?
+   */
+  public bool is_downloading { get; private set; default = false; }
+
+  /**
+   * Is the file being uploaded?
+   */
+  public bool is_uploading { get; private set; default = false; }
+
+  /**
+   * When was the file last uploaded
+   */
+  public DateTime? last_upload { get; private set; default = null; }
+
+  /**
+   * When was the file last downloaded?
+   */
+  public DateTime? last_download { get; private set; default = null; }
+
+  /**
+   * When was the file last modified
+   */
+  public DateTime? last_modified  { get; private set; default = null; }
+
+  /**
+   * Content type object for the file. Contains the editor to use
+   * for the file
+   */
+  public ContentType application { get; private set; }
+
+  /**
+   * Monitors changes to the file and invokes file upload on changes.
+   */
+  private FileMonitor monitor;
+
+  /**
+   * File statuses
+   */
+  public enum Statuses {
     DUMMY_STATUS,
     NOT_DOWNLOADED,
     DOWNLOADED,
@@ -183,64 +279,93 @@ public class Roxenlauncher.LauncherFile : Object
     UPLOADING,
     NOT_CHANGED
   }
-  
+
+  /**
+   * Notification types
+   */
   public enum NotifyType {
     UP,
     DOWN,
     ERROR
   }
 
-  public string         rawdata        { get; private set; }
-  public string         schema         { get; private set; }
-  public string         host           { get; private set; }
-  public string         port           { get; private set; }
-  public string         auth_cookie    { get; private set; }
-  public string         content_type   { get; private set; }
-  public string         sb_params      { get; private set; }
-  public string         id             { get; private set; }
-  public string         path           { get; private set; }
-  public string         local_dir      { get; private set; }
-  public string         local_file     { get; private set; }
-  public int            status         { get; private set; default = -1; }
-  public string[]       bundle_paths   { get; private set; }
-  public bool           is_downloading { get; private set; default = false; }
-  public bool           is_uploading   { get; private set; default = false; }
-  public Poppa.DateTime last_upload    { get; private set; }
-  public Poppa.DateTime last_download  { get; private set; }
-  public Poppa.DateTime last_modified  { get; private set; }
-  public ContentType    application    { get; private set; }
-
   /**
-   * File monitor
-   */
-  private FileMonitor monitor;
-  
-  /**
-   * Creates a new launcher file from a downloaded stub file
+   * Constructor for a launcherfile that doesn't exist locally
    *
    * @param data
-   *  The contents of the stub file
+   *  The raw data of the .rxl2 file
    */
-  public LauncherFile (string data) throws RoxenError
+  public LauncherFile (string data)
   {
     rawdata = data;
-    init (null);
+    assert (rawdata.length > 0);
+    init ();
   }
 
   /**
-   * Creates a new launcher file from an existing stub file
+   * Constructor for a launcherfile that exists locally
    *
    * @param id
-   *  The directory name where the stub recides
+   *  The directory name of the file on the local FS
    * @param data
-   *  The contents of the stub file
    */
-  public LauncherFile.from_existing (string id, string? data) throws RoxenError
+  public LauncherFile.from_existing (string id, string? data=null)
   {
     this.id = id;
     rawdata = data == null ? load () : data;
-    init (id);
-  } 
+    // message ("Raw data: %s", rawdata);
+    assert (rawdata != null && rawdata.length > 0);
+    init ();
+  }
+
+  /**
+   * Unset the application
+   */
+  public void unset_application ()
+  {
+    application = null;
+  }
+
+  /**
+   * Returns the full remote URI of the file
+   *
+   * @return
+   */
+  public string get_uri (string? _path=null)
+  {
+    var s = schema + "://" + host;
+
+    if (schema == "https" && port != 443)
+      s += ":" + port.to_string ();
+    else if (schema == "http" && port != 80)
+      s += ":" + port.to_string ();
+
+    return s + (_path == null ? path : _path);
+  }
+
+  /**
+   * Returns the URI to the file in Sitebuilder
+   */
+  public string get_sb_uri ()
+  {
+    var s = schema + "://" + host;
+
+    if (schema == "https" && port != 443)
+      s += ":" + port.to_string ();
+    else if (schema == "http" && port != 80)
+      s += ":" + port.to_string ();
+
+    return s + ("/edit" + path);
+  }
+
+  /**
+   * Returns the cookie to send when downloading/uploading
+   */
+  public string get_cookie ()
+  {
+    return "RoxenACauth=" + auth_cookie + "; " +
+           "RoxenALparams=\"" + sb_params + "\"";
+  }
 
   /**
    * Returns the file status as a string
@@ -264,64 +389,14 @@ public class Roxenlauncher.LauncherFile : Object
 
     return s;
   }
-  
-  /**
-   * Returns the full remote URI of the file
-   *
-   * @return
-   */
-  public string get_uri (string? _path=null)
-  {
-    var s = schema + "://" + host;
-    
-    if (schema == "https" && port != "443")
-      s += ":" + port;
-    else if (schema == "http" && port != "80")
-      s += ":" + port;
 
-    s += _path == null ? path : _path;
-    return s;
-  }
-  
-  /**
-   * Returns the URI to the file in Sitebuilder
-   */
-  public string get_sb_uri ()
-  {
-    var s = schema + "://" + host;
-    if (schema == "https" && port != "443")
-      s += ":" + port;
-    else if (schema == "http" && port != "80")
-      s += ":" + port;
-      
-    s += "/edit" + path;
-    return s;
-  }
-
-  /**
-   * Returns the cookie to send when downloading/uploading
-   */
-  public string get_cookie ()
-  {
-    return "RoxenACauth=" + auth_cookie + "; " +
-           "RoxenALparams=\"" + sb_params + "\"";
-  }
-  
-  /**
-   * Unset the application
-   */
-  public void unset_application ()
-  {
-    application = null;
-  }
-  
   /**
    * Delete the file
    */
   public bool @delete ()
   {
     bool retval = true;
-    
+
     try {
       if (monitor != null)
         monitor.cancel ();
@@ -330,67 +405,89 @@ public class Roxenlauncher.LauncherFile : Object
                     .enumerate_children ("standard::name", 0, null);
       FileInfo fi;
       string fp;
+
       while ((fi = dir.next_file (null)) != null) {
         fp = Path.build_filename (local_dir, fi.get_name ());
         File.new_for_path (fp).delete (null);
       }
+
       File.new_for_path (local_dir).delete (null);
     }
     catch (GLib.Error e) {
       warning ("Failed to delete launcher file: %s!", e.message);
       retval = false;
     }
-    
+
     return retval;
   }
-  
+
   /**
-   * Launches the file in its associated editor. If no editor is selected
-   * yet the "Add editor" window will first be launched.
-   */ 
-  public void launch_editor ()
+   * Parse the rxl2 file, set up directories and stuff like that
+   */
+  void init ()
   {
+    string _id   = id;
+    string[] a   = rawdata.split ("\r\n");
 
-    message ("Launch editor for ct %s", content_type);
-    
-    if (application == null) {
-      var app = ContentType.get_by_ct (content_type);
+    // Default fields
+    schema       = a[0];
+    host         = a[1];
+    port         = int.parse (a[2]);
+    auth_cookie  = a[3];
+    path         = a[4];
+    content_type = a[5];
+    sb_params    = a[6];
 
-      if (app == null) {
-        
-        application = Main.window.ct_new (content_type);
+    if (a.length >= 9) {
+      if (long.parse (a[7]) > 0)
+        last_upload = new DateTime.from_unix_local ((time_t) long.parse(a[7]));
 
-        if (application == null)
-          return;
-      }
-      else
-        application = app;
+      status = int.parse (a[8]);
+
+      if (a.length > 9 && a[9].length > 0)
+        bundle_paths = a[9].split (":");
+    }
+    else {
+      status = Statuses.NOT_DOWNLOADED;
     }
 
-    if (!file_exists (local_file)) {
-      download ();
-      return;
+    if (_id == null)
+      randid ();
+
+    string fn  = File.new_for_path (path).get_basename ();
+    local_dir  = Path.build_filename (getdir ("files"), id);
+    local_file = Path.build_filename (getdir ("files"), id, fn);
+
+    if (!Poppa.file_exists (local_file)) {
+      save ();
+
+      Idle.add (() => {
+        window.add_launcher_file (this);
+        return false;
+      });
+    }
+    else {
+      var lm = Poppa.filemtime (local_file);
+
+      if (lm != null)
+        last_modified = lm;
     }
 
-    var cmd = application.editor.command;
+    if (App.do_debug)
+      message ("LauncherFile.init (%s): Done!", get_uri ());
+  }
 
-    try {
-      var l = new List<File> ();
-      l.append (File.new_for_path (local_file));
+  /**
+   * Set file status and update file in treeview
+   */
+  void win_set_status (int st)
+  {
+    status = st;
 
-      set_monitor ();
-
-      AppInfo ai = AppInfo.create_from_commandline (cmd, null, 
-                                                    AppInfoCreateFlags.NONE);
-      ai.launch (l, null);
-    }
-    catch (GLib.Error e) {
-      Main.window.show_notification (NotifyType.ERROR,
-                                     _("Error starting editor"),
-                                     _("Could not start editor %s: %s ")
-                                     .printf (application.editor.name, 
-                                              e.message));
-    }
+    Idle.add(() => {
+      window.set_file_status (this, status_as_string ());
+      return false;
+    });
   }
 
   /**
@@ -401,7 +498,7 @@ public class Roxenlauncher.LauncherFile : Object
     try {
       if (monitor != null)
         monitor.cancel ();
-        
+
       var f = File.new_for_path (local_file);
       monitor = f.monitor_file (FileMonitorFlags.NONE);
       monitor.changed.connect (on_file_changed);
@@ -410,7 +507,7 @@ public class Roxenlauncher.LauncherFile : Object
       warning ("Failed to set monitor for \"%s\"", local_file);
     }
   }
-  
+
   /**
    * Stop the file monitor
    */
@@ -422,95 +519,111 @@ public class Roxenlauncher.LauncherFile : Object
     monitor = null;
   }
 
-  Soup.Message get_http_message (string method, string uri)
-  {
-    Soup.Message mess;
-    weak Soup.Message http_mess;
-
-    mess = new Soup.Message (method, uri);
-    http_mess = mess;
-    
-    http_mess.request_headers.append ("Cookie", get_cookie ());
-    http_mess.request_headers.append ("Translate", "f");
-
-    return http_mess;
-  }
-  
   /**
-   * Download the file from the remote host
+   * Launch the editor asynchronously
    */
-  public void download (bool do_launch_editor=true)
+  public async void launch_editor_async ()
+  {
+    launch_editor ();
+    yield;
+  }
+
+  /**
+   * Launches the file in its associated editor. If no editor is selected
+   * yet the "Add editor" window will first be launched.
+   */
+  public void launch_editor ()
+  {
+    message ("Launch editor for ct %s", content_type);
+
+    if (application == null) {
+      var app = ContentType.get_by_ct (content_type);
+
+      if (app == null) {
+
+        application = window.ct_new (content_type);
+
+        if (application == null)
+          return;
+      }
+      else
+        application = app;
+    }
+
+    if (!Poppa.file_exists (local_file)) {
+      download ();
+      yield;
+      return;
+    }
+
+    var cmd = application.editor.command;
+
+    try {
+      var l = new List<File> ();
+      l.append (File.new_for_path (local_file));
+
+      set_monitor ();
+
+      AppInfo ai = AppInfo.create_from_commandline (cmd, null,
+                                                    AppInfoCreateFlags.NONE);
+      ai.launch (l, null);
+    }
+    catch (GLib.Error e) {
+      window.show_notification (NotifyType.ERROR,
+                                _("Error starting editor"),
+                                _("Could not start editor %s: %s ")
+                                .printf (application.editor.name,
+                                         e.message));
+    }
+
+    yield;
+  }
+
+  /**
+   * Download the file
+   */
+  public async void download ()
   {
     if (status == Statuses.DOWNLOADING || status == Statuses.UPLOADING) {
+      log_message ("Downloading or Uploading. Skipping donwload...");
       return;
     }
 
     stop_monitor ();
-    win_set_status (Statuses.DOWNLOADING);
 
-    Soup.Session sess = new Soup.SessionSync ();
+    log_message (_("Downloading file: %s").printf (get_uri ()));
 
-    if (Main.do_debug)
+    Soup.SessionSync sess = new Soup.SessionSync ();
+
+    if (App.do_debug)
       sess.add_feature = new Soup.Logger (Soup.LoggerLogLevel.HEADERS, -1);
 
-    Logger.message (_("Downloading file: %s").printf (get_uri()));
+    if (App.do_debug)
+      print ("> %s\n", get_uri ());
 
-    if (Main.do_debug)
-      print ("< %s\n", get_uri ());
+    sess.queue_message (get_http_message ("GET", get_uri ()), low_download);
 
-    sess.queue_message (get_http_message ("GET", get_uri()), on_download);
+    yield;
   }
-  
-  void on_download (Soup.Session sess, Soup.Message mess)
+
+  /**
+   * Fetch the file
+   */
+  void low_download (Soup.Session sess, Soup.Message mess)
   {
     if (mess.status_code == Soup.KnownStatusCode.OK) {
+      if (App.do_debug)
+        message ("Download ok\n");
+
       if (save_downloaded_file (mess.response_body.data)) {
-        if (bundle_paths != null) {
-          Soup.Session lsess = new Soup.SessionSync ();
-
-          foreach (string bp in bundle_paths) {
-            var lmess = get_http_message ("GET", get_uri(bp));
-            lsess.send_message (lmess);
-
-            if (lmess.status_code == Soup.KnownStatusCode.OK) {
-              string lp = bp;
-              if (lp.contains ("?"))
-                lp = lp.substring (0, lp.index_of ("?"));
-
-              string[] parts = lp.split ("/");
-              lp = local_dir + "/" + parts[parts.length-1];
-#if DEBUG
-              print ("Saving bundle: %s\n", lp);
-#endif
-              save_downloaded_file (lmess.response_body.data, lp);
-
-              lmess = null;
-            }
-            else {
-              warning ("Download of bundle file %s failed", bp);
-              Logger.message (_("Download of bundle file %s failed")
-                              .printf(bp));
-            }
-          }
-        }
-
         win_set_status (Statuses.DOWNLOADED);
 
-        Idle.add (() => {
-          Main.window.show_notification (NotifyType.DOWN,
-                                         _("Download OK"),
-                                         _("%s was downloaded OK from %s")
-                                         .printf(path, host));
-          launch_editor ();
-          return false;
-        });
-      }
-      else {
-        win_set_status (Statuses.NOT_DOWNLOADED);
-        Main.window.show_notification (
-          NotifyType.ERROR,
-          _("Download failed"),
-          _("Unable to write downloaded data to file!"));
+        window.show_notification (NotifyType.DOWN,
+                                  _("Download OK"),
+                                  _("%s was downloaded OK from %s")
+                                  .printf (path, host));
+
+        launch_editor_async.begin ();
       }
 
       save ();
@@ -518,18 +631,12 @@ public class Roxenlauncher.LauncherFile : Object
     else if (mess.status_code == Soup.KnownStatusCode.MOVED_PERMANENTLY ||
              mess.status_code == Soup.KnownStatusCode.MOVED_TEMPORARILY)
     {
-#if DEBUG
-      print ("* Redirection...follow!\n");
-#endif
-      Main.window.show_notification (NotifyType.ERROR,
-                                     _("Unhandled redirection"), 
-                                     _("%s was not downloaded OK from %s")
-                                     .printf (path, host));
+      message ("Follow redirect...");
       win_set_status (Statuses.NOT_DOWNLOADED);
     }
     else {
-      Logger.warning (_("Bad status (%ld) in download!")
-                      .printf (mess.status_code));
+      if (App.do_debug)
+        warning ("Bad status code in HTTP response");
 
       string s;
 
@@ -544,80 +651,15 @@ public class Roxenlauncher.LauncherFile : Object
           break;
       }
 
-      Logger.warning (s);
-
-      Main.window.show_notification (NotifyType.ERROR,_("Download failed"), s);
+      log_warning (s);
       win_set_status (Statuses.NOT_DOWNLOADED);
       save ();
     }
-
-    mess = null;
-    sess = null;
   }
 
   /**
-   * Upload the file to the remote server
+   * Save the downloaded file to disk
    */
-  public void upload ()
-  {
-    if (status == Statuses.DOWNLOADING || status == Statuses.UPLOADING) {
-      return;
-    }
-
-    if (Main.do_debug)
-      print ("> %s\n", get_uri ());
-    
-    Logger.message (_("Uploading %s").printf (get_uri ()));
-    win_set_status (Statuses.UPLOADING);
-
-    try {
-      var f = File.new_for_path (local_file);
-      var s = new DataInputStream (f.read());
-      var i = f.query_info ("*", FileQueryInfoFlags.NONE);
-
-      int64 fsize = i.get_size ();
-      uint8[] data = new uint8[fsize];
-
-      s.read (data);
-      s.close ();
-      s = null;
-
-      var sess = new Soup.SessionSync ();
-
-      if (Main.do_debug)
-        sess.add_feature = new Soup.Logger (Soup.LoggerLogLevel.HEADERS, -1);
-
-      var mess = get_http_message ("PUT", get_uri ());
-      mess.request_body.append (Soup.MemoryUse.COPY, data);
-
-      sess.queue_message (mess, on_upload); 
-    }
-    catch (GLib.Error e) {
-      Logger.warning (_("Unable to upload file: %s").printf(e.message));
-      win_set_status (Statuses.NOT_UPLOADED);
-      Main.window.show_notification (NotifyType.ERROR,
-                                     _("Upload failed"), 
-                                     _("%s was not uploaded OK to %s")
-                                       .printf(path, host));
-    }
-  }
-
-  void on_upload (Soup.Session sess, Soup.Message mess)
-  {
-    last_upload = Poppa.DateTime.now ();
-
-    win_set_status (Statuses.UPLOADED);
-
-    Main.window.show_notification (NotifyType.UP,
-                                   _("Upload OK"), 
-                                   _("%s was uploaded OK to %s")
-                                   .printf (path, host));
-    save();
-
-    mess = null;
-    sess = null;
-  }
-
   bool save_downloaded_file (uint8[] data, string? path=null)
   {
     path = path == null ? local_file : path;
@@ -635,123 +677,159 @@ public class Roxenlauncher.LauncherFile : Object
 
       fs.output_stream.write (data, null);
       fs.close (null);
+      fs = null;
     }
     catch (GLib.Error e) {
-      Logger.warning (_("Unable to write to file %s: %s")
-                      .printf (local_file, e.message));
+      log_warning (_("Unable to write to file %s: %s")
+                    .printf (local_file, e.message));
 
       return false;
     }
 
     return true;
   }
-  
+
   /**
-   * Set status for the file in the treeview
-   *
-   * @param st
+   * Upload the file to the remote server
    */
-  private void  win_set_status (int st)
+  public async void upload ()
   {
-    status = st;
-    Idle.add (() => {
-      Main.window.set_file_status (this, status_as_string ());
-      return false;
-    });
+    if (status == Statuses.DOWNLOADING || status == Statuses.UPLOADING) {
+      return;
+    }
+
+    if (App.do_debug)
+      print ("> %s\n", get_uri ());
+
+    log_message (_("Uploading %s").printf (get_uri ()));
+    win_set_status (Statuses.UPLOADING);
+
+    try {
+      var f = File.new_for_path (local_file);
+      var s = new DataInputStream (f.read());
+      var i = f.query_info ("*", FileQueryInfoFlags.NONE);
+
+      int64 fsize = i.get_size ();
+      uint8[] data = new uint8[fsize];
+
+      s.read (data);
+      s.close ();
+      s = null;
+
+      var sess = new Soup.SessionSync ();
+
+      if (App.do_debug)
+        sess.add_feature = new Soup.Logger (Soup.LoggerLogLevel.HEADERS, -1);
+
+      var mess = get_http_message ("PUT", get_uri ());
+      mess.request_body.append (Soup.MemoryUse.COPY, data);
+
+      sess.queue_message (mess, on_upload);
+      yield;
+    }
+    catch (GLib.Error e) {
+      log_warning (_("Unable to upload file: %s").printf(e.message));
+      win_set_status (Statuses.NOT_UPLOADED);
+      window.show_notification (NotifyType.ERROR,
+                                _("Upload failed"),
+                                _("%s was not uploaded OK to %s")
+                                .printf (path, host));
+    }
   }
-  
-  /**
-   * Initialize the file. Sets up directories and such and downloads the
-   * real file from the remote host
-   *
-   * @param _id
-   *  The directory name of the stub file
-   */
-  private void init (string? _id) throws RoxenError
+
+  void on_upload (Soup.Session sess, Soup.Message mess)
   {
-    if (rawdata == null || rawdata.length == 0)
-      throw new RoxenError.BAD_LAUNCHERFILE (_("No data in launcher file!"));
+    last_upload = new DateTime.now_local ();
 
-    string[] a = rawdata.split ("\r\n");
+    win_set_status (Statuses.UPLOADED);
 
-    if (a.length < 7)
-      throw new RoxenError.BAD_LAUNCHERFILE (_("Bad data in launcher file!"));
+    window.show_notification (NotifyType.UP,
+                              _("Upload OK"),
+                              _("%s was uploaded OK to %s")
+                              .printf (path, host));
+    save();
 
-    schema       = a[0];
-    host         = a[1];
-    port         = a[2];
-    auth_cookie  = a[3];
-    path         = a[4];
-    content_type = a[5];
-    sb_params    = a[6];
-
-    if (a.length >= 9) {
-      last_upload = Poppa.DateTime.unixtime ((time_t) long.parse (a[7]));
-      status = int.parse (a[8]);
-      if (a.length > 9 && a[9].length > 0)
-        bundle_paths = a[9].split (":");
-    }
-    else {
-      last_upload = new Poppa.DateTime ();
-      status = Statuses.NOT_DOWNLOADED;
-    }
-
-    if (_id == null)
-      randid ();
-
-    string[] p = path.split ("/");
-    local_dir  = Path.build_filename (getdir ("files"), id);
-    local_file = Path.build_filename (local_dir, p[p.length-1]);
-
-    // No local copy available - first download
-    if (_id == null) {
-      Idle.add (() => {
-        Main.window.add_launcher_file (this);
-        return false;
-      });
-
-      save ();
-      download (); 
-    }
-    else {
-      var lm = filemtime (local_file);
-      if (lm != null)
-        last_modified = lm;
-    }
-
-#if DEBUG
-    message ("End of LauncherFile.init()");
-#endif
+    mess = null;
+    sess = null;
   }
 
   /**
-   * Creates a random ID to use as directory name for a new launcher file
+   * Creates a Soup.Message with some defaults set
    *
-   * @return
-   *  The ID created.
+   * @param method
+   * @param uri
    */
-  private void randid ()
+  Soup.Message get_http_message (string method, string uri)
+  {
+    Soup.Message mess;
+    weak Soup.Message http_mess;
+
+    mess = new Soup.Message (method, uri);
+    http_mess = mess;
+
+    http_mess.request_headers.append ("Cookie", get_cookie ());
+    http_mess.request_headers.append ("Translate", "f");
+
+    return http_mess;
+  }
+
+  /**
+   * Saves the stub file
+   */
+  private void save ()
+  {
+    create_dir ();
+    string bp = "";
+    string lu = "";
+
+    if (last_upload == null)
+      lu = "0";
+    else
+      lu = "%lld".printf (last_upload.to_unix ());
+
+    if (bundle_paths != null)
+      bp = string.joinv (":", bundle_paths);
+
+    string[] data = {
+      schema,
+      host,
+      port.to_string (),
+      auth_cookie,
+      path,
+      content_type,
+      sb_params,
+      lu,
+      status.to_string (),
+      bp
+    };
+
+    try {
+      var f = Path.build_filename (getdir ("files"), id, "stub");
+      FileUtils.set_contents (f, string.joinv ("\r\n", data));
+    }
+    catch (GLib.Error e) {
+      warning ("Failed to write stub file to local directory: %s", e.message);
+    }
+  }
+
+  /**
+   * Creates a random string used as directory name on the local FS
+   */
+  void randid ()
   {
     string sb = "";
     for (int i = 0; i < 8; i++)
       sb += "%c".printf ((int) Math.floor (26 * Random.next_double () + 65));
 
-    var p = trim (path, "/");
+    string[] paths = path[1:path.length-1].split ("/");
+    paths = paths[0:paths.length-1];
 
-    string[] paths = p.split ("/");
-    string[] npaths = {};
+    assert (paths != null);
 
-    for (int i = 0; i < paths.length-1; i++)
-      npaths += paths[i];
-
-    if (npaths.length > 0)
-      id = sb + "_" + array_implode (npaths, "_");
+    if (paths.length > 0)
+      id = sb + "_" + string.joinv ("_", paths);
     else
       id = sb;
-
-#if DEBUG
-    message ("New ID created: %s", id);
-#endif
   }
 
   /**
@@ -760,6 +838,7 @@ public class Roxenlauncher.LauncherFile : Object
   private void create_dir ()
   {
     var p = Path.build_filename (getdir ("files"), id);
+
     if (!FileUtils.test (p, FileTest.EXISTS)) {
       if (DirUtils.create_with_parents (p, 0750) == -1)
         error (_("Unable to create directory for launcher file!"));
@@ -772,40 +851,7 @@ public class Roxenlauncher.LauncherFile : Object
   private string load ()
   {
     var p = Path.build_filename (getdir ("files"), id, "stub");
-    return file_get_contents (p);
-  }
-
-  /**
-   * Saves the stub file
-   */
-  private void save ()
-  {
-    create_dir ();
-    string bp = "";
-
-    if (bundle_paths != null)
-      bp = array_implode (bundle_paths, ":");
-
-    string[] data = {
-      schema,
-      host,
-      port,
-      auth_cookie,
-      path,
-      content_type,
-      sb_params,
-      "%ld".printf (last_upload.to_unixtime ()),
-      status.to_string (),
-      bp
-    };
-
-    try {
-      var f = Path.build_filename (getdir ("files"), id, "stub");
-      FileUtils.set_contents (f, array_implode (data, "\r\n"));
-    }
-    catch (GLib.Error e) {
-      warning ("Failed to write stub file to local directory: %s", e.message);
-    }
+    return Poppa.file_get_contents (p);
   }
 
   FileMonitorEvent previous_event;
@@ -838,7 +884,7 @@ public class Roxenlauncher.LauncherFile : Object
     if (previous_event == FileMonitorEvent.CREATED ||
         previous_event == FileMonitorEvent.CHANGED)
     {
-      upload ();
+      upload.begin ();
     }
   }
 
