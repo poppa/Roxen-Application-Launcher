@@ -107,6 +107,7 @@ class Roxenlauncher.Main : Gtk.Application
                 message ("Incomming file exists locally!");
 
               window.set_file_selection (lf);
+              lf.download.begin ();
             }
           }
           catch (GLib.Error e) {

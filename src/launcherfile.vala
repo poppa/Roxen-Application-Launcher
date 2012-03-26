@@ -111,10 +111,11 @@ public class Roxenlauncher.LauncherFile : Object
 
     foreach (LauncherFile file in files) {
       if (file.rawdata != null) {
-        string rawdata = string.joinv ("", file.rawdata.split ("\r\n")[0:6]);
+        string[] h = file.get_header ();
+        string tmp = string.joinv ("", h);
 
         // File exists locally
-        if (rawdata == part) {
+        if (tmp == part) {
           if (App.do_debug) message ("File exists");
           lf = file;
           return false;
@@ -365,6 +366,22 @@ public class Roxenlauncher.LauncherFile : Object
   {
     return "RoxenACauth=" + auth_cookie + "; " +
            "RoxenALparams=\"" + sb_params + "\"";
+  }
+
+  /**
+   * Returns the first six lines of the stub file
+   */
+  public string[]? get_header ()
+  {
+    if (rawdata == null) return null;
+
+    string[] t = rawdata.split ("\r\n");
+    string[] ret = new string[7];
+
+    for (int i = 0; i < 7; i++)
+      ret[i] = t[i];
+
+    return ret;
   }
 
   /**
@@ -785,7 +802,7 @@ public class Roxenlauncher.LauncherFile : Object
     if (last_upload == null)
       lu = "0";
     else
-      lu = "%lld".printf (last_upload.to_unix ());
+      lu = "%l64d".printf (last_upload.to_unix ());
 
     if (bundle_paths != null)
       bp = string.joinv (":", bundle_paths);
