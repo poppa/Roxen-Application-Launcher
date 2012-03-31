@@ -551,7 +551,8 @@ public class Roxenlauncher.LauncherFile : Object
    */
   public void launch_editor ()
   {
-    message ("Launch editor for ct %s", content_type);
+    if (App.do_debug)
+      message ("Launch editor for ct %s", content_type);
 
     if (application == null) {
       var app = ContentType.get_by_ct (content_type);
@@ -591,6 +592,8 @@ public class Roxenlauncher.LauncherFile : Object
                                 _("Could not start editor %s: %s ")
                                 .printf (application.editor.name,
                                          e.message));
+      log_warning (_("Could no start editor %s: %s")
+                    .printf(application.editor.name, e.message));
     }
 
     yield;
@@ -649,6 +652,7 @@ public class Roxenlauncher.LauncherFile : Object
              mess.status_code == Soup.KnownStatusCode.MOVED_TEMPORARILY)
     {
       message ("Follow redirect...");
+      log_message ("Got redrirect. Not implemented yet!");
       win_set_status (Statuses.NOT_DOWNLOADED);
     }
     else {

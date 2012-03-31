@@ -357,6 +357,11 @@ namespace Roxenlauncher
           var ds = new DataOutputStream (fs);
           ds.put_string (mess);
         } // streams will close
+
+        Idle.add (() => {
+          window.update_logview (mess);
+          return false;
+        });
       }
       catch (GLib.Error e) {
         GLib.warning (_("Unable to write to logfile %s: %s"), path, e.message);
