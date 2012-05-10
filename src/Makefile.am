@@ -25,14 +25,14 @@ roxenlauncher_SOURCES =                                                  \
 
 roxenlauncher_VALAFLAGS =                                                \
 	--thread                                                               \
+	--vapidir=.                                                            \
+	--pkg=config                                                           \
 	--pkg=gmodule-2.0                                                      \
 	--pkg=gtk+-3.0                                                         \
 	--pkg=libsoup-2.4                                                      \
 	--pkg=gio-2.0                                                          \
 	--pkg=gdk-pixbuf-2.0                                                   \
 	--pkg=libnotify                                                        \
-	--vapidir=.                                                            \
-	--pkg=config                                                           \
 	$(NULL)
 
 roxenlauncher_LDADD =                                                    \

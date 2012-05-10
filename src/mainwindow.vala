@@ -148,7 +148,7 @@ public class Roxenlauncher.MainWindow : Gtk.Window
     });
 
     delete_event.connect (() => {
-      Gtk.main_quit();
+      destroy();
       return true;
     });
 
@@ -408,7 +408,8 @@ public class Roxenlauncher.MainWindow : Gtk.Window
    */
   public void on_window_destroy ()
   {
-    Gtk.main_quit ();
+    destroy ();
+    //Posix.exit (0);
   }
 
   /**
@@ -1099,7 +1100,7 @@ public class Roxenlauncher.MainWindow : Gtk.Window
       Gtk.TextIter iter;
 
       buf.get_end_iter (out iter);
-      buf.insert (iter, text, -1);
+      buf.insert (ref iter, text, -1);
       buf.get_end_iter (out iter);
       mark = buf.get_insert ();
       buf.place_cursor (iter);

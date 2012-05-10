@@ -27,7 +27,7 @@ public class Roxenlauncher.ContentType : Object
   public static unowned List<ContentType> content_types {
     get;
     private set;
-    default = new List<ContentType>();
+    default = new List<ContentType> ();
   }
 
   /**

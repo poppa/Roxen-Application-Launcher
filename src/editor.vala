@@ -27,7 +27,7 @@ public class Roxenlauncher.Editor : Object
   public static unowned List<Editor> editors {
     get;
     private set;
-    default = new List<Editor>();
+    default = new List<Editor> ();
   }
 
   /**

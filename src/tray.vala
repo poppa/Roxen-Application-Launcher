@@ -16,7 +16,7 @@
  * See the GNU General Public License for more details.
  * 
  * You should have received a copy of the GNU General Public License along
- * with RAL.  If not, see <http://www.gnu.org/licenses/>.
+ * with RAL. If not, see <http://www.gnu.org/licenses/>.
  */
 
 using Gtk;
@@ -69,8 +69,8 @@ public class Roxenlauncher.Tray : GLib.Object
   
   void on_trayicon_popup (uint btn, uint time)
   {
-    popmenu = new Menu ();
-      
+    popmenu = new Gtk.Menu ();
+  
     var visible     = window.visible;
     var item_quit   = new ImageMenuItem.from_stock (Stock.QUIT, null);
     var img_hide    = new Image.from_stock (Stock.CLOSE, IconSize.MENU);
@@ -85,28 +85,28 @@ public class Roxenlauncher.Tray : GLib.Object
     GLib.List<LauncherFile> lfs = LauncherFile.get_reversed_files ();
 
     if (lfs.length () == 0) {
-      var mi = new MenuItem.with_label (_("No active files"));
+      var mi = new Gtk.MenuItem.with_label (_("No active files"));
       mi.sensitive = false;
       popmenu.add (mi);
     }
     else {
       foreach (LauncherFile lf in lfs) {
-        MenuItem mi = null;
+        Gtk.MenuItem mi = null;
 
         if (lf.status == LauncherFile.Statuses.DOWNLOADED ||
             lf.status == LauncherFile.Statuses.UPLOADED)
         {
           string img = lf.status == LauncherFile.Statuses.DOWNLOADED ?
                                     Stock.GO_DOWN : Stock.GO_UP;
-          var imi = new ImageMenuItem.from_stock (img, null);
+          var imi = new Gtk.ImageMenuItem.from_stock (img, null);
           imi.set_label (lf.get_uri ());
-          mi = (MenuItem) imi;
+          mi = (Gtk.MenuItem) imi;
         }
         else
-          mi = new MenuItem.with_label (lf.get_uri ());
+          mi = new Gtk.MenuItem.with_label (lf.get_uri ());
 
         mi.activate.connect ((widget) => {
-          var f = LauncherFile.find_by_uri (((MenuItem) widget).label);
+          var f = LauncherFile.find_by_uri (((Gtk.MenuItem) widget).label);
           if (f != null)
             f.download ();
         });
@@ -115,7 +115,7 @@ public class Roxenlauncher.Tray : GLib.Object
       }
     }
 
-    var finish_all = new ImageMenuItem.from_stock (Stock.CLEAR, null);
+    var finish_all = new Gtk.ImageMenuItem.from_stock (Stock.CLEAR, null);
     finish_all.activate.connect (() => {
       Idle.add(() => { window.finish_all_files (); return false; });
       popmenu.popdown ();
@@ -129,14 +129,14 @@ public class Roxenlauncher.Tray : GLib.Object
 
     var t_notify    = _("Enable notifications");
     var t_tray      = _("Minimize to tray");
-    var item_notify = new CheckMenuItem.with_label (t_notify);
+    var item_notify = new Gtk.CheckMenuItem.with_label (t_notify);
 
     item_notify.set_active (App.do_notifications);
     item_notify.activate.connect (() => {
       window.toggle_notifications ((int) (!App.do_notifications));
     });
 
-    var item_minimize = new CheckMenuItem.with_label (t_tray);
+    var item_minimize = new Gtk.CheckMenuItem.with_label (t_tray);
 
     item_minimize.set_active (App.do_minimize);
     item_minimize.activate.connect (() => {

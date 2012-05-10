@@ -592,7 +592,7 @@ public class Roxenlauncher.LauncherFile : Object
                                 _("Could not start editor %s: %s ")
                                 .printf (application.editor.name,
                                          e.message));
-      log_warning (_("Could no start editor %s: %s")
+      log_warning (_("Could not start editor %s: %s ")
                     .printf(application.editor.name, e.message));
     }
 
@@ -613,10 +613,14 @@ public class Roxenlauncher.LauncherFile : Object
 
     log_message (_("Downloading file: %s").printf (get_uri ()));
 
+    win_set_status (Statuses.DOWNLOADING);
+
     Soup.SessionSync sess = new Soup.SessionSync ();
 
-    if (App.do_debug)
-      sess.add_feature = new Soup.Logger (Soup.LoggerLogLevel.HEADERS, -1);
+    if (App.do_debug) {
+      message ("Adding logger to SOUP Session");
+      sess.add_feature (new Soup.Logger (Soup.LoggerLogLevel.HEADERS, -1));
+    }
 
     if (App.do_debug)
       print ("> %s\n", get_uri ());
@@ -633,7 +637,7 @@ public class Roxenlauncher.LauncherFile : Object
   {
     if (mess.status_code == Soup.KnownStatusCode.OK) {
       if (App.do_debug)
-        message ("Download ok\n");
+        message ("Download ok");
 
       if (save_downloaded_file (mess.response_body.data)) {
         win_set_status (Statuses.DOWNLOADED);
@@ -672,8 +676,12 @@ public class Roxenlauncher.LauncherFile : Object
           break;
       }
 
+      if (App.do_debug)
+        message ("Download failed: %s", s);
+
       log_warning (s);
       win_set_status (Statuses.NOT_DOWNLOADED);
+      window.show_notification (NotifyType.ERROR, _("Download failed"), s);
       save ();
     }
   }
@@ -715,9 +723,8 @@ public class Roxenlauncher.LauncherFile : Object
    */
   public async void upload ()
   {
-    if (status == Statuses.DOWNLOADING || status == Statuses.UPLOADING) {
+    if (status == Statuses.DOWNLOADING || status == Statuses.UPLOADING)
       return;
-    }
 
     if (App.do_debug)
       print ("> %s\n", get_uri ());
@@ -740,7 +747,7 @@ public class Roxenlauncher.LauncherFile : Object
       var sess = new Soup.SessionSync ();
 
       if (App.do_debug)
-        sess.add_feature = new Soup.Logger (Soup.LoggerLogLevel.HEADERS, -1);
+        sess.add_feature (new Soup.Logger (Soup.LoggerLogLevel.HEADERS, -1));
 
       var mess = get_http_message ("PUT", get_uri ());
       mess.request_body.append (Soup.MemoryUse.COPY, data);
@@ -806,7 +813,7 @@ public class Roxenlauncher.LauncherFile : Object
     if (last_upload == null)
       lu = "0";
     else
-      lu = "%l64d".printf (last_upload.to_unix ());
+      lu = "%lld".printf (last_upload.to_unix ());
 
     if (bundle_paths != null)
       bp = string.joinv (":", bundle_paths);

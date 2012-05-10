@@ -127,10 +127,9 @@ namespace Poppa
     try {
       var f = File.new_for_path (path);
       if (f.query_exists (null)) {
-        var fi = f.query_info (FILE_ATTRIBUTE_TIME_MODIFIED,
+        var fi = f.query_info (FileAttribute.TIME_MODIFIED,
                                FileQueryInfoFlags.NONE, null);
-        TimeVal tv;
-        fi.get_modification_time (out tv);
+        TimeVal tv = fi.get_modification_time ();
 
         return new DateTime.from_timeval_local (tv);
       }
@@ -152,10 +151,10 @@ namespace Poppa
     try {
       var f = File.new_for_path (path);
       if (f.query_exists (null)) {
-        var fi = f.query_info (FILE_ATTRIBUTE_TIME_CREATED,
+        var fi = f.query_info (FileAttribute.TIME_CREATED,
                                FileQueryInfoFlags.NONE, null);
 
-        var ts = fi.get_attribute_uint64 (FILE_ATTRIBUTE_TIME_CREATED);
+        var ts = fi.get_attribute_uint64 (FileAttribute.TIME_CREATED);
         return new DateTime.from_unix_local ((time_t) ts);
       }
     }

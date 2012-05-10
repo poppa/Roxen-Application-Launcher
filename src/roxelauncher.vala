@@ -337,7 +337,7 @@ namespace Roxenlauncher
     {
       try {
         uint8[] content;
-        if (file.load_contents (null, out content))
+        if (file.load_contents (null, out content, null))
           return (string) content;
       }
       catch (GLib.Error e) {

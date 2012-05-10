@@ -37,17 +37,6 @@ This is what's in Ubuntu 11.10.
 Build from Vala sources
 ================================================================================
 
-If you build from the Vala sources Vala 0.14 is required. Before running
-`./autogen.sh` you need to export the variable `RL_WITH_VALA` like
+If you build from the Vala sources Vala 0.14 is required.
 
-  name@machine:~$ export RL_WITH_VALA=true
-	
-or run 
-
-  name@machine:~$ ./conf-with-vala
-
-if you have downloaded the development branch.
-
-# Pontus Östlund - 2011-11-08
-# Pontus Östlund - 2010-09-22
-# Pontus Östlund - 2009-12-18
+# Pontus Östlund - 2012-05-10

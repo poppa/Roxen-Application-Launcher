@@ -98,7 +98,7 @@ class Roxenlauncher.Main : Gtk.Application
           try {
             if (LauncherFile.handle_file (d, out lf)) {
               if (App.do_debug)
-                message ("Incomming file is new...%s", "x");
+                message ("Incomming file is new...%s", lf.get_uri ());
 
               lf.download.begin ();
             }

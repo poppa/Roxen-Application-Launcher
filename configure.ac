@@ -1,12 +1,13 @@
 AC_PREREQ([2.64])
 AC_INIT(roxenlauncher, 
-        2.0.2,
+        2.0.3,
         [pontus@poppa.se], 
         [roxenlauncher],
         [https://github.com/poppa/Roxen-Application-Launcher])
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_SRCDIR([configure.ac])
 AC_CONFIG_MACRO_DIR([m4])
+AC_CHECK_LIB(gthread-2.0, g_thread_init)
 
 AM_INIT_AUTOMAKE([1.1 -Wall])
 AM_MAINTAINER_MODE([enable])
@@ -38,7 +39,6 @@ GETTEXT_PACKAGE=roxenlauncher
 AC_SUBST(GETTEXT_PACKAGE)
 AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE,"$GETTEXT_PACKAGE", [GETTEXT package name])
 IT_PROG_INTLTOOL([0.40.0])
-
 
 AC_SUBST(CFLAGS)
 AC_SUBST(CPPFLAGS)
