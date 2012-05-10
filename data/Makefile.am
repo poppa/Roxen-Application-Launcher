@@ -8,10 +8,9 @@ gsettings_SCHEMAS = com.roxen.Launcher.gschema.xml
 
 roxenlauncherextradir = ${datadir}/roxenlauncher/data
 roxenlauncherextra_DATA =                                                \
+	mainwindow.ui                                                          \
+	content-type.ui                                                        \
 	$(NULL)
-#	mainwindow.ui                                                          \
-#	content-type.ui                                                        \
-#	$(NULL)
 
 roxenlauncherpixmapsdir = ${datadir}/roxenlauncher/data/pixmap
 roxenlauncherpixmaps_DATA =                                              \
