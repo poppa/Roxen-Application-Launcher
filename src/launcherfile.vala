@@ -669,7 +669,7 @@ public class Roxenlauncher.LauncherFile : Object
           break;
 
         default:
-          s = _("%s was not downloaded from %s").printf (path, host);
+          s = _("%s was not downloaded from %s (code: %d)").printf (path, host, mess.status_code);
           break;
       }
 
