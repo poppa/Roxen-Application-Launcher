@@ -76,10 +76,8 @@ public class Roxenlauncher.LauncherFile : Object
                                                         null);
       FileInfo fi;
 
-      while ((fi = f.next_file (null)) != null) {
-        var lf = new LauncherFile.from_existing (fi.get_name ());
-        files.append (lf);
-      }
+      while ((fi = f.next_file (null)) != null)
+        files.append (new LauncherFile.from_existing (fi.get_name ()));
     }
     catch (GLib.Error e) {
       warning ("Failed to load launcher files: %s", e.message);
@@ -111,8 +109,7 @@ public class Roxenlauncher.LauncherFile : Object
 
     foreach (LauncherFile file in files) {
       if (file.rawdata != null) {
-        string[] h = file.get_header ();
-        string tmp = string.joinv ("", h);
+        string tmp = string.joinv ("", file.get_header ());
 
         // File exists locally
         if (tmp == part) {
