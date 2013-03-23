@@ -1,0 +1,16 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=Roxen Application Launcher
+Name[sv]=Roxen programstartare
+GenericName=Roxen Application Launcher
+GenericName[sv]=Roxen programstartare
+Comment=Open Roxen CMS files in desktop apps
+Comment[sv]=Öppna Roxen CMS-filer i skrivbordsprogram
+Exec=roxenlauncher %U
+Terminal=false
+Type=Application
+Icon=/usr/local/share/roxenlauncher/data/pixmap/roxen-logo.svg
+Categories=Application;Development;Utility;
+StartupNotify=true
+MimeType=application/x-roxen-launcher-2;
+NoDisplay=true
