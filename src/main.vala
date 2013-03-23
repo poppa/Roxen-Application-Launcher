@@ -95,10 +95,9 @@ class Roxenlauncher.Main : Gtk.Application
         if (d != null) {
           LauncherFile lf;
 
-          try {
-            if (LauncherFile.handle_file (d, out lf)) {
-              if (App.do_debug)
-                message ("Incomming file is new...%s", lf.get_uri ());
+          try {   if (LauncherFile.handle_file (d, out lf)) {     if
+          (App.do_debug)       message ("Incomming file is new...%s", lf.get_uri
+          ());
 
               lf.download.begin ();
             }
@@ -200,8 +199,8 @@ class Roxenlauncher.Main : Gtk.Application
    *
    * @param argv
    */
-	public static int main (string[] argv)
-	{
+  public static int main (string[] argv)
+  {
     Intl.setlocale (LocaleCategory.ALL,"");
     Intl.bindtextdomain (Config.GETTEXT_PACKAGE, Config.LOCALEDIR);
     Intl.bind_textdomain_codeset (Config.GETTEXT_PACKAGE, "UTF-8");
@@ -211,6 +210,6 @@ class Roxenlauncher.Main : Gtk.Application
     app.activate.connect (app.on_app_activate);
     app.command_line.connect (app.on_command_line);
 
-		return app.run (argv);
-	}
+    return app.run (argv);
+  }
 }

@@ -307,7 +307,7 @@ public class Roxenlauncher.MainWindow : Gtk.Window
 
         try { Process.spawn_command_line_async (cmd); }
         catch (GLib.Error e) {
-          warning("Unable to open file: %s", e.message);
+          warning ("Unable to open file: %s", e.message);
         }
       }
     });
@@ -324,7 +324,7 @@ public class Roxenlauncher.MainWindow : Gtk.Window
 
         try { Process.spawn_command_line_async (cmd); }
         catch (GLib.Error e) {
-          warning("Unable to open file: %s", e.message);
+          warning ("Unable to open file: %s", e.message);
         }
       }
     });
@@ -409,7 +409,6 @@ public class Roxenlauncher.MainWindow : Gtk.Window
   public void on_window_destroy ()
   {
     destroy ();
-    //Posix.exit (0);
   }
 
   /**

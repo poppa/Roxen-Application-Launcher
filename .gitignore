@@ -1,4 +1,5 @@
 .deps
+.*
 *.[oac]
 *~
 *.stamp
@@ -34,3 +35,4 @@ stamp-*
 !src/soppa.c
 *.anjuta
 *.anjuta*.db
+roxen-launcher.desktop

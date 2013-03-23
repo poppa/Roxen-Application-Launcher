@@ -1,6 +1,6 @@
 AC_PREREQ([2.64])
 AC_INIT(roxenlauncher, 
-        2.0.3,
+        2.0.4,
         [pontus@poppa.se], 
         [roxenlauncher],
         [https://github.com/poppa/Roxen-Application-Launcher])
@@ -15,7 +15,7 @@ AM_MAINTAINER_MODE([enable])
 AC_PROG_CC
 AM_PROG_CC_STDC
 AC_HEADER_STDC
-AM_PROG_VALAC([0.14])
+AM_PROG_VALAC([0.16])
 
 # Initialize libtool
 LT_PREREQ([2.2])

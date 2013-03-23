@@ -136,6 +136,7 @@ public class Roxenlauncher.LauncherFile : Object
       if (l.get_uri () == lf.get_uri ()) {
         if (App.do_debug)
           message ("Launcher file exists. Skip adding!");
+
         return;
       }
 
@@ -454,7 +455,7 @@ public class Roxenlauncher.LauncherFile : Object
 
     if (a.length >= 9) {
       if (long.parse (a[7]) > 0)
-        last_upload = new DateTime.from_unix_local ((time_t) long.parse(a[7]));
+        last_upload = new DateTime.from_unix_local ((time_t) long.parse (a[7]));
 
       status = int.parse (a[8]);
 
@@ -590,7 +591,7 @@ public class Roxenlauncher.LauncherFile : Object
                                 .printf (application.editor.name,
                                          e.message));
       log_warning (_("Could not start editor %s: %s ")
-                    .printf(application.editor.name, e.message));
+                    .printf (application.editor.name, e.message));
     }
 
     yield;
@@ -772,7 +773,7 @@ public class Roxenlauncher.LauncherFile : Object
                               _("Upload OK"),
                               _("%s was uploaded OK to %s")
                               .printf (path, host));
-    save();
+    save ();
 
     mess = null;
     sess = null;

@@ -19,9 +19,16 @@ roxenlauncherpixmaps_DATA =                                              \
 	pixmap/roxen-logo.svg                                                  \
 	$(NULL)
 
+desktopdir=$(datadir)/applications
+desktop_in_files=roxen-launcher.desktop.in
+desktop_DATA=roxen-launcher.desktop
+@INTLTOOL_DESKTOP_RULE@
+
+
 EXTRA_DIST =                                                             \
 	$(roxenlauncherextra_DATA)                                             \
 	$(roxenlauncherpixmaps_DATA)                                           \
 	$(gsettings_SCHEMAS)                                                   \
+	$(desktop_in_files)                                                    \
 	$(NULL)
 
