@@ -1,6 +1,6 @@
 AC_PREREQ([2.64])
 AC_INIT(roxenlauncher, 
-        2.0.4,
+        2.0.5,
         [pontus@poppa.se], 
         [roxenlauncher],
         [https://github.com/poppa/Roxen-Application-Launcher])

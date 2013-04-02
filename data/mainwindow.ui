@@ -75,9 +75,9 @@ along with this program.  If not, see &lt;http://www.gnu.org/licenses/&gt;.
             <property name="can_focus">False</property>
             <child>
               <object class="GtkMenuItem" id="menuitem1">
+                <property name="use_action_appearance">False</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="use_action_appearance">False</property>
                 <property name="label" translatable="yes">_File</property>
                 <property name="use_underline">True</property>
                 <child type="submenu">
@@ -87,9 +87,9 @@ along with this program.  If not, see &lt;http://www.gnu.org/licenses/&gt;.
                     <child>
                       <object class="GtkImageMenuItem" id="im_quit">
                         <property name="label">gtk-quit</property>
+                        <property name="use_action_appearance">False</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="use_action_appearance">False</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
                       </object>
@@ -100,9 +100,9 @@ along with this program.  If not, see &lt;http://www.gnu.org/licenses/&gt;.
             </child>
             <child>
               <object class="GtkMenuItem" id="menuitem4">
+                <property name="use_action_appearance">False</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="use_action_appearance">False</property>
                 <property name="label" translatable="yes">_Help</property>
                 <property name="use_underline">True</property>
                 <child type="submenu">
@@ -112,9 +112,9 @@ along with this program.  If not, see &lt;http://www.gnu.org/licenses/&gt;.
                     <child>
                       <object class="GtkImageMenuItem" id="im_about">
                         <property name="label">gtk-about</property>
+                        <property name="use_action_appearance">False</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="use_action_appearance">False</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
                       </object>
@@ -191,6 +191,7 @@ along with this program.  If not, see &lt;http://www.gnu.org/licenses/&gt;.
                         <child>
                           <object class="GtkButton" id="btn_edit_file">
                             <property name="label">gtk-edit</property>
+                            <property name="use_action_appearance">False</property>
                             <property name="visible">True</property>
                             <property name="sensitive">False</property>
                             <property name="can_focus">True</property>
@@ -207,6 +208,7 @@ along with this program.  If not, see &lt;http://www.gnu.org/licenses/&gt;.
                         <child>
                           <object class="GtkButton" id="btn_finish_file">
                             <property name="label">gtk-remove</property>
+                            <property name="use_action_appearance">False</property>
                             <property name="visible">True</property>
                             <property name="sensitive">False</property>
                             <property name="can_focus">True</property>
@@ -223,6 +225,7 @@ along with this program.  If not, see &lt;http://www.gnu.org/licenses/&gt;.
                         <child>
                           <object class="GtkButton" id="btn_finish_all">
                             <property name="label">gtk-clear</property>
+                            <property name="use_action_appearance">False</property>
                             <property name="visible">True</property>
                             <property name="sensitive">False</property>
                             <property name="can_focus">True</property>
@@ -309,6 +312,7 @@ along with this program.  If not, see &lt;http://www.gnu.org/licenses/&gt;.
                             <child>
                               <object class="GtkButton" id="btn_edit_app">
                                 <property name="label">gtk-edit</property>
+                                <property name="use_action_appearance">False</property>
                                 <property name="visible">True</property>
                                 <property name="sensitive">False</property>
                                 <property name="can_focus">True</property>
@@ -325,6 +329,7 @@ along with this program.  If not, see &lt;http://www.gnu.org/licenses/&gt;.
                             <child>
                               <object class="GtkButton" id="btn_add_app">
                                 <property name="label">gtk-add</property>
+                                <property name="use_action_appearance">False</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">True</property>
@@ -340,6 +345,7 @@ along with this program.  If not, see &lt;http://www.gnu.org/licenses/&gt;.
                             <child>
                               <object class="GtkButton" id="btn_remove_app">
                                 <property name="label">gtk-remove</property>
+                                <property name="use_action_appearance">False</property>
                                 <property name="visible">True</property>
                                 <property name="sensitive">False</property>
                                 <property name="can_focus">True</property>
@@ -404,10 +410,12 @@ along with this program.  If not, see &lt;http://www.gnu.org/licenses/&gt;.
                                     <child>
                                       <object class="GtkCheckButton" id="cb_notify">
                                         <property name="label" translatable="yes">Enable notifications</property>
+                                        <property name="use_action_appearance">False</property>
                                         <property name="visible">True</property>
                                         <property name="can_focus">True</property>
                                         <property name="receives_default">False</property>
                                         <property name="use_action_appearance">False</property>
+                                        <property name="xalign">0</property>
                                         <property name="draw_indicator">True</property>
                                       </object>
                                       <packing>
@@ -419,11 +427,13 @@ along with this program.  If not, see &lt;http://www.gnu.org/licenses/&gt;.
                                     <child>
                                       <object class="GtkCheckButton" id="cb_minimize">
                                         <property name="label" translatable="yes">Minimize to tray</property>
+                                        <property name="use_action_appearance">False</property>
                                         <property name="visible">True</property>
                                         <property name="can_focus">True</property>
                                         <property name="receives_default">False</property>
                                         <property name="tooltip_text" translatable="yes">Window close button minimizes the application to the tray</property>
                                         <property name="use_action_appearance">False</property>
+                                        <property name="xalign">0</property>
                                         <property name="draw_indicator">True</property>
                                       </object>
                                       <packing>
@@ -449,9 +459,12 @@ along with this program.  If not, see &lt;http://www.gnu.org/licenses/&gt;.
                       </object>
                       <packing>
                         <property name="expand">False</property>
-                        <property name="fill">True</property>
+                        <property name="fill">False</property>
                         <property name="position">1</property>
                       </packing>
+                    </child>
+                    <child>
+                      <placeholder/>
                     </child>
                     <child>
                       <placeholder/>
@@ -532,6 +545,7 @@ along with this program.  If not, see &lt;http://www.gnu.org/licenses/&gt;.
                             <child>
                               <object class="GtkButton" id="btn_clear_log">
                                 <property name="label" translatable="yes">Clear log</property>
+                                <property name="use_action_appearance">False</property>
                                 <property name="visible">True</property>
                                 <property name="sensitive">False</property>
                                 <property name="can_focus">True</property>
@@ -581,6 +595,7 @@ along with this program.  If not, see &lt;http://www.gnu.org/licenses/&gt;.
                         <child>
                           <object class="GtkCheckButton" id="cb_logging">
                             <property name="label" translatable="yes">Enable logging</property>
+                            <property name="use_action_appearance">False</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">False</property>
@@ -649,23 +664,26 @@ along with this program.  If not, see &lt;http://www.gnu.org/licenses/&gt;.
       </packing>
     </child>
   </object>
+  <object class="GtkTextBuffer" id="textbuffer1">
+    <property name="text" translatable="yes">Add the mimetype for Roxen Launcher files (.xrl2) to your mimetype database</property>
+  </object>
   <object class="GtkMenu" id="tv_files_rclick_menu">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <child>
       <object class="GtkMenuItem" id="sb_view">
+        <property name="use_action_appearance">False</property>
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="use_action_appearance">False</property>
         <property name="label" translatable="yes">_View in Sitebuilder</property>
         <property name="use_underline">True</property>
       </object>
     </child>
     <child>
       <object class="GtkMenuItem" id="sb_view_dir">
+        <property name="use_action_appearance">False</property>
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="use_action_appearance">False</property>
         <property name="label" translatable="yes">V_iew directory in Sitebuilder</property>
         <property name="use_underline">True</property>
       </object>
@@ -678,18 +696,18 @@ along with this program.  If not, see &lt;http://www.gnu.org/licenses/&gt;.
     </child>
     <child>
       <object class="GtkMenuItem" id="ctx_menu_edit">
+        <property name="use_action_appearance">False</property>
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="use_action_appearance">False</property>
         <property name="label" translatable="yes">_Edit</property>
         <property name="use_underline">True</property>
       </object>
     </child>
     <child>
       <object class="GtkMenuItem" id="ctx_menu_delete">
+        <property name="use_action_appearance">False</property>
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="use_action_appearance">False</property>
         <property name="label" translatable="yes">_Delete</property>
         <property name="use_underline">True</property>
       </object>

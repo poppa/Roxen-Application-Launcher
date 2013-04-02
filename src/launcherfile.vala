@@ -556,7 +556,6 @@ public class Roxenlauncher.LauncherFile : Object
       var app = ContentType.get_by_ct (content_type);
 
       if (app == null) {
-
         application = window.ct_new (content_type);
 
         if (application == null)
@@ -754,7 +753,7 @@ public class Roxenlauncher.LauncherFile : Object
       yield;
     }
     catch (GLib.Error e) {
-      log_warning (_("Unable to upload file: %s").printf(e.message));
+      log_warning (_("Unable to upload file: %s").printf (e.message));
       win_set_status (Statuses.NOT_UPLOADED);
       window.show_notification (NotifyType.ERROR,
                                 _("Upload failed"),

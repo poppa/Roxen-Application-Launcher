@@ -418,7 +418,9 @@ public class Roxenlauncher.MainWindow : Gtk.Window
    */
   public void on_cb_notify_toggled (Object cb)
   {
-    message ("notify toggled");
+    if (App.do_debug)
+      message ("notify toggled");
+
     App.do_notifications = !App.do_notifications;
   }
 
@@ -429,7 +431,9 @@ public class Roxenlauncher.MainWindow : Gtk.Window
    */
   public void on_cb_minimize_toggled (Object cb)
   {
-    message ("notify toggled");
+    if (App.do_debug)
+      message ("notify toggled");
+
     App.do_minimize = !App.do_minimize;
   }
 

@@ -57,11 +57,6 @@ class Roxenlauncher.Main : Gtk.Application
       window = new MainWindow ();
       window.set_application (this);
 
-      /*
-      tray = new Tray ();
-      tray.hookup ();
-      */
-
       if (window.setup_ui ()) {
         window.show_all ();
         log_message (_("Application launcher started"));
@@ -95,9 +90,10 @@ class Roxenlauncher.Main : Gtk.Application
         if (d != null) {
           LauncherFile lf;
 
-          try {   if (LauncherFile.handle_file (d, out lf)) {     if
-          (App.do_debug)       message ("Incomming file is new...%s", lf.get_uri
-          ());
+          try {   
+            if (LauncherFile.handle_file (d, out lf)) {     
+              if (App.do_debug)
+                message ("Incomming file is new...%s", lf.get_uri ());
 
               lf.download.begin ();
             }
@@ -108,6 +104,16 @@ class Roxenlauncher.Main : Gtk.Application
               window.set_file_selection (lf);
               lf.download.begin ();
             }
+
+            if (App.do_debug)
+              message ("Delete incomming file \"%s\"", args[i]);
+
+            try {
+              File.new_for_path (args[i]).delete (null);
+            }
+            catch (GLib.Error ex) {
+              message ("Unable to delete incomming file!");
+            }            
           }
           catch (GLib.Error e) {
             log_warning (_("Failed to handle incomming file: %s")
