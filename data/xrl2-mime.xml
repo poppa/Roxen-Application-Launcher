@@ -1,0 +1,8 @@
+<?xml version='1.0' encoding='utf-8'?>
+<mime-info xmlns="http://www.freedesktop.org/standards/shared-mime-info">
+  <mime-type type="application/x-roxen-launcher-2">
+    <glob pattern="*.xrl2"/>
+    <comment>Roxen Launcher MIME type</comment>
+    <comment xml:lang="sv">Roxen Launcher filtyp</comment>
+  </mime-type>
+</mime-info>
