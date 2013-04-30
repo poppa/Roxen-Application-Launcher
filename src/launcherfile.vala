@@ -842,7 +842,7 @@ public class Roxenlauncher.LauncherFile : Object
    */
   void randid ()
   {
-    string sb = "";
+    string sb = host + "_";
     for (int i = 0; i < 8; i++)
       sb += "%c".printf ((int) Math.floor (26 * Random.next_double () + 65));
 
