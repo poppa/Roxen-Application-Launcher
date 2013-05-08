@@ -312,8 +312,12 @@ public class Roxenlauncher.LauncherFile : Object
   {
     this.id = id;
     rawdata = data == null ? load () : data;
-    // message ("Raw data: %s", rawdata);
-    assert (rawdata != null && rawdata.length > 0);
+
+    if (rawdata == null || rawdata.length == 0) {
+      error ("%s seems bad. Try cleaning up the files directory at \"%s\"", 
+             id, getdir ("files"));
+    }
+
     init ();
   }
 

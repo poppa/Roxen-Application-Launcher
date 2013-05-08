@@ -1,6 +1,6 @@
 AC_PREREQ([2.64])
 AC_INIT(roxenlauncher, 
-        2.0.6,
+        2.0.6.1,
         [pontus@poppa.se], 
         [roxenlauncher],
         [https://github.com/poppa/Roxen-Application-Launcher])
@@ -21,7 +21,7 @@ AM_PROG_VALAC([0.16])
 LT_PREREQ([2.2])
 LT_INIT
 
-CFLAGS="${CFLAGS} -Wall"
+CFLAGS="${CFLAGS} -Wall -lm"
 CFLAGS+=" -DGSEAL_ENABLE"
 
 GNOME_MAINTAINER_MODE_DEFINES
@@ -57,7 +57,7 @@ GIO_REQUIRED=2.3.0
 GDK_PIXBUF_REQUIRED=2.24.0
 LIBNOTIFY_REQUIRED=0.7.4
 
-PKG_CHECK_MODULES(ROXENLAUNCHER,         \
+PKG_CHECK_MODULES(ROXENLAUNCHER,               \
 	glib-2.0       >= $GLIB_REQUIRED       \
 	gobject-2.0    >= $GLIB_REQUIRED       \
 	gtk+-3.0       >= $GTK_REQUIRED        \
@@ -75,7 +75,7 @@ AC_CONFIG_FILES([
 	Makefile
 	src/Makefile
 	data/Makefile
-	po/Makefile
+	po/Makefile 
 ])
 
 AC_OUTPUT

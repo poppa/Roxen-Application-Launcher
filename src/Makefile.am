@@ -1,6 +1,6 @@
 NULL = 
 
-AM_CPPFLAGS =                                                            \
+AM_CPPFLAGS =                                                                  \
 	-DDATADIR=\""$(datadir)"\"                                             \
 	-DGETTEXT_PACKAGE=\""$(GETTEXT_PACKAGE)"\"                             \
 	-DLOCALEDIR=\""$(localedir)"\"                                         \
@@ -11,7 +11,7 @@ AM_CPPFLAGS =                                                            \
 BUILT_SOURCES = roxenlauncher_vala.stamp
 bin_PROGRAMS = roxenlauncher
 
-roxenlauncher_SOURCES =                                                  \
+roxenlauncher_SOURCES =                                                        \
 	content-type.vala                                                      \
 	editor.vala                                                            \
 	launcherfile.vala                                                      \
@@ -23,7 +23,7 @@ roxenlauncher_SOURCES =                                                  \
 	tray.vala                                                              \
 	$(NULL)
 
-roxenlauncher_VALAFLAGS =                                                \
+roxenlauncher_VALAFLAGS =                                                      \
 	--thread                                                               \
 	--vapidir=.                                                            \
 	--pkg=config                                                           \
@@ -35,10 +35,10 @@ roxenlauncher_VALAFLAGS =                                                \
 	--pkg=libnotify                                                        \
 	$(NULL)
 
-roxenlauncher_LDADD =                                                    \
+roxenlauncher_LDADD =                                                          \
 	$(ROXENLAUNCHER_LIBS)                                                  \
 	$(NULL)
 
-DISTCLEANFILES =                                                         \
+DISTCLEANFILES =                                                               \
 	$(NULL)
 
