@@ -93,6 +93,17 @@ namespace Roxenlauncher
   }
 
   /**
+   * Write an error to the logfile
+   *
+   * @param m
+   */
+  void log_error (string m)
+  {
+    if (App.do_logging)
+      logger.log ("[error] %s".printf (m));
+  }
+
+  /**
    * Initialize application variables
    */
   public void init ()

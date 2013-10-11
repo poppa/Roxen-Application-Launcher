@@ -307,7 +307,8 @@ public class Roxenlauncher.MainWindow : Gtk.Window
 
         try { Process.spawn_command_line_async (cmd); }
         catch (GLib.Error e) {
-          warning ("Unable to open file: %s", e.message);
+          log_error ("Unable to open file %s: %s".printf(uri, e.message));
+          warning ("Unable to open file %s: %s", uri, e.message);
         }
       }
     });
@@ -324,7 +325,8 @@ public class Roxenlauncher.MainWindow : Gtk.Window
 
         try { Process.spawn_command_line_async (cmd); }
         catch (GLib.Error e) {
-          warning ("Unable to open file: %s", e.message);
+          log_error ("Unable to open sb-directory %s: %s".printf(uri, e.message));
+          warning ("Unable to open sb-directory %s: %s", uri, e.message);
         }
       }
     });
@@ -982,6 +984,7 @@ public class Roxenlauncher.MainWindow : Gtk.Window
       nf.set_timeout (2000);
       try { nf.show (); }
       catch (GLib.Error e) {
+        log_error ("libnotify error: %s".printf(e.message));
         warning ("libnotify error: %s", e.message);
       }
     }

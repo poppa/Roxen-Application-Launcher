@@ -216,6 +216,14 @@ class Roxenlauncher.Main : Gtk.Application
     app.activate.connect (app.on_app_activate);
     app.command_line.connect (app.on_command_line);
 
-    return app.run (argv);
+    int retval;
+
+    try { retval = app.run (argv); }
+    catch (Error e) {
+      message ("Critical error: " + e.message);
+      log_error ("Critical error: " + e.message);
+    }
+
+    return retval;
   }
 }
