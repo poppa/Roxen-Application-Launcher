@@ -105,14 +105,14 @@ public class Roxenlauncher.LauncherFile : Object
     if (lines.length < 7)
       throw new RoxenError.ANY(_("Bad data in launcher file!"));
 
-    string part = string.joinv ("", lines[0:6]);
+    string hash = LauncherFile.make_hash (data);
 
     foreach (LauncherFile file in files) {
       if (file.rawdata != null) {
-        string tmp = string.joinv ("", file.get_header ());
+        string tmp = file.get_hash ();
 
         // File exists locally
-        if (tmp == part) {
+        if (tmp == hash) {
           if (App.do_debug) message ("File exists");
           lf = file;
           return false;
@@ -162,6 +162,21 @@ public class Roxenlauncher.LauncherFile : Object
   public static void remove_file (LauncherFile file)
   {
     files.remove (file);
+  }
+
+  /**
+   * Makes a hash from a stub file. This is for comparing if one file is
+   * the same as another.
+   *
+   * @param stub
+   *  The raw data of a stub file
+   */
+  public static string make_hash (string stub)
+  {
+    string[] t = stub.split ("\r\n");
+    assert (t.length > 4);
+    string s = t[1] + t[2] + t[4] + t[5];
+    return Checksum.compute_for_string(ChecksumType.MD5, s, s.length);
   }
 
   /**
@@ -314,7 +329,7 @@ public class Roxenlauncher.LauncherFile : Object
     rawdata = data == null ? load () : data;
 
     if (rawdata == null || rawdata.length == 0) {
-      error ("%s seems bad. Try cleaning up the files directory at \"%s\"", 
+      error ("%s seems bad. Try cleaning up the files directory at \"%s\"",
              id, getdir ("files"));
     }
 
@@ -385,6 +400,18 @@ public class Roxenlauncher.LauncherFile : Object
 
     return ret;
   }
+
+  /**
+   * Returns the file hash. This is not a hash of the entire file but some
+   * parts of the raw stub file.
+   */
+  public string get_hash ()
+  {
+    if (_hash == null)
+      _hash = LauncherFile.make_hash (rawdata);
+
+    return _hash;
+  } private string _hash = null;
 
   /**
    * Returns the file status as a string

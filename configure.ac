@@ -1,7 +1,7 @@
 AC_PREREQ([2.64])
-AC_INIT(roxenlauncher, 
-        2.0.6.2,
-        [poppanator@gmail.com], 
+AC_INIT(roxenlauncher,
+        2.0.6.3,
+        [poppanator@gmail.com],
         [roxenlauncher],
         [https://github.com/poppa/Roxen-Application-Launcher])
 AC_CONFIG_HEADERS([config.h])
@@ -75,7 +75,7 @@ AC_CONFIG_FILES([
 	Makefile
 	src/Makefile
 	data/Makefile
-	po/Makefile 
+	po/Makefile
 ])
 
 AC_OUTPUT
