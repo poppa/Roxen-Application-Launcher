@@ -915,7 +915,7 @@ public class Roxenlauncher.MainWindow : Gtk.Window
         ls_files.set (iter, 1, status);
 
         if (f.last_upload != null) {
-          ls_files.set (iter, TVFileCols.LAST_UPLOAD, 
+          ls_files.set (iter, TVFileCols.LAST_UPLOAD,
                               f.last_upload.format (DATE_FORMAT));
         }
 
@@ -959,6 +959,10 @@ public class Roxenlauncher.MainWindow : Gtk.Window
                                  string summary, string text)
   {
     if (cb_notify.active) {
+
+      if (App.do_debug)
+        message ("Show notification: %s".printf (summary));
+
       string icon = null;
 
       switch (type)
@@ -979,16 +983,20 @@ public class Roxenlauncher.MainWindow : Gtk.Window
           break;
       }
 
-      var nf = new Notification (summary, text, icon);
+      if (_nf == null)
+        _nf = new Notification (summary, text, icon);
+      else
+        _nf.update (summary, text, icon);
+
       // FIXME: This just simply doesn't work!
-      nf.set_timeout (2000);
-      try { nf.show (); }
+      _nf.set_timeout (2000);
+      try { _nf.show (); }
       catch (GLib.Error e) {
         log_error ("libnotify error: %s".printf(e.message));
         warning ("libnotify error: %s", e.message);
       }
     }
-  }
+  } private Notification _nf;
 
   /**
    * Handles sensitivity of the app related buttons

@@ -805,6 +805,8 @@ public class Roxenlauncher.LauncherFile : Object
                               .printf (path, host));
     save ();
 
+    window.set_file_selection (this);
+
     mess = null;
     sess = null;
   }
