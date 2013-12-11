@@ -32,7 +32,7 @@ namespace Roxenlauncher
   }
 
   /* Various globals */
- 
+
   // Main window, doh!
   MainWindow window;
 
@@ -118,7 +118,7 @@ namespace Roxenlauncher
       if ("KDE" in s) {
         if (App.do_debug)
           message ("Running in KDE (I guess)");
-          
+
         App.is_kde = true;
         break;
       }
@@ -288,6 +288,11 @@ namespace Roxenlauncher
     public static bool do_minimize {
       get { return conf.get_boolean ("minimize-to-tray"); }
       set { conf.set_boolean ("minimize-to-tray", value); }
+    }
+
+    public static int  query_timeout {
+      get { return conf.get_int ("query-timeout"); }
+      set { conf.set_int ("query-timeout", value); }
     }
 
     // Should we do logging?

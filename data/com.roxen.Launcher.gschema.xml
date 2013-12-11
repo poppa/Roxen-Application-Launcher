@@ -8,7 +8,7 @@
       </description>
       <default>true</default>
     </key>
-    
+
     <key name='logfile' type='s'>
       <summary>Path to logfile</summary>
       <description>
@@ -46,6 +46,14 @@
       <default>false</default>
     </key>
 
+    <key name='query-timeout' type='i'>
+      <summary>HTTP query timeout</summary>
+      <description>
+        Number of seconds a HTTP query can be pending before it's aborted
+      </description>
+      <default>10</default>
+    </key>
+
     <key name='window-width' type='i'>
       <summary>Window width</summary>
       <description>
@@ -54,7 +62,7 @@
       </description>
       <default>0</default>
     </key>
-    
+
     <key name='window-height' type='i'>
       <summary>Window height</summary>
       <description>
@@ -67,16 +75,16 @@
     <key name='window-left' type='i'>
       <summary>Window x-position</summary>
       <description>
-        The x-position of the window. The window x-position will be set to 
+        The x-position of the window. The window x-position will be set to
         this value upon start.
       </description>
       <default>0</default>
     </key>
-    
+
     <key name='window-top' type='i'>
       <summary>Window y-position</summary>
       <description>
-        The y-position of the window. The window y-position will be set to 
+        The y-position of the window. The window y-position will be set to
         this value upon start.
       </description>
       <default>0</default>

@@ -695,7 +695,7 @@ public class Roxenlauncher.LauncherFile : Object
 
       switch (mess.status_code)
       {
-        case 404:
+        case Soup.KnownStatusCode.NOT_FOUND:
           s = _("Requested file %s not found on %s").printf (path, host);
           break;
 
@@ -754,6 +754,7 @@ public class Roxenlauncher.LauncherFile : Object
     if (status == Statuses.DOWNLOADING || status == Statuses.UPLOADING)
       return;
 
+
     if (App.do_debug)
       print ("> %s\n", get_uri ());
 
@@ -772,15 +773,73 @@ public class Roxenlauncher.LauncherFile : Object
       s.close ();
       s = null;
 
-      var sess = new Soup.SessionSync ();
+      var sess = new Soup.SessionAsync ();
+      sess.use_thread_context = true;
+      int qt = App.query_timeout;
 
-      if (App.do_debug)
+      if (qt > 0)
+        sess.timeout = qt;
+
+      if (App.do_debug) {
+        message ("Query timeout is: %d\n", qt);
         sess.add_feature (new Soup.Logger (Soup.LoggerLogLevel.HEADERS, -1));
+      }
 
       var mess = get_http_message ("PUT", get_uri ());
       mess.request_body.append (Soup.MemoryUse.COPY, data);
 
-      sess.queue_message (mess, on_upload);
+      sess.queue_message (mess, (sess, mess) => {
+        if (App.do_debug) {
+          message("> on_upload");
+          message ("Status: %ld", mess.status_code);
+        }
+
+        last_upload = new DateTime.now_local ();
+
+        switch (mess.status_code)
+        {
+          case 7:
+            if (App.do_debug)
+              message ("Request was aborted");
+
+            window.show_notification (NotifyType.UP,
+                                      _("Upload warning"),
+                                      _("%s generated a timeout " +
+                                        "when it was uploaded to %s. " +
+                                        "Most likely you have a syntax error " +
+                                        "in the file!")
+                                       .printf (path, host));
+            break;
+
+          case Soup.KnownStatusCode.INTERNAL_SERVER_ERROR:
+            if (App.do_debug)
+              message ("Internal server error");
+
+              window.show_notification (NotifyType.UP,
+                                      _("Upload warning"),
+                                      _("%s generated an Internal Server " +
+                                        "when it was uploaded to %s")
+                                       .printf (path, host));
+
+            break;
+
+          default:
+            window.show_notification (NotifyType.UP,
+                                      _("Upload OK"),
+                                      _("%s was uploaded OK to %s")
+                                      .printf (path, host));
+            break;
+        }
+
+        save ();
+
+        win_set_status (Statuses.UPLOADED);
+        window.set_file_selection (this);
+
+        mess = null;
+        sess = null;
+      });
+
       yield;
     }
     catch (GLib.Error e) {
@@ -793,8 +852,12 @@ public class Roxenlauncher.LauncherFile : Object
     }
   }
 
+/*
   void on_upload (Soup.Session sess, Soup.Message mess)
   {
+    if (App.do_debug)
+      message("> on_upload");
+
     last_upload = new DateTime.now_local ();
 
     win_set_status (Statuses.UPLOADED);
@@ -810,6 +873,7 @@ public class Roxenlauncher.LauncherFile : Object
     mess = null;
     sess = null;
   }
+*/
 
   /**
    * Creates a Soup.Message with some defaults set
@@ -943,6 +1007,8 @@ public class Roxenlauncher.LauncherFile : Object
         previous_event == FileMonitorEvent.CHANGED)
     {
       upload.begin ();
+      if (App.do_debug)
+        message ("After upload.begin()");
     }
   }
 
