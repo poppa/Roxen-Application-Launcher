@@ -788,57 +788,7 @@ public class Roxenlauncher.LauncherFile : Object
       var mess = get_http_message ("PUT", get_uri ());
       mess.request_body.append (Soup.MemoryUse.COPY, data);
 
-      sess.queue_message (mess, (sess, mess) => {
-        if (App.do_debug) {
-          message("> on_upload");
-          message ("Status: %ld", mess.status_code);
-        }
-
-        last_upload = new DateTime.now_local ();
-
-        switch (mess.status_code)
-        {
-          case 7:
-            if (App.do_debug)
-              message ("Request was aborted");
-
-            window.show_notification (NotifyType.UP,
-                                      _("Upload warning"),
-                                      _("%s generated a timeout " +
-                                        "when it was uploaded to %s. " +
-                                        "Most likely you have a syntax error " +
-                                        "in the file!")
-                                       .printf (path, host));
-            break;
-
-          case Soup.KnownStatusCode.INTERNAL_SERVER_ERROR:
-            if (App.do_debug)
-              message ("Internal server error");
-
-              window.show_notification (NotifyType.UP,
-                                      _("Upload warning"),
-                                      _("%s generated an Internal Server " +
-                                        "when it was uploaded to %s")
-                                       .printf (path, host));
-
-            break;
-
-          default:
-            window.show_notification (NotifyType.UP,
-                                      _("Upload OK"),
-                                      _("%s was uploaded OK to %s")
-                                      .printf (path, host));
-            break;
-        }
-
-        save ();
-
-        win_set_status (Statuses.UPLOADED);
-        window.set_file_selection (this);
-
-        mess = null;
-        sess = null;
-      });
+      sess.queue_message (mess, on_upload);
 
       yield;
     }
@@ -852,20 +802,52 @@ public class Roxenlauncher.LauncherFile : Object
     }
   }
 
-/*
   void on_upload (Soup.Session sess, Soup.Message mess)
   {
-    if (App.do_debug)
+    if (App.do_debug) {
       message("> on_upload");
+      message ("Status: %ld", mess.status_code);
+    }
 
     last_upload = new DateTime.now_local ();
 
+    switch (mess.status_code)
+    {
+      case 7:
+        if (App.do_debug)
+          message ("Request was aborted");
+
+        window.show_notification (NotifyType.UP,
+                                  _("Upload warning"),
+                                  _("%s generated a timeout " +
+                                    "when it was uploaded to %s. " +
+                                    "Most likely you have a syntax error " +
+                                    "in the file!")
+                                   .printf (path, host));
+        break;
+
+      case Soup.KnownStatusCode.INTERNAL_SERVER_ERROR:
+        if (App.do_debug)
+          message ("Internal server error");
+
+          window.show_notification (NotifyType.UP,
+                                  _("Upload warning"),
+                                  _("%s generated an Internal Server " +
+                                    "when it was uploaded to %s")
+                                   .printf (path, host));
+
+        break;
+
+      default:
+        window.show_notification (NotifyType.UP,
+                                  _("Upload OK"),
+                                  _("%s was uploaded OK to %s")
+                                  .printf (path, host));
+        break;
+    }
+
     win_set_status (Statuses.UPLOADED);
 
-    window.show_notification (NotifyType.UP,
-                              _("Upload OK"),
-                              _("%s was uploaded OK to %s")
-                              .printf (path, host));
     save ();
 
     window.set_file_selection (this);
@@ -873,7 +855,6 @@ public class Roxenlauncher.LauncherFile : Object
     mess = null;
     sess = null;
   }
-*/
 
   /**
    * Creates a Soup.Message with some defaults set
