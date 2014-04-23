@@ -45,6 +45,7 @@ public class Roxenlauncher.MainWindow : Gtk.Window
   Gtk.Menu              ctx_menu;
   Gtk.FileChooserButton fcb_logfile;
   Gtk.TextView          logview;
+  Gtk.SpinButton        sp_timeout;
 
   Tray tray;
 
@@ -113,6 +114,7 @@ public class Roxenlauncher.MainWindow : Gtk.Window
     statusbar       = g ("statusbar1")           as Gtk.Statusbar;
     fcb_logfile     = g ("fcb_logfile")          as Gtk.FileChooserButton;
     logview         = g ("logview")              as Gtk.TextView;
+    sp_timeout      = g ("sp_http_query_timeout") as Gtk.SpinButton;
 
     if (App.is_kde) {
       try {
@@ -173,6 +175,18 @@ public class Roxenlauncher.MainWindow : Gtk.Window
     // Minimize to tray check button
     cb_minimize.active = App.do_minimize;
     cb_minimize.toggled.connect (on_cb_minimize_toggled);
+
+    // HTTP query timeout
+    if (App.do_debug)
+      message ("HTTP query timeout: %d", App.query_timeout);
+
+    sp_timeout.adjustment.value = App.query_timeout;
+    sp_timeout.adjustment.value_changed.connect (() => {
+      if (App.do_debug)
+        message("HTTP query timeout changed: %d", (int) sp_timeout.value);
+
+      App.query_timeout = (int) sp_timeout.value;
+    });
 
     // Enable logging check button
     cb_logging.active = App.do_logging;
