@@ -90,8 +90,8 @@ class Roxenlauncher.Main : Gtk.Application
         if (d != null) {
           LauncherFile lf;
 
-          try {   
-            if (LauncherFile.handle_file (d, out lf)) {     
+          try {
+            if (LauncherFile.handle_file (d, out lf)) {
               if (App.do_debug)
                 message ("Incomming file is new...%s", lf.get_uri ());
 
@@ -113,7 +113,7 @@ class Roxenlauncher.Main : Gtk.Application
             }
             catch (GLib.Error ex) {
               message ("Unable to delete incomming file!");
-            }            
+            }
           }
           catch (GLib.Error e) {
             log_warning (_("Failed to handle incomming file: %s")
@@ -212,7 +212,8 @@ class Roxenlauncher.Main : Gtk.Application
     Intl.bind_textdomain_codeset (Config.GETTEXT_PACKAGE, "UTF-8");
     Intl.textdomain (Config.GETTEXT_PACKAGE);
 
-    var app = new Main (DOMAIN, ApplicationFlags.FLAGS_NONE);
+    var app = new Main (DOMAIN, ApplicationFlags.HANDLES_COMMAND_LINE|
+                                ApplicationFlags.HANDLES_OPEN);
     app.activate.connect (app.on_app_activate);
     app.command_line.connect (app.on_command_line);
 
