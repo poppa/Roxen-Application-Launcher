@@ -998,7 +998,7 @@ public class Roxenlauncher.MainWindow : Gtk.Window
       }
 
       if (_nf == null)
-        _nf = new Notification (summary, text, icon);
+        _nf = new Notify.Notification (summary, text, icon);
       else
         _nf.update (summary, text, icon);
 
@@ -1010,7 +1010,7 @@ public class Roxenlauncher.MainWindow : Gtk.Window
         warning ("libnotify error: %s", e.message);
       }
     }
-  } private Notification _nf;
+  } private Notify.Notification _nf;
 
   /**
    * Handles sensitivity of the app related buttons

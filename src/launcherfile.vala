@@ -19,7 +19,7 @@
  * along with this library.  If not, see <http://www.gnu.org/licenses/>.
  *
  * Author:
- *  Pontus Östlund <pontus@poppa.se>
+ *  Pontus Östlund <poppanator@gmail.com>
  */
 
 public class Roxenlauncher.LauncherFile : Object
@@ -176,7 +176,7 @@ public class Roxenlauncher.LauncherFile : Object
     string[] t = stub.split ("\r\n");
     assert (t.length > 4);
     string s = t[1] + t[2] + t[4] + t[5];
-    return Checksum.compute_for_string(ChecksumType.MD5, s, s.length);
+    return Checksum.compute_for_string (ChecksumType.MD5, s, s.length);
   }
 
   /**
@@ -700,7 +700,8 @@ public class Roxenlauncher.LauncherFile : Object
           break;
 
         default:
-          s = _("%s was not downloaded from %s (code: %d)").printf (path, host, mess.status_code);
+          s = _("%s was not downloaded from %s (code: %d)")
+               .printf (path, host, mess.status_code);
           break;
       }
 
@@ -830,11 +831,11 @@ public class Roxenlauncher.LauncherFile : Object
         if (App.do_debug)
           message ("Internal server error");
 
-          window.show_notification (NotifyType.UP,
-                                  _("Upload warning"),
-                                  _("%s generated an Internal Server " +
-                                    "when it was uploaded to %s")
-                                   .printf (path, host));
+        window.show_notification (NotifyType.UP,
+                                _("Upload warning"),
+                                _("%s generated an Internal Server Error " +
+                                  "when it was uploaded to %s")
+                                 .printf (path, host));
 
         break;
 

@@ -17,7 +17,7 @@
  * along with this library.  If not, see <http://www.gnu.org/licenses/>.
  *
  * Author:
- * 	Pontus Östlund <pontus@poppa.se>
+ * 	Pontus Östlund <poppanator@gmail.com>
  */
 
 class Roxenlauncher.Main : Gtk.Application
