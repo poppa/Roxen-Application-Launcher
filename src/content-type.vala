@@ -1,7 +1,7 @@
 /* -*- Mode: Vala; indent-tabs-mode: s; c-basic-offset: 2; tab-width: 2 -*- */
 /* application.vala
  *
- * Copyright (C) Pontus Östlund 2009-2011 <pontus@poppa.se>
+ * Copyright (C) Pontus Östlund 2009-2015 <poppanator@gmail.com>
  *
  * This file is part of Roxen Application Launcher (RAL)
  *

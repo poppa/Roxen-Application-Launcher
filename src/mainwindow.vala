@@ -1,7 +1,7 @@
 /* -*- Mode: Vala; indent-tabs-mode: s; c-basic-offset: 2; tab-width: 2 -*- */
 /*
  * mainwindow.vala
- * Copyright (C) Pontus Östlund 2009-2011 <pontus@poppa.se>
+ * Copyright (C) Pontus Östlund 2009-2015 <poppanator@gmail.com>
  *
  * This file is part of Roxen Application Launcher (RAL)
  *
@@ -183,7 +183,7 @@ public class Roxenlauncher.MainWindow : Gtk.Window
     sp_timeout.adjustment.value = App.query_timeout;
     sp_timeout.adjustment.value_changed.connect (() => {
       if (App.do_debug)
-        message("HTTP query timeout changed: %d", (int) sp_timeout.value);
+        message ("HTTP query timeout changed: %d", (int) sp_timeout.value);
 
       App.query_timeout = (int) sp_timeout.value;
     });
@@ -998,7 +998,7 @@ public class Roxenlauncher.MainWindow : Gtk.Window
       }
 
       if (_nf == null)
-        _nf = new Notification (summary, text, icon);
+        _nf = new Notify.Notification (summary, text, icon);
       else
         _nf.update (summary, text, icon);
 
@@ -1010,7 +1010,7 @@ public class Roxenlauncher.MainWindow : Gtk.Window
         warning ("libnotify error: %s", e.message);
       }
     }
-  } private Notification _nf;
+  } private Notify.Notification _nf;
 
   /**
    * Handles sensitivity of the app related buttons

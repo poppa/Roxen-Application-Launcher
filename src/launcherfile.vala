@@ -3,7 +3,7 @@
  *
  * This file contains various utility methods and classes
  *
- * Copyright (C) 2010 Pontus Östlund
+ * Copyright (C) Pontus Östlund 2009-2015 <poppanator@gmail.com>
  *
  * This library is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -17,9 +17,6 @@
  *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this library.  If not, see <http://www.gnu.org/licenses/>.
- *
- * Author:
- *  Pontus Östlund <pontus@poppa.se>
  */
 
 public class Roxenlauncher.LauncherFile : Object

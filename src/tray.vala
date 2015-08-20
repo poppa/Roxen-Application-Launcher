@@ -1,20 +1,20 @@
 /* -*- Mode: Vala; indent-tabs-mode: s; c-basic-offset: 2; tab-width: 2 -*- */
 /* tray.vala
- * 
- * Copyright (C) Pontus Östlund 2009 <pontus@poppa.se>
+ *
+ * Copyright (C) Pontus Östlund 2009-2015 <poppanator@gmail.com>
  *
  * This file is part of Roxen Application Launcher (RAL)
- * 
+ *
  * RAL is free software: you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
  * Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * RAL is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License along
  * with RAL. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -29,7 +29,7 @@ public class Roxenlauncher.Tray : GLib.Object
   string m_show = _("Click to show the application launcher");
   string m_hide = _("Click to hide the application launcher");
   string t_show = _("Show application launcher");
-  string t_hide = _("Hide application launcher");    
+  string t_hide = _("Hide application launcher");
 
   construct {
     try {
@@ -44,33 +44,33 @@ public class Roxenlauncher.Tray : GLib.Object
       warning ("Unable to load logo for tray! Can't start panel applet");
     }
   }
-  
+
   public StatusIcon get_icon ()
   {
     return icon;
   }
-  
+
   public void hookup ()
   {
     icon.popup_menu.connect (on_trayicon_popup);
     icon.activate.connect (set_window_visibility);
     icon.set_visible (true);
   }
-  
+
   public void set_blinking (bool val)
   {
     // icon.set_blinking(val);
   }
-  
+
   public void hide_window ()
   {
     set_window_visibility ();
   }
-  
+
   void on_trayicon_popup (uint btn, uint time)
   {
     popmenu = new Gtk.Menu ();
-  
+
     var visible     = window.visible;
     var item_quit   = new ImageMenuItem.from_stock (Stock.QUIT, null);
     var img_hide    = new Image.from_stock (Stock.CLOSE, IconSize.MENU);

@@ -1,7 +1,7 @@
 /* -*- Mode: Vala; indent-tabs-mode: s; c-basic-offset: 2; tab-width: 2 -*- */
 /* content-type-form.vala
  *
- * Copyright (C) Pontus Östlund 2009-2011 <pontus@poppa.se>
+ * Copyright (C) Pontus Östlund 2009-2015 <poppanator@gmail.com>
  *
  * This file is part of Roxen Application Launcher (RAL)
  *
@@ -78,7 +78,7 @@ class Roxenlauncher.ContentTypeForm : GLib.Object
     tf_content_type.sensitive = true;
 
     tf_content_type.changed.connect (on_tf_changed);
-    
+
     btn_app_chooser.clicked.connect (() => {
       AppInfo app = app_chooser (tf_content_type.text);
 
