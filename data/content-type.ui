@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Generated with glade 3.18.3 -->
 <interface>
-  <!-- interface-requires gtk+ 3.0 -->
+  <requires lib="gtk+" version="3.0"/>
   <object class="GtkDialog" id="dialog">
     <property name="can_focus">False</property>
     <property name="border_width">5</property>
     <property name="default_width">320</property>
     <property name="default_height">170</property>
     <property name="type_hint">dialog</property>
-    <property name="has_resize_grip">False</property>
     <child internal-child="vbox">
       <object class="GtkBox" id="dialog-vbox1">
         <property name="can_focus">False</property>
@@ -19,10 +19,10 @@
             <child>
               <object class="GtkButton" id="btn_cancel">
                 <property name="label">gtk-cancel</property>
+                <property name="use_action_appearance">False</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
-                <property name="use_action_appearance">False</property>
                 <property name="use_stock">True</property>
               </object>
               <packing>
@@ -34,10 +34,10 @@
             <child>
               <object class="GtkButton" id="btn_ok">
                 <property name="label">gtk-ok</property>
+                <property name="use_action_appearance">False</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
-                <property name="use_action_appearance">False</property>
                 <property name="use_stock">True</property>
               </object>
               <packing>
@@ -79,7 +79,6 @@
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="invisible_char">●</property>
-                            <property name="invisible_char_set">True</property>
                           </object>
                         </child>
                       </object>
@@ -154,15 +153,16 @@
                   <object class="GtkAlignment" id="alignment5">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="top_padding">20</property>
-                    <property name="bottom_padding">7</property>
+                    <property name="top_padding">26</property>
+                    <property name="bottom_padding">5</property>
+                    <property name="left_padding">6</property>
                     <child>
                       <object class="GtkButton" id="btn_app_chooser">
                         <property name="label" translatable="yes">Choose...</property>
+                        <property name="use_action_appearance">False</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
-                        <property name="use_action_appearance">False</property>
                       </object>
                     </child>
                   </object>
