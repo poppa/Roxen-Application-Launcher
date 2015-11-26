@@ -697,15 +697,15 @@ public class Roxenlauncher.LauncherFile : Object
           break;
 
         default:
-          s = _("%s was not downloaded from %s (code: %d)")
-               .printf (path, host, mess.status_code);
+          s = _("%s was not downloaded from %s (code: %d: %s)")
+               .printf (path, host, mess.status_code, mess.reason_phrase);
           break;
       }
 
       if (App.do_debug)
         message ("Download failed: %s", s);
 
-      log_warning (s);
+      log_error (s);
       win_set_status (Statuses.NOT_DOWNLOADED);
       window.show_notification (NotifyType.ERROR, _("Download failed"), s);
       save ();
