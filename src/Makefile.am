@@ -20,7 +20,6 @@ roxenlauncher_SOURCES =                                                        \
 	poppa.vala                                                             \
 	roxelauncher.vala                                                      \
 	content-type-form.vala                                                 \
-	tray.vala                                                              \
 	$(NULL)
 
 roxenlauncher_VALAFLAGS =                                                      \

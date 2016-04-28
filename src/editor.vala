@@ -21,13 +21,16 @@
 
 public class Roxenlauncher.Editor : Object
 {
+	private static List<Editor> _editors =
+		new List<Editor> ();
+
   /**
    * List of available editors
    */
-  public static unowned List<Editor> editors {
-    get;
-    private set;
-    default = new List<Editor> ();
+  public static List<Editor> editors {
+    get {
+  		return _editors;
+    }
   }
 
   /**
@@ -37,7 +40,7 @@ public class Roxenlauncher.Editor : Object
    */
   public static void add_editor (Editor editor)
   {
-    foreach (Editor e in editors) {
+    foreach (Editor e in _editors) {
       if (e.name.down () == editor.name.down ()) {
         if (App.do_debug)
           message ("Editor %s already in list", editor.name);
@@ -56,7 +59,7 @@ public class Roxenlauncher.Editor : Object
    */
   public static void remove_editor (Editor editor)
   {
-    editors.remove (editor);
+    _editors.remove (editor);
     conf.set_strv ("editors", Editor.to_array ());
   }
 
@@ -69,7 +72,7 @@ public class Roxenlauncher.Editor : Object
    */
   public static Editor? get_by_name (string name)
   {
-    foreach (Editor e in editors)
+    foreach (Editor e in _editors)
       if (e.name.down () == name.down ())
         return e;
 
@@ -84,7 +87,7 @@ public class Roxenlauncher.Editor : Object
   {
     string[] s = new string[] {};
 
-    foreach (Editor e in editors)
+    foreach (Editor e in _editors)
       s += e.to_string ();
 
     return s;

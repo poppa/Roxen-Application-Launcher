@@ -1,6 +1,6 @@
 AC_PREREQ([2.64])
 AC_INIT(roxenlauncher,
-        2.0.8.5,
+        2.0.8.6,
         [poppanator@gmail.com],
         [roxenlauncher],
         [https://github.com/poppa/Roxen-Application-Launcher])
@@ -57,7 +57,7 @@ GIO_REQUIRED=2.3.0
 GDK_PIXBUF_REQUIRED=2.24.0
 LIBNOTIFY_REQUIRED=0.7.4
 
-PKG_CHECK_MODULES(ROXENLAUNCHER,               \
+PKG_CHECK_MODULES(ROXENLAUNCHER,         \
 	glib-2.0       >= $GLIB_REQUIRED       \
 	gobject-2.0    >= $GLIB_REQUIRED       \
 	gtk+-3.0       >= $GTK_REQUIRED        \

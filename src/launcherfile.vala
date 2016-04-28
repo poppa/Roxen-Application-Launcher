@@ -21,13 +21,16 @@
 
 public class Roxenlauncher.LauncherFile : Object
 {
+	private static List<LauncherFile> _files =
+		new List<LauncherFile> ();
+
   /**
    * Storage for all current files
    */
-  public static unowned List<LauncherFile> files {
-    get;
-    private set;
-    default = new List<LauncherFile> ();
+  public static List<LauncherFile> files {
+    get {
+  		return _files;
+    }
   }
 
   /**
@@ -38,8 +41,8 @@ public class Roxenlauncher.LauncherFile : Object
   {
     GLib.List<LauncherFile> nlist = new GLib.List<LauncherFile> ();
 
-    for (uint i = files.length (); i > 0;)
-      nlist.append (files.nth_data (--i));
+    for (uint i = _files.length (); i > 0;)
+      nlist.append (_files.nth_data (--i));
 
     return nlist;
   }
@@ -53,7 +56,7 @@ public class Roxenlauncher.LauncherFile : Object
    */
   public static LauncherFile? find_by_uri (string uri)
   {
-    foreach (LauncherFile lf in files)
+    foreach (LauncherFile lf in _files)
       if (lf.get_uri () == uri)
         return lf;
 
@@ -74,14 +77,14 @@ public class Roxenlauncher.LauncherFile : Object
       FileInfo fi;
 
       while ((fi = f.next_file (null)) != null)
-        files.append (new LauncherFile.from_existing (fi.get_name ()));
+        _files.append (new LauncherFile.from_existing (fi.get_name ()));
     }
     catch (GLib.Error e) {
       warning ("Failed to load launcher files: %s", e.message);
     }
 
     if (App.do_debug)
-      message ("Num files: %ld", files.length ());
+      message ("Num files: %ld", _files.length ());
   }
 
   /**
@@ -104,7 +107,7 @@ public class Roxenlauncher.LauncherFile : Object
 
     string hash = LauncherFile.make_hash (data);
 
-    foreach (LauncherFile file in files) {
+    foreach (LauncherFile file in _files) {
       if (file.rawdata != null) {
         string tmp = file.get_hash ();
 
@@ -129,7 +132,7 @@ public class Roxenlauncher.LauncherFile : Object
    */
   public static void add_file (LauncherFile lf)
   {
-    foreach (LauncherFile l in files)
+    foreach (LauncherFile l in _files)
       if (l.get_uri () == lf.get_uri ()) {
         if (App.do_debug)
           message ("Launcher file exists. Skip adding!");
@@ -137,7 +140,7 @@ public class Roxenlauncher.LauncherFile : Object
         return;
       }
 
-    files.prepend (lf);
+    _files.prepend (lf);
   }
 
   /**
@@ -145,10 +148,10 @@ public class Roxenlauncher.LauncherFile : Object
    */
   public static void clear_files ()
   {
-    foreach (LauncherFile l in files)
-      files.remove (l);
+    foreach (LauncherFile l in _files)
+      _files.remove (l);
 
-    files = new GLib.List<LauncherFile> ();
+    _files = new GLib.List<LauncherFile> ();
   }
 
   /**
@@ -158,7 +161,7 @@ public class Roxenlauncher.LauncherFile : Object
    */
   public static void remove_file (LauncherFile file)
   {
-    files.remove (file);
+    _files.remove (file);
   }
 
   /**
@@ -594,7 +597,7 @@ public class Roxenlauncher.LauncherFile : Object
     }
 
     if (!Poppa.file_exists (local_file)) {
-      download ();
+      download.begin ();
       yield;
       return;
     }
@@ -640,7 +643,7 @@ public class Roxenlauncher.LauncherFile : Object
 
     win_set_status (Statuses.DOWNLOADING);
 
-    Soup.SessionSync sess = new Soup.SessionSync ();
+    var sess = new Soup.Session ();
 
     if (App.do_debug) {
       message ("Adding logger to SOUP Session");
@@ -660,7 +663,7 @@ public class Roxenlauncher.LauncherFile : Object
    */
   void low_download (Soup.Session sess, Soup.Message mess)
   {
-    if (mess.status_code == Soup.KnownStatusCode.OK) {
+    if (mess.status_code == Soup.Status.OK) {
       if (App.do_debug)
         message ("Download ok");
 
@@ -677,8 +680,8 @@ public class Roxenlauncher.LauncherFile : Object
 
       save ();
     }
-    else if (mess.status_code == Soup.KnownStatusCode.MOVED_PERMANENTLY ||
-             mess.status_code == Soup.KnownStatusCode.MOVED_TEMPORARILY)
+    else if (mess.status_code == Soup.Status.MOVED_PERMANENTLY ||
+             mess.status_code == Soup.Status.MOVED_TEMPORARILY)
     {
       message ("Follow redirect...");
       log_message ("Got redrirect. Not implemented yet!");
@@ -692,7 +695,7 @@ public class Roxenlauncher.LauncherFile : Object
 
       switch (mess.status_code)
       {
-        case Soup.KnownStatusCode.NOT_FOUND:
+        case Soup.Status.NOT_FOUND:
           s = _("Requested file %s not found on %s").printf (path, host);
           break;
 
@@ -771,7 +774,8 @@ public class Roxenlauncher.LauncherFile : Object
       s.close ();
       s = null;
 
-      var sess = new Soup.SessionAsync ();
+//      var sess = new Soup.SessionAsync ();
+			var sess = new Soup.Session ();
       sess.use_thread_context = true;
       int qt = App.query_timeout;
 
@@ -784,7 +788,7 @@ public class Roxenlauncher.LauncherFile : Object
       }
 
       var mess = get_http_message ("PUT", get_uri ());
-      mess.request_body.append (Soup.MemoryUse.COPY, data);
+      mess.request_body.append_take (data);
 
       sess.queue_message (mess, on_upload);
 
@@ -824,7 +828,8 @@ public class Roxenlauncher.LauncherFile : Object
                                    .printf (path, host));
         break;
 
-      case Soup.KnownStatusCode.INTERNAL_SERVER_ERROR:
+//      case Soup.KnownStatusCode.INTERNAL_SERVER_ERROR:
+				case Soup.Status.INTERNAL_SERVER_ERROR:
         if (App.do_debug)
           message ("Internal server error");
 
@@ -999,3 +1004,4 @@ public class Roxenlauncher.LauncherFile : Object
       monitor.cancel ();
   }
 }
+

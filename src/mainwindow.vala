@@ -47,7 +47,7 @@ public class Roxenlauncher.MainWindow : Gtk.Window
   Gtk.TextView          logview;
   Gtk.SpinButton        sp_timeout;
 
-  Tray tray;
+  //Tray tray;
 
   /**
    * Column order for the content type tree view
@@ -350,8 +350,8 @@ public class Roxenlauncher.MainWindow : Gtk.Window
     me.activate.connect (on_btn_edit_file_clicked);
     md.activate.connect (on_ctx_popup_menu_delete);
 
-    tray = new Tray ();
-    tray.hookup ();
+    //tray = new Tray ();
+    //tray.hookup ();
 
     destroy.connect (on_window_destroy);
     add (main_vbox);
@@ -713,7 +713,7 @@ public class Roxenlauncher.MainWindow : Gtk.Window
     var lf = get_selected_file (out a, out b);
 
     if (lf != null)
-      lf.download ();
+      lf.download.begin ();
   }
 
   /**
@@ -982,15 +982,18 @@ public class Roxenlauncher.MainWindow : Gtk.Window
       switch (type)
       {
         case LauncherFile.NotifyType.UP:
-          icon = Gtk.Stock.GO_UP;
+          //icon = Gtk.Stock.GO_UP;
+          icon = "go-up";
           break;
 
         case LauncherFile.NotifyType.DOWN:
-          icon = Gtk.Stock.GO_DOWN;
+          //icon = Gtk.Stock.GO_DOWN;
+          icon = "go-down";
           break;
 
         case LauncherFile.NotifyType.ERROR:
-          icon = Gtk.Stock.DIALOG_ERROR;
+          //icon = Gtk.Stock.DIALOG_ERROR;
+          icon = "dialog-error";
           break;
 
         default:

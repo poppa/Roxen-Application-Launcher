@@ -21,13 +21,15 @@
 
 public class Roxenlauncher.ContentType : Object
 {
+	private static List<ContentType> _content_types =
+		new List<ContentType> ();
   /**
    * List of added content types
    */
-  public static unowned List<ContentType> content_types {
-    get;
-    private set;
-    default = new List<ContentType> ();
+  public static List<ContentType> content_types {
+    get {
+  		return _content_types;
+    }
   }
 
   /**
@@ -37,7 +39,7 @@ public class Roxenlauncher.ContentType : Object
    */
   public static bool add_content_type (ContentType ct)
   {
-    foreach (ContentType c in content_types) {
+    foreach (ContentType c in _content_types) {
       if (ct.mimetype == c.mimetype) {
         if (App.do_debug)
           message ("Content type %s already in list", c.mimetype);
@@ -46,7 +48,7 @@ public class Roxenlauncher.ContentType : Object
       }
     }
 
-    content_types.append (ct);
+    _content_types.append (ct);
     conf.set_strv ("content-types", ContentType.to_array ());
 
     return true;
@@ -59,7 +61,7 @@ public class Roxenlauncher.ContentType : Object
    */
   public static void remove_content_type (ContentType ct)
   {
-    content_types.remove (ct);
+    _content_types.remove (ct);
     conf.set_strv ("content-types", ContentType.to_array ());
   }
 
@@ -75,7 +77,7 @@ public class Roxenlauncher.ContentType : Object
     if (ct == null)
       return null;
 
-    foreach (ContentType c in content_types)
+    foreach (ContentType c in _content_types)
       if (c.mimetype == ct)
         return c;
 
@@ -91,7 +93,7 @@ public class Roxenlauncher.ContentType : Object
    */
   public static Editor? get_editor_for_ct (string ct)
   {
-    foreach (ContentType c in content_types) {
+    foreach (ContentType c in _content_types) {
       if (c.mimetype == ct)
         return c.editor;
     }
@@ -107,7 +109,7 @@ public class Roxenlauncher.ContentType : Object
   {
     string[] s = new string[] {};
 
-    foreach (ContentType c in content_types)
+    foreach (ContentType c in _content_types)
       s += c.to_string ();
 
     return s;
