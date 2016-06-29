@@ -104,6 +104,18 @@ namespace Roxenlauncher
   }
 
   /**
+   * Write a message to stdout if in debug mode
+   *
+   * @param s
+   */
+  void wdebug (string s)
+  {
+    if (App.do_debug) {
+      message (s);
+    }
+  }
+
+  /**
    * Initialize application variables
    */
   public void init ()

@@ -48,7 +48,7 @@ public class Roxenlauncher.Editor : Object
       }
     }
 
-    editors.append (editor);
+    _editors.append (editor);
     conf.set_strv ("editors", Editor.to_array ());
   }
 
@@ -87,8 +87,9 @@ public class Roxenlauncher.Editor : Object
   {
     string[] s = new string[] {};
 
-    foreach (Editor e in _editors)
+    foreach (Editor e in _editors) {
       s += e.to_string ();
+    }
 
     return s;
   }
@@ -183,7 +184,8 @@ public class Roxenlauncher.Editor : Object
    */
   public string to_string ()
   {
-    string ico = icon == null ? "" : icon;
+    string ico = icon ?? "";
     return name + "\\1" + command + "\\1" + ico;
   }
 }
+
