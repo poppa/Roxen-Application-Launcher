@@ -58,7 +58,7 @@ class Roxenlauncher.Main : Gtk.Application
         window.show_all ();
         log_message (_("Application launcher started"));
 
-        string oldconf = Path.build_filename (getdir("$home"), DIR, "ral.conf");
+        string oldconf = Path.build_filename (getdir ("$home"), DIR, "ral.conf");
 
         if (Poppa.file_exists (oldconf)) {
           try { File.new_for_path (oldconf).delete (); }

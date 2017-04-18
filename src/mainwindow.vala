@@ -208,7 +208,7 @@ public class Roxenlauncher.MainWindow : Gtk.Window
     // File choose button
     fcb_logfile.sensitive = cb_logging.active;
     fcb_logfile.filter = filter;
-    fcb_logfile.set_filename (App.logfile);
+    fcb_logfile.set_filename (logger == null ? App.logfile : logger.path);
 
     // Log view
     logview.sensitive = cb_logging.active;

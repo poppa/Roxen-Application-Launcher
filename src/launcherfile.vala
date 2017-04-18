@@ -132,13 +132,16 @@ public class Roxenlauncher.LauncherFile : Object
    */
   public static void add_file (LauncherFile lf)
   {
-    foreach (LauncherFile l in _files)
+    foreach (LauncherFile l in _files) {
       if (l.get_uri () == lf.get_uri ()) {
         if (App.do_debug)
           message ("Launcher file exists. Skip adding!");
 
         return;
       }
+    }
+
+    log_message ("Adding file: %s".printf (lf.get_uri ()));
 
     _files.prepend (lf);
   }
@@ -151,6 +154,8 @@ public class Roxenlauncher.LauncherFile : Object
     foreach (LauncherFile l in _files)
       _files.remove (l);
 
+    log_message (_("Purging all files"));
+
     _files = new GLib.List<LauncherFile> ();
   }
 
@@ -161,6 +166,8 @@ public class Roxenlauncher.LauncherFile : Object
    */
   public static void remove_file (LauncherFile file)
   {
+    log_message (_("Removing file: %s").printf (file.get_uri ()));
+
     _files.remove (file);
   }
 
@@ -467,6 +474,17 @@ public class Roxenlauncher.LauncherFile : Object
     return retval;
   }
 
+  void check_modification ()
+  {
+    wdebug ("Check modified for %s".printf (get_uri ()));
+
+    if (last_upload != null && last_modified != null) {
+      if (last_modified.compare (last_upload) == 1) {
+        wdebug ("File's been modified outside RAL");
+      }
+    }
+  }
+
   /**
    * Parse the rxl2 file, set up directories and stuff like that
    */
@@ -515,8 +533,10 @@ public class Roxenlauncher.LauncherFile : Object
     else {
       var lm = Poppa.filemtime (local_file);
 
-      if (lm != null)
+      if (lm != null) {
         last_modified = lm;
+        check_modification ();
+      }
     }
 
     if (App.do_debug)
@@ -542,8 +562,9 @@ public class Roxenlauncher.LauncherFile : Object
   void set_monitor ()
   {
     try {
-      if (monitor != null)
+      if (monitor != null) {
         monitor.cancel ();
+      }
 
       var f = File.new_for_path (local_file);
       monitor = f.monitor_file (FileMonitorFlags.NONE);
@@ -559,8 +580,9 @@ public class Roxenlauncher.LauncherFile : Object
    */
   void stop_monitor ()
   {
-    if (monitor != null)
+    if (monitor != null) {
       monitor.cancel ();
+    }
 
     monitor = null;
   }
@@ -580,8 +602,9 @@ public class Roxenlauncher.LauncherFile : Object
    */
   public void launch_editor ()
   {
-    if (App.do_debug)
+    if (App.do_debug) {
       message ("Launch editor for ct %s", content_type);
+    }
 
     if (application == null) {
       var app = ContentType.get_by_ct (content_type);
@@ -592,8 +615,9 @@ public class Roxenlauncher.LauncherFile : Object
         if (application == null)
           return;
       }
-      else
+      else {
         application = app;
+      }
     }
 
     if (!Poppa.file_exists (local_file)) {
@@ -663,9 +687,14 @@ public class Roxenlauncher.LauncherFile : Object
    */
   void low_download (Soup.Session sess, Soup.Message mess)
   {
+    if (App.do_debug) {
+      message ("Status code from download: %ld", mess.status_code);
+    }
+
     if (mess.status_code == Soup.Status.OK) {
-      if (App.do_debug)
+      if (App.do_debug) {
         message ("Download ok");
+      }
 
       if (save_downloaded_file (mess.response_body.data)) {
         win_set_status (Statuses.DOWNLOADED);
@@ -752,19 +781,25 @@ public class Roxenlauncher.LauncherFile : Object
    */
   public async void upload ()
   {
-    if (status == Statuses.DOWNLOADING || status == Statuses.UPLOADING)
+    if (status == Statuses.DOWNLOADING || status == Statuses.UPLOADING) {
+      log_message (_("%s is under %s. Skipping upload").printf (
+                   get_uri (), status == Statuses.DOWNLOADING
+                                       ? _("download")
+                                       : _("upload")));
       return;
+    }
 
 
-    if (App.do_debug)
+    if (App.do_debug) {
       print ("> %s\n", get_uri ());
+    }
 
     log_message (_("Uploading %s").printf (get_uri ()));
     win_set_status (Statuses.UPLOADING);
 
     try {
       var f = File.new_for_path (local_file);
-      var s = new DataInputStream (f.read());
+      var s = new DataInputStream (f.read ());
       var i = f.query_info ("*", FileQueryInfoFlags.NONE);
 
       int64 fsize = i.get_size ();
@@ -812,44 +847,55 @@ public class Roxenlauncher.LauncherFile : Object
     }
 
     last_upload = new DateTime.now_local ();
+    string errmsg = null;
+
+    Statuses upload_status = Statuses.NOT_UPLOADED;
 
     switch (mess.status_code)
     {
       case 7:
-        if (App.do_debug)
-          message ("Request was aborted");
-
+        wdebug ("Request was aborted");
+        errmsg = _("%s generated a timeout when it was uploaded to %s. " +
+                   "Most likely you have a syntax error in the file!")
+                  .printf (path, host);
         window.show_notification (NotifyType.UP,
                                   _("Upload warning"),
-                                  _("%s generated a timeout " +
-                                    "when it was uploaded to %s. " +
-                                    "Most likely you have a syntax error " +
-                                    "in the file!")
-                                   .printf (path, host));
+                                  errmsg);
+        log_warning (errmsg);
         break;
 
-//      case Soup.KnownStatusCode.INTERNAL_SERVER_ERROR:
-				case Soup.Status.INTERNAL_SERVER_ERROR:
-        if (App.do_debug)
-          message ("Internal server error");
-
+			case Soup.Status.INTERNAL_SERVER_ERROR:
+        wdebug ("Internal server error");
+        errmsg = _("%s generated an Internal Server Error when it was " +
+                   "uploaded to %s")
+                  .printf (path, host);
         window.show_notification (NotifyType.UP,
-                                _("Upload warning"),
-                                _("%s generated an Internal Server Error " +
-                                  "when it was uploaded to %s")
-                                 .printf (path, host));
-
+                                _("Upload error"),
+                                errmsg);
+        log_error (errmsg);
         break;
 
-      default:
+      case Soup.Status.OK:
         window.show_notification (NotifyType.UP,
                                   _("Upload OK"),
                                   _("%s was uploaded OK to %s")
                                   .printf (path, host));
+        upload_status = Statuses.UPLOADED;
         break;
+
+      default:
+        errmsg = _("%s was not uploaded to %s. Got unexpected HTTP status " +
+                   "(%ld) from server.")
+                  .printf (path, host, mess.status_code);
+        window.show_notification (NotifyType.UP,
+                                  _("Upload error"),
+                                  errmsg);
+        log_error (errmsg);
+        break;
+
     }
 
-    win_set_status (Statuses.UPLOADED);
+    win_set_status (upload_status);
 
     save ();
 
@@ -888,13 +934,16 @@ public class Roxenlauncher.LauncherFile : Object
     string bp = "";
     string lu = "";
 
-    if (last_upload == null)
+    if (last_upload == null) {
       lu = "0";
-    else
+    }
+    else {
       lu = "%lld".printf (last_upload.to_unix ());
+    }
 
-    if (bundle_paths != null)
+    if (bundle_paths != null) {
       bp = string.joinv (":", bundle_paths);
+    }
 
     string[] data = {
       schema,
@@ -923,19 +972,23 @@ public class Roxenlauncher.LauncherFile : Object
    */
   void randid ()
   {
-    string sb = host + "_";
-    for (int i = 0; i < 8; i++)
-      sb += "%c".printf ((int) Math.floor (26 * Random.next_double () + 65));
+    string sb = host + "@" + (port.to_string()) + "-";
 
-    string[] paths = path[1:path.length-1].split ("/");
+    for (int i = 0; i < 8; i++) {
+      sb += "%c".printf ((int) Math.floor (26 * Random.next_double () + 65));
+    }
+
+    string[] paths = path[1:path.length].split ("/");
     paths = paths[0:paths.length-1];
 
     assert (paths != null);
 
-    if (paths.length > 0)
-      id = sb + "_" + string.joinv ("_", paths);
-    else
+    if (paths.length > 0) {
+      id = sb + "-" + string.joinv ("-", paths);
+    }
+    else {
       id = sb;
+    }
   }
 
   /**

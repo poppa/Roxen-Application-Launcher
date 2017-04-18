@@ -327,6 +327,7 @@ namespace Roxenlauncher
       get {
         if (_logfile == null) {
           _logfile = conf.get_string ("logfile");
+
           if (_logfile.length == 0)
             _logfile = Path.build_filename (getdir ("$home"), LOGFILE);
         }
@@ -353,11 +354,15 @@ namespace Roxenlauncher
 
     public Logger (string path)
     {
-      this.path = path;
-      file = File.new_for_path (path);
+      string dir    = Path.get_dirname (path);
+      string prefix = (new DateTime.now_local ()).format ("%Y-%m");
+      string _path  = Path.build_filename (dir, "ral-" + prefix + ".log");
 
-      if (!FileUtils.test (path, FileTest.EXISTS)) {
-        log (_("Creating log file %s").printf (path));
+      this.path = _path;
+      file = File.new_for_path (_path);
+
+      if (!FileUtils.test (_path, FileTest.EXISTS)) {
+        log (_("Creating log file %s").printf (_path));
       }
     }
 

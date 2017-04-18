@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: roxenlauncher 2.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-04-23 11:49+0100\n"
-"PO-Revision-Date: 2014-04-23 15:19+0100\n"
+"POT-Creation-Date: 2017-04-18 17:08+0200\n"
+"PO-Revision-Date: 2017-04-18 17:24+0200\n"
 "Last-Translator: Pontus Östlund <poppanator@gmail.com>\n"
 "Language-Team: Swedish <poppanator@gmail.com>\n"
 "Language: sv\n"
@@ -12,279 +12,127 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Poedit-SourceCharset: UTF-8\n"
-"X-Poedit-Basepath: ../\n"
-"X-Generator: Poedit 1.5.4\n"
+"X-Poedit-Basepath: ..\n"
+"X-Generator: Poedit 1.8.7.1\n"
 "X-Poedit-SearchPath-0: src\n"
 "X-Poedit-SearchPath-1: data\n"
 
-#: src/tray.c:485
-msgid "No active files"
-msgstr "Inga aktiva filer"
-
-#: src/tray.c:619 data/mainwindow.ui:412
+#: data/com.roxen.Launcher.gschema.xml:5 data/mainwindow.ui:412
 msgid "Enable notifications"
 msgstr "Aktivera notifieringar"
 
-#: src/tray.c:622 data/mainwindow.ui:428
+#: data/com.roxen.Launcher.gschema.xml:6
+msgid "Set to True to enable notifications of downloads and uploads."
+msgstr ""
+"Sätt till True för att aktivera notifieringar om ned- och uppladdningar."
+
+#: data/com.roxen.Launcher.gschema.xml:13
+msgid "Path to logfile"
+msgstr "Sökväg till loggfil"
+
+#: data/com.roxen.Launcher.gschema.xml:14
+msgid ""
+"Absolute path to log file to use. If empty the default file in the "
+"application directory will be used if logging is enabled"
+msgstr ""
+"Absolut sökväg till loggfil att använda. Om tom kommer standardfilen i "
+"applikationsmappen att användas om loggning är påslaget"
+
+#: data/com.roxen.Launcher.gschema.xml:22
+msgid "Added editors"
+msgstr "Lade till editorer"
+
+#: data/com.roxen.Launcher.gschema.xml:23
+msgid "List of added editors"
+msgstr "Lista på tillagda editorer"
+
+#: data/com.roxen.Launcher.gschema.xml:28
+msgid "Added content types"
+msgstr "Tillagda filtyper"
+
+#: data/com.roxen.Launcher.gschema.xml:29
+msgid "List of registered content types."
+msgstr "Lista på registrerade filtyper."
+
+#: data/com.roxen.Launcher.gschema.xml:34 data/mainwindow.ui:428
 msgid "Minimize to tray"
 msgstr "Minimera till notifieringsytan"
 
-#: src/tray.c:811
-msgid "Click to show the application launcher"
-msgstr "Klicka för att visa programstartaren"
+#: data/com.roxen.Launcher.gschema.xml:35
+msgid "If True minimizing the application hides it to the tray"
+msgstr "Om True göms applikationen i systemfältet"
 
-#: src/tray.c:814
-msgid "Click to hide the application launcher"
-msgstr "Klicka för att gömma programstartaren"
+#: data/com.roxen.Launcher.gschema.xml:42 data/mainwindow.ui:639
+msgid "Enable logging"
+msgstr "Aktivera loggning"
 
-#: src/tray.c:817
-msgid "Show application launcher"
-msgstr "Visa programstartaren"
+#: data/com.roxen.Launcher.gschema.xml:43
+msgid "If True various events will be written to the log file."
+msgstr "Om True loggas vissa händelser till loggfilen."
 
-#: src/tray.c:820
-msgid "Hide application launcher"
-msgstr "Göm programstartaren"
+#: data/com.roxen.Launcher.gschema.xml:50 data/mainwindow.ui:475
+msgid "HTTP query timeout"
+msgstr "Timeout för HTTP-förfrågan"
 
-#: src/roxelauncher.c:190 src/mainwindow.c:4244 src/main.c:103
-msgid "Roxen™ Application Launcher"
-msgstr "Roxen™ Programstartare"
+#: data/com.roxen.Launcher.gschema.xml:51
+msgid "Number of seconds a HTTP query can be pending before it's aborted"
+msgstr "Antal sekunder en HTTP-förfrågan kan avvakta svar innan den avbryts"
 
-#: src/roxelauncher.c:804 src/roxelauncher.c:840
-#, c-format
-msgid "Unable to create local directory \"%s\""
-msgstr "Kunde inte skapa lokal katalog \"%s\""
+#: data/com.roxen.Launcher.gschema.xml:58
+msgid "Window width"
+msgstr "Fönsterbredd"
 
-#: src/roxelauncher.c:1338
-#, c-format
-msgid "Creating log file %s"
-msgstr "Skapar loggfil %s"
-
-#: src/roxelauncher.c:1399
-msgid "Unable to load log file contents"
-msgstr "Kunde inte ladda in loggfil: %s"
-
-#: src/roxelauncher.c:1542
-#, c-format
-msgid "Unable to write to logfile %s: %s"
-msgstr "Kunde inte skriva till loggfil %s: %s"
-
-#: src/roxelauncher.c:1597
-#, c-format
-msgid "Unable to truncate log file %s: %s"
-msgstr "Kunde inte rensa loggfil %s: %s"
-
-#: src/content-type-form.c:275
-#, c-format
-msgid "Failed adding application to button: %s"
-msgstr "Kunde inte lägga till program till knapp: %s"
-
-#: src/content-type-form.c:399
-#, c-format
-msgid "Error: %s\n"
-msgstr "Fel: %s\n"
-
-#: src/content-type-form.c:520
-#, c-format
-msgid "Error adding application to button: %s"
-msgstr "Kunde inte lägga till program till knapp: %s"
-
-#: src/mainwindow.c:720
-msgid "Log file truncated"
-msgstr "Loggfilen rensades"
-
-#: src/mainwindow.c:1560
-msgid "File"
-msgstr "Fil"
-
-#: src/mainwindow.c:1562
-msgid "Status"
-msgstr "Status"
-
-#: src/mainwindow.c:1564
-msgid "Last upload"
-msgstr "Senast uppladdad"
-
-#: src/mainwindow.c:1681 src/mainwindow.c:2428 src/launcherfile.c:1518
-msgid "Not uploaded"
-msgstr "Ej uppladdad"
-
-#: src/mainwindow.c:1733
-msgid "Content type"
-msgstr "Filtyp"
-
-#: src/mainwindow.c:1739
-msgid "Application"
-msgstr "Program"
-
-#: src/mainwindow.c:2183 src/mainwindow.c:2232
-msgid "Do you want to delete the selected file?"
-msgstr "Vill du radera den valda filen?"
-
-#: src/mainwindow.c:2306
-msgid "Do you want to delete the selected content type?"
-msgstr "Vill du radera den valda filtypen?"
-
-#: src/mainwindow.c:2978
-msgid "Add content type"
-msgstr "Lägg till filtyp"
-
-#: src/mainwindow.c:3114
-msgid "Edit content type"
-msgstr "Redigera filtyp"
-
-#: src/mainwindow.c:3906
-msgid "No files"
-msgstr "Inga filer"
-
-#: src/mainwindow.c:3916
-msgid "One file"
-msgstr "En fil"
-
-#: src/mainwindow.c:3924
-#, c-format
-msgid "%d active files"
-msgstr "%d aktiva filer"
-
-#: src/launcherfile.c:718
-msgid "Bad data in launcher file!"
-msgstr "Felaktigt innehåll i filen"
-
-#: src/launcherfile.c:1488
-msgid "Not downloaded"
-msgstr "Ej nerladdad"
-
-#: src/launcherfile.c:1498
-msgid "Downloaded"
-msgstr "Nerladdad"
-
-#: src/launcherfile.c:1508
-msgid "Uploaded"
-msgstr "Uppladdad"
-
-#: src/launcherfile.c:1528
-msgid "Downloading..."
-msgstr "Laddar ner..."
-
-#: src/launcherfile.c:1538
-msgid "Uploading..."
-msgstr "Laddar upp..."
-
-#: src/launcherfile.c:1548
-msgid "Not changed"
-msgstr "Ej ändrad"
-
-#: src/launcherfile.c:2243
-msgid "Error starting editor"
-msgstr "Kunde inte starta redigerare"
-
-#: src/launcherfile.c:2244 src/launcherfile.c:2256
-#, c-format
-msgid "Could not start editor %s: %s "
-msgstr "Kunde inte starta redigerare %s: %s"
-
-#: src/launcherfile.c:2345
-#, c-format
-msgid "Downloading file: %s"
-msgstr "Laddar ner fil: %s"
-
-#: src/launcherfile.c:2437
-msgid "Download OK"
-msgstr "Hämtningen lyckades"
-
-#: src/launcherfile.c:2438
-#, c-format
-msgid "%s was downloaded OK from %s"
-msgstr "%s laddades ner OK från %s"
-
-#: src/launcherfile.c:2498
-#, c-format
-msgid "Requested file %s not found on %s"
-msgstr "Den efterfrågde filen %s hittades inte på %s"
-
-#: src/launcherfile.c:2515
-#, c-format
-msgid "%s was not downloaded from %s (code: %d)"
-msgstr "%s laddades inte ner från %s (kod: %d)"
-
-#: src/launcherfile.c:2537
-msgid "Download failed"
-msgstr "Hämtningen misslyckades"
-
-#: src/launcherfile.c:2647
-#, c-format
-msgid "Unable to write to file %s: %s"
-msgstr "Kunde inte skriva till fil %s: %s"
-
-#: src/launcherfile.c:2746
-#, c-format
-msgid "Uploading %s"
-msgstr "Laddar upp %s"
-
-#: src/launcherfile.c:2873
-#, c-format
-msgid "Unable to upload file: %s"
-msgstr "Kunde inte ladda upp fil: %s"
-
-#: src/launcherfile.c:2884
-msgid "Upload failed"
-msgstr "Uppladdningen misslyckades"
-
-#: src/launcherfile.c:2886
-#, c-format
-msgid "%s was not uploaded OK to %s"
-msgstr "%s laddades inte upp OK till %s"
-
-#: src/launcherfile.c:2957 src/launcherfile.c:2982
-msgid "Upload warning"
-msgstr "Uppladdningsvarning"
-
-#: src/launcherfile.c:2958
-#, c-format
+#: data/com.roxen.Launcher.gschema.xml:59
 msgid ""
-"%s generated a timeout when it was uploaded to %s. Most likely you have a "
-"syntax error in the file!"
+"The width of the window. The window width will be set to this value upon "
+"start."
 msgstr ""
-"%s genererade en timeout när den laddades upp till %s. Du har sannolikt ett "
-"syntaxfel i filen!"
+"Programfönstrets bredd. Fönstret kommer sättas till denna bredd när "
+"programmet startar."
 
-#: src/launcherfile.c:2983
-#, c-format
-msgid "%s generated an Internal Server when it was uploaded to %s"
-msgstr "%s genererade ett internt serverfel när den laddades upp till %s"
+#: data/com.roxen.Launcher.gschema.xml:67
+msgid "Window height"
+msgstr "Fönsterhöjd"
 
-#: src/launcherfile.c:3002
-msgid "Upload OK"
-msgstr "Uppladdningen lyckades"
+#: data/com.roxen.Launcher.gschema.xml:68
+msgid ""
+"The height of the window. The window height will be set to this value upon "
+"start."
+msgstr ""
+"Programfönstrets höjd. Fönstret kommer sättas till denna höjd när "
+"programmet startar."
 
-#: src/launcherfile.c:3003
-#, c-format
-msgid "%s was uploaded OK to %s"
-msgstr "%s laddades upp OK till %s"
+#: data/com.roxen.Launcher.gschema.xml:76
+msgid "Window x-position"
+msgstr "Fönstrets x-position"
 
-#: src/launcherfile.c:3478
-msgid "Unable to create directory for launcher file!"
-msgstr "Kunde inte skapa katalog för fil"
+#: data/com.roxen.Launcher.gschema.xml:77
+msgid ""
+"The x-position of the window. The window x-position will be set to this "
+"value upon start."
+msgstr "Fönstret kommer sättas till denna x-position när programmet startar."
 
-#: src/main.c:193
-msgid "Application launcher started"
-msgstr "Programstartaren startad"
+#: data/com.roxen.Launcher.gschema.xml:85
+msgid "Window y-position"
+msgstr "Fönstrets y-position"
 
-#: src/main.c:430
-#, c-format
-msgid "Failed to handle incomming file: %s"
-msgstr "Kunde inte hantera inkommande fil: %s"
+#: data/com.roxen.Launcher.gschema.xml:86
+msgid ""
+"The y-position of the window. The window y-position will be set to this "
+"value upon start."
+msgstr "Fönstret kommer sättas till denna y-position när programmet startar."
 
-#: src/main.c:580
-msgid " [FILE]"
-msgstr " [FIL]"
+#: data/content-type.ui:90
+msgid "<b>Content type</b>"
+msgstr "<b>Filtyp</b>"
 
-#: src/main.c:631
-msgid "Version"
-msgstr "Version"
+#: data/content-type.ui:139
+msgid "<b>Editor</b>"
+msgstr "<b>Redigerare</b>"
 
-#: src/main.c:649
-msgid "Antoher instance of Roxen Application Launcher is already running"
-msgstr "En annan instans av Roxen Programstartare körs redan"
+#: data/content-type.ui:161
+msgid "Choose..."
+msgstr "Välj..."
 
 #: data/mainwindow.ui:8
 msgid "About %s"
@@ -360,10 +208,6 @@ msgstr "Fönstrets stängknapp minimerar applikationen till notifieringsytan"
 msgid "If 0 no timeout is used"
 msgstr "Om 0 används ingen timeout"
 
-#: data/mainwindow.ui:475
-msgid "HTTP query timeout"
-msgstr "Timeout för HTTP-förfrågan"
-
 #: data/mainwindow.ui:497
 msgid "<b>Settings</b>"
 msgstr "<b>Inställningar</b>"
@@ -375,10 +219,6 @@ msgstr "Program"
 #: data/mainwindow.ui:591
 msgid "Clear log"
 msgstr "Rensa loggen"
-
-#: data/mainwindow.ui:639
-msgid "Enable logging"
-msgstr "Aktivera loggning"
 
 #: data/mainwindow.ui:673
 msgid "Logging"
@@ -407,17 +247,313 @@ msgstr "_Redigera"
 msgid "_Delete"
 msgstr "_Radera"
 
-#: data/content-type.ui:91
-msgid "<b>Content type</b>"
-msgstr "<b>Filtyp</b>"
+#: src/content-type-form.vala:65
+#, c-format
+msgid "Error: %s\n"
+msgstr "Fel: %s\n"
 
-#: data/content-type.ui:140
-msgid "<b>Editor</b>"
-msgstr "<b>Redigerare</b>"
+#: src/content-type-form.vala:98
+#, c-format
+msgid "Failed adding application to button: %s"
+msgstr "Kunde inte lägga till program till knapp: %s"
 
-#: data/content-type.ui:161
-msgid "Choose..."
-msgstr "Välj..."
+#: src/content-type-form.vala:110
+#, c-format
+msgid "Error adding application to button: %s"
+msgstr "Kunde inte lägga till program till knapp: %s"
+
+#: src/launcherfile.vala:106
+msgid "Bad data in launcher file!"
+msgstr "Felaktigt innehåll i filen"
+
+#: src/launcherfile.vala:157
+msgid "Purging all files"
+msgstr "Raderar alla filer"
+
+#: src/launcherfile.vala:169
+#, c-format
+msgid "Removing file: %s"
+msgstr "Tar bort fil: %s"
+
+#: src/launcherfile.vala:433
+msgid "Not downloaded"
+msgstr "Ej nerladdad"
+
+#: src/launcherfile.vala:434
+msgid "Downloaded"
+msgstr "Nerladdad"
+
+#: src/launcherfile.vala:435
+msgid "Uploaded"
+msgstr "Uppladdad"
+
+#: src/launcherfile.vala:436 src/mainwindow.vala:249 src/mainwindow.vala:651
+msgid "Not uploaded"
+msgstr "Ej uppladdad"
+
+#: src/launcherfile.vala:437
+msgid "Downloading..."
+msgstr "Laddar ner..."
+
+#: src/launcherfile.vala:438
+msgid "Uploading..."
+msgstr "Laddar upp..."
+
+#: src/launcherfile.vala:439
+msgid "Not changed"
+msgstr "Ej ändrad"
+
+#: src/launcherfile.vala:645
+msgid "Error starting editor"
+msgstr "Kunde inte starta redigerare"
+
+#: src/launcherfile.vala:646 src/launcherfile.vala:649
+#, c-format
+msgid "Could not start editor %s: %s "
+msgstr "Kunde inte starta redigerare %s: %s"
+
+#: src/launcherfile.vala:668
+#, c-format
+msgid "Downloading file: %s"
+msgstr "Laddar ner fil: %s"
+
+#: src/launcherfile.vala:705
+msgid "Download OK"
+msgstr "Hämtningen lyckades"
+
+#: src/launcherfile.vala:706
+#, c-format
+msgid "%s was downloaded OK from %s"
+msgstr "%s laddades ner OK från %s"
+
+#: src/launcherfile.vala:730
+#, c-format
+msgid "Requested file %s not found on %s"
+msgstr "Den efterfrågde filen %s hittades inte på %s"
+
+#: src/launcherfile.vala:734
+#, c-format
+msgid "%s was not downloaded from %s (code: %d: %s)"
+msgstr "%s laddades inte ner från %s (kod: %d: %s)"
+
+#: src/launcherfile.vala:744
+msgid "Download failed"
+msgstr "Hämtningen misslyckades"
+
+#: src/launcherfile.vala:772
+#, c-format
+msgid "Unable to write to file %s: %s"
+msgstr "Kunde inte skriva till fil %s: %s"
+
+#: src/launcherfile.vala:787
+#, c-format
+msgid "%s is under %s. Skipping upload"
+msgstr "%s är under %s. Hoppar över uppladdning"
+
+#: src/launcherfile.vala:789
+msgid "download"
+msgstr "nedladdning"
+
+#: src/launcherfile.vala:790
+msgid "upload"
+msgstr "uppladdning"
+
+#: src/launcherfile.vala:799
+#, c-format
+msgid "Uploading %s"
+msgstr "Laddar upp %s"
+
+#: src/launcherfile.vala:835
+#, c-format
+msgid "Unable to upload file: %s"
+msgstr "Kunde inte ladda upp fil: %s"
+
+#: src/launcherfile.vala:838
+msgid "Upload failed"
+msgstr "Uppladdningen misslyckades"
+
+#: src/launcherfile.vala:839
+#, c-format
+msgid "%s was not uploaded OK to %s"
+msgstr "%s laddades inte upp OK till %s"
+
+#: src/launcherfile.vala:860
+#, c-format
+msgid ""
+"%s generated a timeout when it was uploaded to %s. Most likely you have a "
+"syntax error in the file!"
+msgstr ""
+"%s genererade en timeout när den laddades upp till %s. Du har sannolikt ett "
+"syntaxfel i filen!"
+
+#: src/launcherfile.vala:864
+msgid "Upload warning"
+msgstr "Uppladdningsvarning"
+
+#: src/launcherfile.vala:871
+#, c-format
+msgid "%s generated an Internal Server Error when it was uploaded to %s"
+msgstr "%s orsakade ett Internt Serverfel när den laddades upp till %s"
+
+#: src/launcherfile.vala:875 src/launcherfile.vala:893
+msgid "Upload error"
+msgstr "Uppladdningsfel"
+
+#: src/launcherfile.vala:882
+msgid "Upload OK"
+msgstr "Uppladdningen lyckades"
+
+#: src/launcherfile.vala:883
+#, c-format
+msgid "%s was uploaded OK to %s"
+msgstr "%s laddades upp OK till %s"
+
+#: src/launcherfile.vala:889
+#, c-format
+msgid ""
+"%s was not uploaded to %s. Got unexpected HTTP status (%ld) from server."
+msgstr ""
+"%s laddades inte upp till %s. Fick en oväntad HTTP-status (%ld) från "
+"servern."
+
+#: src/launcherfile.vala:1005
+msgid "Unable to create directory for launcher file!"
+msgstr "Kunde inte skapa katalog för fil"
+
+#: src/main.vala:29
+msgid "Output version information and exit"
+msgstr "Skriv ut versions-information och avsluta"
+
+#: src/main.vala:31
+msgid ""
+"Debug mode. Will print HTTP trafic on download and upload and other various "
+"info to stdout"
+msgstr ""
+"Avlusningsläge. Skriver info om HTTP-trafik vid upp- och nedladdning, och "
+"annan diverse information, till stdout."
+
+#: src/main.vala:59
+msgid "Application launcher started"
+msgstr "Programstartaren startad"
+
+#: src/main.vala:116
+#, c-format
+msgid "Failed to handle incomming file: %s"
+msgstr "Kunde inte hantera inkommande fil: %s"
+
+#: src/main.vala:164
+msgid " [FILE]"
+msgstr " [FIL]"
+
+#: src/main.vala:178
+msgid "Version"
+msgstr "Version"
+
+#: src/main.vala:187
+msgid "Antoher instance of Roxen Application Launcher is already running"
+msgstr "En annan instans av Roxen Programstartare körs redan"
+
+#: src/mainwindow.vala:202
+msgid "Log file truncated"
+msgstr "Loggfilen rensades"
+
+#: src/mainwindow.vala:228
+msgid "File"
+msgstr "Fil"
+
+#: src/mainwindow.vala:228
+msgid "Status"
+msgstr "Status"
+
+#: src/mainwindow.vala:228
+msgid "Last upload"
+msgstr "Senast uppladdad"
+
+#: src/mainwindow.vala:276
+msgid "Content type"
+msgstr "Filtyp"
+
+#: src/mainwindow.vala:277
+msgid "Application"
+msgstr "Program"
+
+#: src/mainwindow.vala:554 src/mainwindow.vala:578
+msgid "Do you want to delete the selected file?"
+msgstr "Vill du radera den valda filen?"
+
+#: src/mainwindow.vala:604
+msgid "Do you want to delete the selected content type?"
+msgstr "Vill du radera den valda filtypen?"
+
+#: src/mainwindow.vala:839
+msgid "Add content type"
+msgstr "Lägg till filtyp"
+
+#: src/mainwindow.vala:880
+msgid "Edit content type"
+msgstr "Redigera filtyp"
+
+#: src/mainwindow.vala:1091
+msgid "No files"
+msgstr "Inga filer"
+
+#: src/mainwindow.vala:1093
+msgid "One file"
+msgstr "En fil"
+
+#: src/mainwindow.vala:1095
+#, c-format
+msgid "%d active files"
+msgstr "%d aktiva filer"
+
+#: src/mainwindow.vala:1173 src/roxelauncher.vala:47
+msgid "Roxen™ Application Launcher"
+msgstr "Roxen™ Programstartare"
+
+#: src/roxelauncher.vala:207 src/roxelauncher.vala:216
+#, c-format
+msgid "Unable to create local directory \"%s\""
+msgstr "Kunde inte skapa lokal katalog \"%s\""
+
+#: src/roxelauncher.vala:365
+#, c-format
+msgid "Creating log file %s"
+msgstr "Skapar loggfil %s"
+
+#: src/roxelauncher.vala:377
+msgid "Unable to load log file contents"
+msgstr "Kunde inte ladda in loggfil: %s"
+
+#: src/roxelauncher.vala:400
+#, c-format
+msgid "Unable to write to logfile %s: %s"
+msgstr "Kunde inte skriva till loggfil %s: %s"
+
+#: src/roxelauncher.vala:412
+#, c-format
+msgid "Unable to truncate log file %s: %s"
+msgstr "Kunde inte rensa loggfil %s: %s"
+
+#~ msgid "No active files"
+#~ msgstr "Inga aktiva filer"
+
+#~ msgid "Click to show the application launcher"
+#~ msgstr "Klicka för att visa programstartaren"
+
+#~ msgid "Click to hide the application launcher"
+#~ msgstr "Klicka för att gömma programstartaren"
+
+#~ msgid "Show application launcher"
+#~ msgstr "Visa programstartaren"
+
+#~ msgid "Hide application launcher"
+#~ msgstr "Göm programstartaren"
+
+#~ msgid "%s was not downloaded from %s (code: %d)"
+#~ msgstr "%s laddades inte ner från %s (kod: %d)"
+
+#~ msgid "%s generated an Internal Server when it was uploaded to %s"
+#~ msgstr "%s genererade ett internt serverfel när den laddades upp till %s"
 
 #~ msgid "www.poppa.se"
 #~ msgstr "www.poppa.se"

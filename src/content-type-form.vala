@@ -62,7 +62,7 @@ class Roxenlauncher.ContentTypeForm : GLib.Object
       builder.add_from_file (get_ui_path ("content-type.ui"));
     }
     catch (GLib.Error e) {
-      error (_("Error: %s\n").printf(e.message));
+      error (_("Error: %s\n").printf (e.message));
     }
 
     prevaction = PreviousAction.LOAD;
@@ -96,7 +96,7 @@ class Roxenlauncher.ContentTypeForm : GLib.Object
         }
         catch (Error e) {
           log_message (_("Failed adding application to button: %s")
-                        .printf(e.message));
+                        .printf (e.message));
         }
       }
     });
