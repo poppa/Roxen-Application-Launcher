@@ -46,6 +46,14 @@
       <default>false</default>
     </key>
 
+    <key name='allow-any-cert' type='b'>
+      <summary>Allow all certificates</summary>
+      <description>
+        If True no TLS-certificate validation will be made.
+      </description>
+      <default>false</default>
+    </key>
+
     <key name='query-timeout' type='i'>
       <summary>HTTP query timeout</summary>
       <description>

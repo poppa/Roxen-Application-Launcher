@@ -670,6 +670,11 @@ public class Roxenlauncher.LauncherFile : Object
 
     var sess = new Soup.Session ();
 
+    if (App.allow_all_certs) {
+      wdebug ("Allow any certificate");
+      sess.ssl_strict = false;
+    }
+
     if (App.do_debug) {
       message ("Adding logger to SOUP Session");
       sess.add_feature (new Soup.Logger (Soup.LoggerLogLevel.HEADERS, -1));
@@ -677,7 +682,13 @@ public class Roxenlauncher.LauncherFile : Object
 
     wdebug ("> %s\n".printf (get_uri ()));
 
-    sess.queue_message (get_http_message ("GET", get_uri ()), low_download);
+    var mess = get_http_message ("GET", get_uri ());
+
+    if (App.allow_all_certs) {
+      mess.tls_errors = GLib.TlsCertificateFlags.VALIDATE_ALL;
+    }
+
+    sess.queue_message (mess, low_download);
 
     yield;
   }
@@ -711,8 +722,7 @@ public class Roxenlauncher.LauncherFile : Object
       win_set_status (Statuses.NOT_DOWNLOADED);
     }
     else {
-      if (App.do_debug)
-        warning ("Bad status code in HTTP response");
+      warn_debug ("Bad status code in HTTP response");
 
       string s;
 
@@ -720,6 +730,12 @@ public class Roxenlauncher.LauncherFile : Object
       {
         case Soup.Status.NOT_FOUND:
           s = _("Requested file %s not found on %s").printf (path, host);
+          break;
+
+        case Soup.Status.SSL_FAILED:
+          s= _("The requested file %s on %s was not downloaded due to an " +
+               "untrusted certificate being used").printf (path, host);
+          wdebug ("Untrusted...");
           break;
 
         default:
@@ -782,7 +798,6 @@ public class Roxenlauncher.LauncherFile : Object
       return;
     }
 
-
     if (App.do_debug) {
       print ("> %s\n", get_uri ());
     }
@@ -803,6 +818,12 @@ public class Roxenlauncher.LauncherFile : Object
       s = null;
 
 			var sess = new Soup.Session ();
+
+      if (App.allow_all_certs) {
+        wdebug ("Allow any certificate");
+        sess.ssl_strict = false;
+      }
+
       sess.use_thread_context = true;
       int qt = App.query_timeout;
 
@@ -816,6 +837,10 @@ public class Roxenlauncher.LauncherFile : Object
 
       var mess = get_http_message ("PUT", get_uri ());
       mess.request_body.append_take (data);
+
+      if (App.allow_all_certs) {
+        mess.tls_errors = GLib.TlsCertificateFlags.VALIDATE_ALL;
+      }
 
       sess.queue_message (mess, on_upload);
 
@@ -853,6 +878,16 @@ public class Roxenlauncher.LauncherFile : Object
                                   _("Upload warning"),
                                   errmsg);
         log_warning (errmsg);
+        break;
+
+      case Soup.Status.SSL_FAILED:
+        wdebug ("Untrusted certificate!");
+        errmsg = _("%s was not uploaded to %s due to an untrusted certificate" +
+                   " being used").printf (path, host);
+        log_error (errmsg);
+        window.show_notification (NotifyType.ERROR,
+                                _("Upload error"),
+                                errmsg);
         break;
 
 			case Soup.Status.INTERNAL_SERVER_ERROR:

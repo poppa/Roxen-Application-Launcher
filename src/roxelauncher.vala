@@ -116,6 +116,18 @@ namespace Roxenlauncher
   }
 
   /**
+   * Write a warning to stdout if in debug mode
+   *
+   * @param s
+   */
+  void warn_debug (string s)
+  {
+    if (App.do_debug) {
+      warning (s);
+    }
+  }
+
+  /**
    * Initialize application variables
    */
   public void init ()
@@ -289,6 +301,11 @@ namespace Roxenlauncher
     public static bool do_debug = false;
 
     /* GSettings */
+
+    public static bool allow_all_certs {
+      get { return conf.get_boolean ("allow-any-cert"); }
+      set { conf.set_boolean ("allow-any-cert", value); }
+    }
 
     // Should we show notifications or not?
     public static bool do_notifications {

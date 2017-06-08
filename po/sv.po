@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: roxenlauncher 2.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-04-18 17:24+0200\n"
-"PO-Revision-Date: 2017-04-19 13:46+0200\n"
+"POT-Creation-Date: 2017-06-08 13:53+0200\n"
+"PO-Revision-Date: 2017-06-08 13:53+0200\n"
 "Last-Translator: Pontus Östlund <poppanator@gmail.com>\n"
 "Language-Team: Swedish <poppanator@gmail.com>\n"
 "Language: sv\n"
@@ -62,7 +62,7 @@ msgstr "Minimera till notifieringsytan"
 msgid "If True minimizing the application hides it to the tray"
 msgstr "Om True göms applikationen i systemfältet"
 
-#: data/com.roxen.Launcher.gschema.xml:42 data/mainwindow.ui:639
+#: data/com.roxen.Launcher.gschema.xml:42 data/mainwindow.ui:656
 msgid "Enable logging"
 msgstr "Aktivera loggning"
 
@@ -70,19 +70,27 @@ msgstr "Aktivera loggning"
 msgid "If True various events will be written to the log file."
 msgstr "Om True loggas vissa händelser till loggfilen."
 
-#: data/com.roxen.Launcher.gschema.xml:50 data/mainwindow.ui:475
+#: data/com.roxen.Launcher.gschema.xml:50 data/mainwindow.ui:445
+msgid "Allow all certificates"
+msgstr "Tillåt alla certifikat"
+
+#: data/com.roxen.Launcher.gschema.xml:51
+msgid "If True no TLS-certificate validation will be made."
+msgstr "Om vald kommer ingen verifiering av TLS-certifikat att göras."
+
+#: data/com.roxen.Launcher.gschema.xml:58 data/mainwindow.ui:492
 msgid "HTTP query timeout"
 msgstr "Timeout för HTTP-förfrågan"
 
-#: data/com.roxen.Launcher.gschema.xml:51
+#: data/com.roxen.Launcher.gschema.xml:59
 msgid "Number of seconds a HTTP query can be pending before it's aborted"
 msgstr "Antal sekunder en HTTP-förfrågan kan avvakta svar innan den avbryts"
 
-#: data/com.roxen.Launcher.gschema.xml:58
+#: data/com.roxen.Launcher.gschema.xml:66
 msgid "Window width"
 msgstr "Fönsterbredd"
 
-#: data/com.roxen.Launcher.gschema.xml:59
+#: data/com.roxen.Launcher.gschema.xml:67
 msgid ""
 "The width of the window. The window width will be set to this value upon "
 "start."
@@ -90,11 +98,11 @@ msgstr ""
 "Programfönstrets bredd. Fönstret kommer sättas till denna bredd när "
 "programmet startar."
 
-#: data/com.roxen.Launcher.gschema.xml:67
+#: data/com.roxen.Launcher.gschema.xml:75
 msgid "Window height"
 msgstr "Fönsterhöjd"
 
-#: data/com.roxen.Launcher.gschema.xml:68
+#: data/com.roxen.Launcher.gschema.xml:76
 msgid ""
 "The height of the window. The window height will be set to this value upon "
 "start."
@@ -102,21 +110,21 @@ msgstr ""
 "Programfönstrets höjd. Fönstret kommer sättas till denna höjd när programmet "
 "startar."
 
-#: data/com.roxen.Launcher.gschema.xml:76
+#: data/com.roxen.Launcher.gschema.xml:84
 msgid "Window x-position"
 msgstr "Fönstrets x-position"
 
-#: data/com.roxen.Launcher.gschema.xml:77
+#: data/com.roxen.Launcher.gschema.xml:85
 msgid ""
 "The x-position of the window. The window x-position will be set to this "
 "value upon start."
 msgstr "Fönstret kommer sättas till denna x-position när programmet startar."
 
-#: data/com.roxen.Launcher.gschema.xml:85
+#: data/com.roxen.Launcher.gschema.xml:93
 msgid "Window y-position"
 msgstr "Fönstrets y-position"
 
-#: data/com.roxen.Launcher.gschema.xml:86
+#: data/com.roxen.Launcher.gschema.xml:94
 msgid ""
 "The y-position of the window. The window y-position will be set to this "
 "value upon start."
@@ -204,46 +212,50 @@ msgstr "Filer"
 msgid "Window close button minimizes the application to the tray"
 msgstr "Fönstrets stängknapp minimerar applikationen till notifieringsytan"
 
-#: data/mainwindow.ui:458
+#: data/mainwindow.ui:449
+msgid "Don't check for TLS certificate's validity."
+msgstr "Titta inte efter validiteten av TLS-certifikat."
+
+#: data/mainwindow.ui:475
 msgid "If 0 no timeout is used"
 msgstr "Om 0 används ingen timeout"
 
-#: data/mainwindow.ui:497
+#: data/mainwindow.ui:514
 msgid "<b>Settings</b>"
 msgstr "<b>Inställningar</b>"
 
-#: data/mainwindow.ui:534
+#: data/mainwindow.ui:551
 msgid "Applications"
 msgstr "Program"
 
-#: data/mainwindow.ui:591
+#: data/mainwindow.ui:608
 msgid "Clear log"
 msgstr "Rensa loggen"
 
-#: data/mainwindow.ui:673
+#: data/mainwindow.ui:690
 msgid "Logging"
 msgstr "Loggning"
 
-#: data/mainwindow.ui:709
+#: data/mainwindow.ui:726
 msgid ""
 "Add the mimetype for Roxen Launcher files (.xrl2) to your mimetype database"
 msgstr ""
 "Lägg till filetypen för Roxens programstartare (.xrl2) till din "
 "filtypsdatabas"
 
-#: data/mainwindow.ui:719
+#: data/mainwindow.ui:736
 msgid "_View in Sitebuilder"
 msgstr "_Visa i Sitebuilder"
 
-#: data/mainwindow.ui:728
+#: data/mainwindow.ui:745
 msgid "V_iew directory in Sitebuilder"
 msgstr "V_isa mapp i Sitebuilder"
 
-#: data/mainwindow.ui:743
+#: data/mainwindow.ui:760
 msgid "_Edit"
 msgstr "_Redigera"
 
-#: data/mainwindow.ui:752
+#: data/mainwindow.ui:769
 msgid "_Delete"
 msgstr "_Radera"
 
@@ -287,7 +299,7 @@ msgstr "Nerladdad"
 msgid "Uploaded"
 msgstr "Uppladdad"
 
-#: src/launcherfile.vala:436 src/mainwindow.vala:249 src/mainwindow.vala:651
+#: src/launcherfile.vala:436 src/mainwindow.vala:256 src/mainwindow.vala:658
 msgid "Not uploaded"
 msgstr "Ej uppladdad"
 
@@ -303,81 +315,100 @@ msgstr "Laddar upp..."
 msgid "Not changed"
 msgstr "Ej ändrad"
 
-#: src/launcherfile.vala:645
+#: src/launcherfile.vala:470
+#, c-format
+msgid "Failed to delete launcher file: %s!"
+msgstr "Misslyckades att radera programstartar-fil: %s! "
+
+#: src/launcherfile.vala:575
+#, c-format
+msgid "Failed to set monitor for \"%s\""
+msgstr "Misslyckades att skapa fil-övervakare för \"%s\""
+
+#: src/launcherfile.vala:644
 msgid "Error starting editor"
 msgstr "Kunde inte starta redigerare"
 
-#: src/launcherfile.vala:646 src/launcherfile.vala:649
+#: src/launcherfile.vala:645 src/launcherfile.vala:648
 #, c-format
 msgid "Could not start editor %s: %s "
 msgstr "Kunde inte starta redigerare %s: %s"
 
-#: src/launcherfile.vala:668
+#: src/launcherfile.vala:667
 #, c-format
 msgid "Downloading file: %s"
 msgstr "Laddar ner fil: %s"
 
-#: src/launcherfile.vala:705
+#: src/launcherfile.vala:708
 msgid "Download OK"
 msgstr "Hämtningen lyckades"
 
-#: src/launcherfile.vala:706
+#: src/launcherfile.vala:709
 #, c-format
 msgid "%s was downloaded OK from %s"
 msgstr "%s laddades ner OK från %s"
 
-#: src/launcherfile.vala:730
+#: src/launcherfile.vala:732
 #, c-format
 msgid "Requested file %s not found on %s"
 msgstr "Den efterfrågde filen %s hittades inte på %s"
 
-#: src/launcherfile.vala:734
+#: src/launcherfile.vala:736
+#, c-format
+msgid ""
+"The requested file %s on %s was not downloaded due to an untrusted "
+"certificate being used"
+msgstr ""
+"Den efterfrågade filen %s på %s laddades inte ner på grund av att ett "
+"opålitligt certifikat används"
+
+#: src/launcherfile.vala:742
 #, c-format
 msgid "%s was not downloaded from %s (code: %d: %s)"
 msgstr "%s laddades inte ner från %s (kod: %d: %s)"
 
-#: src/launcherfile.vala:744
+#: src/launcherfile.vala:751
 msgid "Download failed"
 msgstr "Hämtningen misslyckades"
 
-#: src/launcherfile.vala:772
+#: src/launcherfile.vala:779
 #, c-format
 msgid "Unable to write to file %s: %s"
 msgstr "Kunde inte skriva till fil %s: %s"
 
-#: src/launcherfile.vala:787
+#: src/launcherfile.vala:794
 #, c-format
 msgid "%s is under %s. Skipping upload"
 msgstr "%s är under %s. Hoppar över uppladdning"
 
-#: src/launcherfile.vala:789
+#: src/launcherfile.vala:796
 msgid "download"
 msgstr "nedladdning"
 
-#: src/launcherfile.vala:790
+#: src/launcherfile.vala:797
 msgid "upload"
 msgstr "uppladdning"
 
-#: src/launcherfile.vala:799
+#: src/launcherfile.vala:805
 #, c-format
 msgid "Uploading %s"
 msgstr "Laddar upp %s"
 
-#: src/launcherfile.vala:835
+#: src/launcherfile.vala:850
 #, c-format
 msgid "Unable to upload file: %s"
 msgstr "Kunde inte ladda upp fil: %s"
 
-#: src/launcherfile.vala:838
+#: src/launcherfile.vala:853
 msgid "Upload failed"
 msgstr "Uppladdningen misslyckades"
 
-#: src/launcherfile.vala:839
+#: src/launcherfile.vala:854
 #, c-format
 msgid "%s was not uploaded OK to %s"
 msgstr "%s laddades inte upp OK till %s"
 
-#: src/launcherfile.vala:860
+#: src/launcherfile.vala:874
 #, c-format
 msgid ""
 "%s generated a timeout when it was uploaded to %s. Most likely you have a "
@@ -386,36 +417,48 @@ msgstr ""
 "%s genererade en timeout när den laddades upp till %s. Du har sannolikt ett "
 "syntaxfel i filen!"
 
-#: src/launcherfile.vala:864
+#: src/launcherfile.vala:878
 msgid "Upload warning"
 msgstr "Uppladdningsvarning"
 
-#: src/launcherfile.vala:871
+#: src/launcherfile.vala:885
+#, c-format
+msgid "%s was not uploaded to %s due to an untrusted certificate being used"
+msgstr ""
+"%s laddades inte upp till %s på grund av att ett opålitligt certifikat "
+"används "
+
+#: src/launcherfile.vala:892
 #, c-format
 msgid "%s generated an Internal Server Error when it was uploaded to %s"
 msgstr "%s orsakade ett Internt Serverfel när den laddades upp till %s"
 
-#: src/launcherfile.vala:875 src/launcherfile.vala:893
+#: src/launcherfile.vala:896 src/launcherfile.vala:915
 msgid "Upload error"
 msgstr "Uppladdningsfel"
 
-#: src/launcherfile.vala:882
+#: src/launcherfile.vala:904
 msgid "Upload OK"
 msgstr "Uppladdningen lyckades"
 
-#: src/launcherfile.vala:883
+#: src/launcherfile.vala:905
 #, c-format
 msgid "%s was uploaded OK to %s"
 msgstr "%s laddades upp OK till %s"
 
-#: src/launcherfile.vala:889
+#: src/launcherfile.vala:911
 #, c-format
 msgid ""
 "%s was not uploaded to %s. Got unexpected HTTP status (%ld) from server."
 msgstr ""
 "%s laddades inte upp till %s. Fick en oväntad HTTP-status (%ld) från servern."
 
-#: src/launcherfile.vala:1005
+#: src/launcherfile.vala:990
+#, c-format
+msgid "Failed to write stub file to local directory: %s"
+msgstr "Misslyckades att skriva  stump-fil till lokal mapp: %s"
+
+#: src/launcherfile.vala:1029
 msgid "Unable to create directory for launcher file!"
 msgstr "Kunde inte skapa katalog för fil"
 
@@ -452,86 +495,89 @@ msgstr "Version"
 msgid "Antoher instance of Roxen Application Launcher is already running"
 msgstr "En annan instans av Roxen Programstartare körs redan"
 
-#: src/mainwindow.vala:202
+#: src/mainwindow.vala:209
 msgid "Log file truncated"
 msgstr "Loggfilen rensades"
 
-#: src/mainwindow.vala:228
+#: src/mainwindow.vala:235
 msgid "File"
 msgstr "Fil"
 
-#: src/mainwindow.vala:228
+#: src/mainwindow.vala:235
 msgid "Status"
 msgstr "Status"
 
-#: src/mainwindow.vala:228
+#: src/mainwindow.vala:235
 msgid "Last upload"
 msgstr "Senast uppladdad"
 
-#: src/mainwindow.vala:276
+#: src/mainwindow.vala:283
 msgid "Content type"
 msgstr "Filtyp"
 
-#: src/mainwindow.vala:277
+#: src/mainwindow.vala:284
 msgid "Application"
 msgstr "Program"
 
-#: src/mainwindow.vala:554 src/mainwindow.vala:578
+#: src/mainwindow.vala:561 src/mainwindow.vala:585
 msgid "Do you want to delete the selected file?"
 msgstr "Vill du radera den valda filen?"
 
-#: src/mainwindow.vala:604
+#: src/mainwindow.vala:611
 msgid "Do you want to delete the selected content type?"
 msgstr "Vill du radera den valda filtypen?"
 
-#: src/mainwindow.vala:839
+#: src/mainwindow.vala:846
 msgid "Add content type"
 msgstr "Lägg till filtyp"
 
-#: src/mainwindow.vala:880
+#: src/mainwindow.vala:887
 msgid "Edit content type"
 msgstr "Redigera filtyp"
 
-#: src/mainwindow.vala:1091
+#: src/mainwindow.vala:1098
 msgid "No files"
 msgstr "Inga filer"
 
-#: src/mainwindow.vala:1093
+#: src/mainwindow.vala:1100
 msgid "One file"
 msgstr "En fil"
 
-#: src/mainwindow.vala:1095
+#: src/mainwindow.vala:1102
 #, c-format
 msgid "%d active files"
 msgstr "%d aktiva filer"
 
-#: src/mainwindow.vala:1173 src/roxelauncher.vala:47
+#: src/mainwindow.vala:1180 src/roxelauncher.vala:47
 msgid "Roxen™ Application Launcher"
 msgstr "Roxen™ Programstartare"
 
-#: src/roxelauncher.vala:207 src/roxelauncher.vala:216
+#: src/roxelauncher.vala:219 src/roxelauncher.vala:228
 #, c-format
 msgid "Unable to create local directory \"%s\""
 msgstr "Kunde inte skapa lokal katalog \"%s\""
 
-#: src/roxelauncher.vala:365
+#: src/roxelauncher.vala:382
 #, c-format
 msgid "Creating log file %s"
 msgstr "Skapar loggfil %s"
 
-#: src/roxelauncher.vala:377
+#: src/roxelauncher.vala:394
 msgid "Unable to load log file contents"
 msgstr "Kunde inte ladda in loggfil: %s"
 
-#: src/roxelauncher.vala:400
+#: src/roxelauncher.vala:417
 #, c-format
 msgid "Unable to write to logfile %s: %s"
 msgstr "Kunde inte skriva till loggfil %s: %s"
 
-#: src/roxelauncher.vala:412
+#: src/roxelauncher.vala:429
 #, c-format
 msgid "Unable to truncate log file %s: %s"
 msgstr "Kunde inte rensa loggfil %s: %s"
+
+#~ msgid "Untrusted certificate?"
+#~ msgstr "Opålitligt certifikat?"
 
 #~ msgid "No active files"
 #~ msgstr "Inga aktiva filer"

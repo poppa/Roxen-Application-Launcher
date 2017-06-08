@@ -30,6 +30,7 @@ public class Roxenlauncher.MainWindow : Gtk.Window
   Gtk.CheckButton       cb_notify;
   Gtk.CheckButton       cb_minimize;
   Gtk.CheckButton       cb_logging;
+  Gtk.CheckButton       cb_allow_any_cert;
   Gtk.Button            btn_edit_file;
   Gtk.Button            btn_finish_file;
   Gtk.Button            btn_finish_all;
@@ -99,6 +100,7 @@ public class Roxenlauncher.MainWindow : Gtk.Window
     cb_notify       = g ("cb_notify")            as Gtk.CheckButton;
     cb_minimize     = g ("cb_minimize")          as Gtk.CheckButton;
     cb_logging      = g ("cb_logging")           as Gtk.CheckButton;
+    cb_allow_any_cert = g ("cb_allow_any_cert")  as Gtk.CheckButton;
     btn_edit_file   = g ("btn_edit_file")        as Gtk.Button;
     btn_finish_file = g ("btn_finish_file")      as Gtk.Button;
     btn_finish_all  = g ("btn_finish_all")       as Gtk.Button;
@@ -192,6 +194,11 @@ public class Roxenlauncher.MainWindow : Gtk.Window
     cb_logging.active = App.do_logging;
     cb_logging.toggled.connect (() => {
       App.do_logging = !App.do_logging;
+    });
+
+    cb_allow_any_cert.active = App.allow_all_certs;
+    cb_allow_any_cert.toggled.connect (() => {
+      App.allow_all_certs = !App.allow_all_certs;
     });
 
     // Clear log button
