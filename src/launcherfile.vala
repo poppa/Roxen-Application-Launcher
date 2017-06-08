@@ -467,7 +467,9 @@ public class Roxenlauncher.LauncherFile : Object
       File.new_for_path (local_dir).delete (null);
     }
     catch (GLib.Error e) {
-      warning ("Failed to delete launcher file: %s!", e.message);
+      string m = _("Failed to delete launcher file: %s!").printf (e.message);
+      warning (m);
+      log_error (m);
       retval = false;
     }
 
@@ -539,8 +541,7 @@ public class Roxenlauncher.LauncherFile : Object
       }
     }
 
-    if (App.do_debug)
-      message ("LauncherFile.init (%s): Done!", get_uri ());
+    wdebug ("LauncherFile.init (%s): Done!".printf (get_uri ()));
   }
 
   /**
@@ -571,7 +572,9 @@ public class Roxenlauncher.LauncherFile : Object
       monitor.changed.connect (on_file_changed);
     }
     catch (GLib.Error e) {
-      warning ("Failed to set monitor for \"%s\"", local_file);
+      string m = _("Failed to set monitor for \"%s\"").printf (local_file);
+      warning (m);
+      log_error(m);
     }
   }
 
@@ -602,9 +605,7 @@ public class Roxenlauncher.LauncherFile : Object
    */
   public void launch_editor ()
   {
-    if (App.do_debug) {
-      message ("Launch editor for ct %s", content_type);
-    }
+    wdebug ("Launch editor for ct %s".printf (content_type));
 
     if (application == null) {
       var app = ContentType.get_by_ct (content_type);
@@ -674,8 +675,7 @@ public class Roxenlauncher.LauncherFile : Object
       sess.add_feature (new Soup.Logger (Soup.LoggerLogLevel.HEADERS, -1));
     }
 
-    if (App.do_debug)
-      print ("> %s\n", get_uri ());
+    wdebug ("> %s\n".printf (get_uri ()));
 
     sess.queue_message (get_http_message ("GET", get_uri ()), low_download);
 
@@ -687,15 +687,9 @@ public class Roxenlauncher.LauncherFile : Object
    */
   void low_download (Soup.Session sess, Soup.Message mess)
   {
-    if (App.do_debug) {
-      message ("Status code from download: %ld", mess.status_code);
-    }
+    wdebug ("Status code from download: %ld".printf (mess.status_code));
 
     if (mess.status_code == Soup.Status.OK) {
-      if (App.do_debug) {
-        message ("Download ok");
-      }
-
       if (save_downloaded_file (mess.response_body.data)) {
         win_set_status (Statuses.DOWNLOADED);
 
@@ -734,8 +728,7 @@ public class Roxenlauncher.LauncherFile : Object
           break;
       }
 
-      if (App.do_debug)
-        message ("Download failed: %s", s);
+      wdebug ("Download failed: %s". printf(s));
 
       log_error (s);
       win_set_status (Statuses.NOT_DOWNLOADED);
@@ -809,7 +802,6 @@ public class Roxenlauncher.LauncherFile : Object
       s.close ();
       s = null;
 
-//      var sess = new Soup.SessionAsync ();
 			var sess = new Soup.Session ();
       sess.use_thread_context = true;
       int qt = App.query_timeout;
@@ -842,11 +834,10 @@ public class Roxenlauncher.LauncherFile : Object
   void on_upload (Soup.Session sess, Soup.Message mess)
   {
     if (App.do_debug) {
-      message("> on_upload");
+      message ("> on_upload");
       message ("Status: %ld", mess.status_code);
     }
 
-    last_upload = new DateTime.now_local ();
     string errmsg = null;
 
     Statuses upload_status = Statuses.NOT_UPLOADED;
@@ -869,13 +860,14 @@ public class Roxenlauncher.LauncherFile : Object
         errmsg = _("%s generated an Internal Server Error when it was " +
                    "uploaded to %s")
                   .printf (path, host);
-        window.show_notification (NotifyType.UP,
+        window.show_notification (NotifyType.ERROR,
                                 _("Upload error"),
                                 errmsg);
         log_error (errmsg);
         break;
 
       case Soup.Status.OK:
+        last_upload = new DateTime.now_local ();
         window.show_notification (NotifyType.UP,
                                   _("Upload OK"),
                                   _("%s was uploaded OK to %s")
@@ -887,7 +879,7 @@ public class Roxenlauncher.LauncherFile : Object
         errmsg = _("%s was not uploaded to %s. Got unexpected HTTP status " +
                    "(%ld) from server.")
                   .printf (path, host, mess.status_code);
-        window.show_notification (NotifyType.UP,
+        window.show_notification (NotifyType.ERROR,
                                   _("Upload error"),
                                   errmsg);
         log_error (errmsg);
@@ -963,7 +955,9 @@ public class Roxenlauncher.LauncherFile : Object
       FileUtils.set_contents (f, string.joinv ("\r\n", data));
     }
     catch (GLib.Error e) {
-      warning ("Failed to write stub file to local directory: %s", e.message);
+      string m = _("Failed to write stub file to local directory: %s").printf (e.message);
+      warning (m);
+      log_error(m);
     }
   }
 
@@ -1044,14 +1038,13 @@ public class Roxenlauncher.LauncherFile : Object
         previous_event == FileMonitorEvent.CHANGED)
     {
       upload.begin ();
-      if (App.do_debug)
-        message ("After upload.begin()");
+      wdebug ("After upload.begin()");
     }
   }
 
   ~LauncherFile ()
   {
-    message ("LauncherFile destroyed: %s", get_uri ());
+    wdebug ("LauncherFile destroyed: %s".printf (get_uri ()));
 
     if (monitor != null)
       monitor.cancel ();
