@@ -287,18 +287,23 @@ public class Roxenlauncher.LauncherFile : Object
    */
   private FileMonitor monitor;
 
+  private string redirect_uri { get; set; default = null; }
+
+  private int max_redirect = 5;
+
   /**
    * File statuses
    */
   public enum Statuses {
-    DUMMY_STATUS,
+    NONE,
     NOT_DOWNLOADED,
     DOWNLOADED,
     UPLOADED,
     NOT_UPLOADED,
     DOWNLOADING,
     UPLOADING,
-    NOT_CHANGED
+    NOT_CHANGED,
+    REDIRECTING,
   }
 
   /**
@@ -357,6 +362,16 @@ public class Roxenlauncher.LauncherFile : Object
    * @return
    */
   public string get_uri (string? _path=null)
+  {
+    if (redirect_uri != null) {
+      wdebug ("Is redirect uri: %s".printf (redirect_uri));
+      return redirect_uri;
+    }
+
+    return get_stub_uri (_path);
+  }
+
+  string get_stub_uri (string? _path = null)
   {
     var s = schema + "://" + host;
 
@@ -492,6 +507,10 @@ public class Roxenlauncher.LauncherFile : Object
    */
   void init ()
   {
+    if (App.do_debug) {
+      message ("Raw launcher file: %s\n".printf (rawdata));
+    }
+
     string _id   = id;
     string[] a   = rawdata.split ("\r\n");
 
@@ -693,6 +712,8 @@ public class Roxenlauncher.LauncherFile : Object
     yield;
   }
 
+  int redirects = 0;
+
   /**
    * Fetch the file
    */
@@ -713,13 +734,6 @@ public class Roxenlauncher.LauncherFile : Object
       }
 
       save ();
-    }
-    else if (mess.status_code == Soup.Status.MOVED_PERMANENTLY ||
-             mess.status_code == Soup.Status.MOVED_TEMPORARILY)
-    {
-      message ("Follow redirect...");
-      log_message ("Got redrirect. Not implemented yet!");
-      win_set_status (Statuses.NOT_DOWNLOADED);
     }
     else {
       warn_debug ("Bad status code in HTTP response");
@@ -867,6 +881,8 @@ public class Roxenlauncher.LauncherFile : Object
 
     Statuses upload_status = Statuses.NOT_UPLOADED;
 
+    redirect_uri = null;
+
     switch (mess.status_code)
     {
       case 7:
@@ -879,6 +895,37 @@ public class Roxenlauncher.LauncherFile : Object
                                   errmsg);
         log_warning (errmsg);
         break;
+
+      case Soup.Status.MOVED_PERMANENTLY:
+      case Soup.Status.MOVED_TEMPORARILY:
+        redirects += 1;
+
+        if (redirects > max_redirect) {
+          errmsg = _("Max redirect limit reached for %s.")
+                    .printf (get_stub_uri ());
+          window.show_notification (NotifyType.UP,
+                                    _("Upload error"),
+                                    errmsg);
+          log_error (errmsg);
+
+          if (App.do_debug) {
+            message (errmsg);
+          }
+
+          break;
+        }
+
+        if (App.do_debug) {
+          message ("Got redirect: %s\n",
+                   mess.response_headers.get_one ("Location"));
+        }
+
+        status = Statuses.REDIRECTING;
+        redirect_uri = mess.response_headers.get_one ("Location");
+        mess = null;
+        sess = null;
+        upload.begin ();
+        return;
 
       case Soup.Status.SSL_FAILED:
         wdebug ("Untrusted certificate!");
@@ -930,6 +977,8 @@ public class Roxenlauncher.LauncherFile : Object
 
     mess = null;
     sess = null;
+
+    redirects = 0;
   }
 
   /**
