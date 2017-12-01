@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: roxenlauncher 2.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-10-10 10:49+0200\n"
-"PO-Revision-Date: 2017-10-10 10:49+0200\n"
+"POT-Creation-Date: 2017-12-01 11:02+0100\n"
+"PO-Revision-Date: 2017-12-01 11:05+0100\n"
 "Last-Translator: Pontus Östlund <poppanator@gmail.com>\n"
 "Language-Team: Swedish <poppanator@gmail.com>\n"
 "Language: sv\n"
@@ -147,16 +147,16 @@ msgid "About %s"
 msgstr "Om %s"
 
 #: data/mainwindow.ui:17
-msgid "Copyright © 2009-2013 Pontus Östlund"
-msgstr "Copyright © 2009-2013 Pontus Östlund"
+msgid "Copyright © 2009-2017 Pontus Östlund"
+msgstr "Copyright © 2009-2017 Pontus Östlund"
 
 #: data/mainwindow.ui:18
 msgid ""
-"This is a Gnome port - written in Vala - of the Roxen™ \n"
+"This is a Gnome port - written in Vala - of the Roxen™\n"
 "Application Launcher originally written in Pike."
 msgstr ""
-"Det här är en Gnome-variant - skriven i Vala - av Roxen™\n"
-"Application Launcher ursprungligen skriven i Pike."
+"This is a Gnome port - written in Vala - of the Roxen™\n"
+"Application Launcher originally written in Pike."
 
 #: data/mainwindow.ui:21
 msgid "Github"
@@ -165,7 +165,7 @@ msgstr "Github"
 #: data/mainwindow.ui:22
 msgid ""
 "ROXEN™ APPLICATION LAUNCHER\n"
-"Copyright © 2009-2013 Pontus Östlund\n"
+"Copyright © 2009-2017 Pontus Östlund\n"
 "\n"
 "This program is free software: you can redistribute it and/or modify\n"
 "it under the terms of the GNU General Public License as published by\n"
@@ -181,7 +181,7 @@ msgid ""
 "along with this program.  If not, see <http://www.gnu.org/licenses/>.\n"
 msgstr ""
 "ROXEN™ APPLICATION LAUNCHER\n"
-"Copyright © 2009-2013 Pontus Östlund\n"
+"Copyright © 2009-2017 Pontus Östlund\n"
 "\n"
 "This program is free software: you can redistribute it and/or modify\n"
 "it under the terms of the GNU General Public License as published by\n"
@@ -554,33 +554,79 @@ msgstr "En fil"
 msgid "%d active files"
 msgstr "%d aktiva filer"
 
-#: src/mainwindow.vala:1180 src/roxelauncher.vala:47
+#: src/mainwindow.vala:1182 src/roxelauncher.vala:47
 msgid "Roxen™ Application Launcher"
 msgstr "Roxen™ Programstartare"
 
-#: src/roxelauncher.vala:219 src/roxelauncher.vala:228
+#: src/roxelauncher.vala:279 src/roxelauncher.vala:288
 #, c-format
 msgid "Unable to create local directory \"%s\""
 msgstr "Kunde inte skapa lokal katalog \"%s\""
 
-#: src/roxelauncher.vala:382
+#: src/roxelauncher.vala:441
 #, c-format
-msgid "Creating log file %s"
-msgstr "Skapar loggfil %s"
+msgid "Creating new log file %s"
+msgstr "Skapar ny loggfil %s"
 
-#: src/roxelauncher.vala:394
+#: src/roxelauncher.vala:453
 msgid "Unable to load log file contents"
 msgstr "Kunde inte ladda in loggfil: %s"
 
-#: src/roxelauncher.vala:417
+#: src/roxelauncher.vala:476
 #, c-format
 msgid "Unable to write to logfile %s: %s"
 msgstr "Kunde inte skriva till loggfil %s: %s"
 
-#: src/roxelauncher.vala:429
+#: src/roxelauncher.vala:488
 #, c-format
 msgid "Unable to truncate log file %s: %s"
 msgstr "Kunde inte rensa loggfil %s: %s"
+
+#~ msgid "Copyright © 2009-2013 Pontus Östlund"
+#~ msgstr "Copyright © 2009-2013 Pontus Östlund"
+
+#~ msgid ""
+#~ "This is a Gnome port - written in Vala - of the Roxen™ \n"
+#~ "Application Launcher originally written in Pike."
+#~ msgstr ""
+#~ "Det här är en Gnome-variant - skriven i Vala - av Roxen™\n"
+#~ "Application Launcher ursprungligen skriven i Pike."
+
+#~ msgid ""
+#~ "ROXEN™ APPLICATION LAUNCHER\n"
+#~ "Copyright © 2009-2013 Pontus Östlund\n"
+#~ "\n"
+#~ "This program is free software: you can redistribute it and/or modify\n"
+#~ "it under the terms of the GNU General Public License as published by\n"
+#~ "the Free Software Foundation, either version 3 of the License, or\n"
+#~ "(at your option) any later version.\n"
+#~ "\n"
+#~ "This program is distributed in the hope that it will be useful,\n"
+#~ "but WITHOUT ANY WARRANTY; without even the implied warranty of\n"
+#~ "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n"
+#~ "GNU General Public License for more details.\n"
+#~ "\n"
+#~ "You should have received a copy of the GNU General Public License\n"
+#~ "along with this program.  If not, see <http://www.gnu.org/licenses/>.\n"
+#~ msgstr ""
+#~ "ROXEN™ APPLICATION LAUNCHER\n"
+#~ "Copyright © 2009-2013 Pontus Östlund\n"
+#~ "\n"
+#~ "This program is free software: you can redistribute it and/or modify\n"
+#~ "it under the terms of the GNU General Public License as published by\n"
+#~ "the Free Software Foundation, either version 3 of the License, or\n"
+#~ "(at your option) any later version.\n"
+#~ "\n"
+#~ "This program is distributed in the hope that it will be useful,\n"
+#~ "but WITHOUT ANY WARRANTY; without even the implied warranty of\n"
+#~ "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n"
+#~ "GNU General Public License for more details.\n"
+#~ "\n"
+#~ "You should have received a copy of the GNU General Public License\n"
+#~ "along with this program.  If not, see <http://www.gnu.org/licenses/>.\n"
+
+#~ msgid "Creating log file %s"
+#~ msgstr "Skapar loggfil %s"
 
 #~ msgid "Untrusted certificate?"
 #~ msgstr "Opålitligt certifikat?"

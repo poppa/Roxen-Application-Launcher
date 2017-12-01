@@ -1,6 +1,6 @@
 AC_PREREQ([2.64])
 AC_INIT(roxenlauncher,
-        2.0.10,
+        2.0.11,
         [poppanator@gmail.com],
         [roxenlauncher],
         [https://github.com/poppa/Roxen-Application-Launcher])
@@ -51,7 +51,7 @@ AC_SUBST(LDFLAGS)
 #*******************************************************************************
 
 GLIB_REQUIRED=2.30.0
-GTK_REQUIRED=3.0
+GTK_REQUIRED=3.6
 SOUP24_REQUIRED=2.36.0
 GIO_REQUIRED=2.3.0
 GDK_PIXBUF_REQUIRED=2.24.0

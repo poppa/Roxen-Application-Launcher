@@ -1,7 +1,7 @@
 /* -*- Mode: Vala; indent-tabs-mode: s; c-basic-offset: 2; tab-width: 2 -*- */
 /* roxenlauncher.vala
  *
- * Copyright (C) Pontus Östlund 2009-2015 <poppanator@gmail.com>
+ * Copyright (C) Pontus Östlund 2009-2017 <poppanator@gmail.com>
  *
  * This file is part of Roxen Application Launcher (RAL)
  *
@@ -148,6 +148,7 @@ namespace Roxenlauncher
       }
     }
 
+    /*
     if (!Poppa.file_exists (App.logfile)) {
       try {
         var fs = File.new_for_path (App.logfile)
@@ -158,9 +159,12 @@ namespace Roxenlauncher
         warning ("Unable to create log file \"%s\"", App.logfile);
       }
     }
+    */
+
+    gc_logs ();
 
     if (App.do_logging)
-      logger = new Logger (App.logfile);
+      logger = new Logger ();
 
     setup_editors_and_cts ();
     LauncherFile.load_existing ();
@@ -168,6 +172,62 @@ namespace Roxenlauncher
     Notify.init (NAME);
   }
 
+  /**
+   * Garbage collect old log files
+   */
+  void gc_logs () 
+  {
+    var d = new DateTime.now_local ();
+    d = d.add_months (-3);
+
+    TimeVal tv_then;
+    d.to_timeval (out tv_then);
+
+    var dir = getdir ("APPLICATION");
+
+    FileEnumerator f;
+
+    try {
+      f = File.new_for_path (dir)
+              .enumerate_children (FileAttribute.STANDARD_DISPLAY_NAME + "," +
+                                   FileAttribute.TIME_MODIFIED,
+                                   FileQueryInfoFlags.NONE, null);
+    }
+    catch (GLib.Error e) {
+      warning ("Unable to create FileEnumerator in log file GC");
+      return;
+    }
+    
+    FileInfo fi;
+
+    try {
+      while ((fi = f.next_file (null)) != null) {
+        if (fi.get_file_type () == FileType.REGULAR) {
+          var fname = fi.get_display_name ();
+
+          if (fname.has_suffix (".log")) {
+            var mod = fi.get_modification_time ();
+
+            if (mod.tv_sec < tv_then.tv_sec) {
+              var fp = Path.build_filename (dir, fi.get_display_name ());
+
+              try {
+                File.new_for_path (fp).delete (null);
+              }
+              catch (GLib.Error e) {
+                warning ("Unable to remove old log file %s.", 
+                         fi.get_display_name ());
+              }
+            }
+          }
+        }
+      }
+    }
+    catch (GLib.Error e) {
+      warning ("Error enumerating log files: %s", e.message);
+    }
+  }
+   
   /**
    * Set up the exitors and content types
    */
@@ -289,6 +349,13 @@ namespace Roxenlauncher
     conf.set_int ("window-top",    y);
   }
 
+
+  string get_logfile_name () 
+  {
+    string prefix = (new DateTime.now_local ()).format ("%Y-%m");
+    return "ral-" + prefix + ".log";
+  }
+   
   /**
    * Static class for runtime variables
    */
@@ -334,7 +401,7 @@ namespace Roxenlauncher
         conf.set_boolean ("enable-logging", value);
 
         if (value)
-          logger = new Logger (logfile);
+          logger = new Logger ();
       }
     }
 
@@ -343,17 +410,11 @@ namespace Roxenlauncher
     public static string logfile {
       get {
         if (_logfile == null) {
-          _logfile = conf.get_string ("logfile");
-
-          if (_logfile.length == 0)
-            _logfile = Path.build_filename (getdir ("$home"), LOGFILE);
+          _logfile = Path.build_filename (getdir ("APPLICATION"), 
+                                          get_logfile_name ());
         }
 
         return _logfile;
-      }
-      set {
-        conf.set_string ("logfile", value);
-        _logfile = value;
       }
     }
 
@@ -369,17 +430,15 @@ namespace Roxenlauncher
     public string path { get; private set; }
     public File file { get; private set; }
 
-    public Logger (string path)
+    public Logger ()
     {
-      string dir    = Path.get_dirname (path);
-      string prefix = (new DateTime.now_local ()).format ("%Y-%m");
-      string _path  = Path.build_filename (dir, "ral-" + prefix + ".log");
+      var new_file = !FileUtils.test (App.logfile, FileTest.EXISTS);
 
-      this.path = _path;
-      file = File.new_for_path (_path);
+      this.path = App.logfile;
+      this.file = File.new_for_path (App.logfile);
 
-      if (!FileUtils.test (_path, FileTest.EXISTS)) {
-        log (_("Creating log file %s").printf (_path));
+      if (new_file) {
+        log (_("Creating new log file %s").printf (_path));
       }
     }
 

@@ -1,7 +1,7 @@
 /* -*- Mode: Vala; indent-tabs-mode: s; c-basic-offset: 2; tab-width: 2 -*- */
 /*
  * mainwindow.vala
- * Copyright (C) Pontus Östlund 2009-2015 <poppanator@gmail.com>
+ * Copyright (C) Pontus Östlund 2009-2017 <poppanator@gmail.com>
  *
  * This file is part of Roxen Application Launcher (RAL)
  *
@@ -1166,6 +1166,8 @@ class Roxenlauncher.About : GLib.Object
     }
 
     var d = (Gtk.AboutDialog) builder.get_object ("aboutdialog");
+    d.set_transient_for (window);
+    
     string about_logo = get_ui_path ("pixmap/roxen-logo.png");
 
     if (about_logo != null) {
