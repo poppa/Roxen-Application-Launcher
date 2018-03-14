@@ -107,6 +107,8 @@ public class Roxenlauncher.LauncherFile : Object
 
     string hash = LauncherFile.make_hash (data);
 
+    wdebug (".xrl2 data: %s".printf (data));
+
     foreach (LauncherFile file in _files) {
       if (file.rawdata != null) {
         string tmp = file.get_hash ();
@@ -114,6 +116,9 @@ public class Roxenlauncher.LauncherFile : Object
         // File exists locally
         if (tmp == hash) {
           if (App.do_debug) message ("File exists");
+
+          file.set_ac_cookie (lines[3]);
+
           lf = file;
           return false;
         }
@@ -354,6 +359,14 @@ public class Roxenlauncher.LauncherFile : Object
   public void unset_application ()
   {
     application = null;
+  }
+
+  /**
+   * Update the auth cookie
+   */
+  public void set_ac_cookie (string cookie)
+  {
+    auth_cookie = cookie;
   }
 
   /**
@@ -753,8 +766,18 @@ public class Roxenlauncher.LauncherFile : Object
           break;
 
         default:
-          s = _("%s was not downloaded from %s (code: %d: %s)")
-               .printf (path, host, mess.status_code, mess.reason_phrase);
+          if (mess.status_code == Soup.Status.UNAUTHORIZED &&
+              local_file != null && Poppa.file_exists (local_file))
+          {
+            s = _("The download was unauthorized. This is probably due to an " +
+                  "expired authentication by the server. Try downloading the " +
+                  "file explicitly from the server. This will update the " +
+                  "authentication.");
+          }
+          else {
+            s = _("%s was not downloaded from %s (code: %d: %s)")
+                 .printf (path, host, mess.status_code, mess.reason_phrase);
+          }
           break;
       }
 

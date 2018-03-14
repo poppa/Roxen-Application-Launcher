@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: roxenlauncher 2.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-12-01 11:02+0100\n"
-"PO-Revision-Date: 2017-12-01 11:05+0100\n"
+"POT-Creation-Date: 2018-03-14 21:52+0100\n"
+"PO-Revision-Date: 2018-03-14 21:55+0100\n"
 "Last-Translator: Pontus Östlund <poppanator@gmail.com>\n"
 "Language-Team: Swedish <poppanator@gmail.com>\n"
 "Language: sv\n"
@@ -278,82 +278,82 @@ msgstr "Kunde inte lägga till program till knapp: %s"
 msgid "Bad data in launcher file!"
 msgstr "Felaktigt innehåll i filen"
 
-#: src/launcherfile.vala:157
+#: src/launcherfile.vala:162
 msgid "Purging all files"
 msgstr "Raderar alla filer"
 
-#: src/launcherfile.vala:169
+#: src/launcherfile.vala:174
 #, c-format
 msgid "Removing file: %s"
 msgstr "Tar bort fil: %s"
 
-#: src/launcherfile.vala:448
+#: src/launcherfile.vala:461
 msgid "Not downloaded"
 msgstr "Ej nerladdad"
 
-#: src/launcherfile.vala:449
+#: src/launcherfile.vala:462
 msgid "Downloaded"
 msgstr "Nerladdad"
 
-#: src/launcherfile.vala:450
+#: src/launcherfile.vala:463
 msgid "Uploaded"
 msgstr "Uppladdad"
 
-#: src/launcherfile.vala:451 src/mainwindow.vala:256 src/mainwindow.vala:658
+#: src/launcherfile.vala:464 src/mainwindow.vala:256 src/mainwindow.vala:658
 msgid "Not uploaded"
 msgstr "Ej uppladdad"
 
-#: src/launcherfile.vala:452
+#: src/launcherfile.vala:465
 msgid "Downloading..."
 msgstr "Laddar ner..."
 
-#: src/launcherfile.vala:453
+#: src/launcherfile.vala:466
 msgid "Uploading..."
 msgstr "Laddar upp..."
 
-#: src/launcherfile.vala:454
+#: src/launcherfile.vala:467
 msgid "Not changed"
 msgstr "Ej ändrad"
 
-#: src/launcherfile.vala:485
+#: src/launcherfile.vala:498
 #, c-format
 msgid "Failed to delete launcher file: %s!"
 msgstr "Misslyckades att radera programstartar-fil: %s! "
 
-#: src/launcherfile.vala:594
+#: src/launcherfile.vala:607
 #, c-format
 msgid "Failed to set monitor for \"%s\""
 msgstr "Misslyckades att skapa fil-övervakare för \"%s\""
 
-#: src/launcherfile.vala:663
+#: src/launcherfile.vala:676
 msgid "Error starting editor"
 msgstr "Kunde inte starta redigerare"
 
-#: src/launcherfile.vala:664 src/launcherfile.vala:667
+#: src/launcherfile.vala:677 src/launcherfile.vala:680
 #, c-format
 msgid "Could not start editor %s: %s "
 msgstr "Kunde inte starta redigerare %s: %s"
 
-#: src/launcherfile.vala:686
+#: src/launcherfile.vala:699
 #, c-format
 msgid "Downloading file: %s"
 msgstr "Laddar ner fil: %s"
 
-#: src/launcherfile.vala:729
+#: src/launcherfile.vala:742
 msgid "Download OK"
 msgstr "Hämtningen lyckades"
 
-#: src/launcherfile.vala:730
+#: src/launcherfile.vala:743
 #, c-format
 msgid "%s was downloaded OK from %s"
 msgstr "%s laddades ner OK från %s"
 
-#: src/launcherfile.vala:746
+#: src/launcherfile.vala:759
 #, c-format
 msgid "Requested file %s not found on %s"
 msgstr "Den efterfrågde filen %s hittades inte på %s"
 
-#: src/launcherfile.vala:750
+#: src/launcherfile.vala:763
 #, c-format
 msgid ""
 "The requested file %s on %s was not downloaded due to an untrusted "
@@ -362,53 +362,63 @@ msgstr ""
 "Den efterfrågade filen %s på %s laddades inte ner på grund av att ett "
 "opålitligt certifikat används"
 
-#: src/launcherfile.vala:756
+#: src/launcherfile.vala:772
+msgid ""
+"The download was unauthorized. This is probably due to an expired "
+"authentication by the server. Try downloading the file explicitly from the "
+"server. This will update the authentication."
+msgstr ""
+"Obehörig nedladdning. Detta beror antagligen på att servern har uppdaterat "
+"autentiseringen. Prova att explicit ladda ner filen igen från servern för "
+"att uppdatera autentiseringen."
+
+#: src/launcherfile.vala:778
 #, c-format
 msgid "%s was not downloaded from %s (code: %d: %s)"
 msgstr "%s laddades inte ner från %s (kod: %d: %s)"
 
-#: src/launcherfile.vala:765
+#: src/launcherfile.vala:788
 msgid "Download failed"
 msgstr "Hämtningen misslyckades"
 
-#: src/launcherfile.vala:793
+#: src/launcherfile.vala:816
 #, c-format
 msgid "Unable to write to file %s: %s"
 msgstr "Kunde inte skriva till fil %s: %s"
 
-#: src/launcherfile.vala:808
+#: src/launcherfile.vala:831
 #, c-format
 msgid "%s is under %s. Skipping upload"
 msgstr "%s är under %s. Hoppar över uppladdning"
 
-#: src/launcherfile.vala:810
+#: src/launcherfile.vala:833
 msgid "download"
 msgstr "nedladdning"
 
-#: src/launcherfile.vala:811
+#: src/launcherfile.vala:834
 msgid "upload"
 msgstr "uppladdning"
 
-#: src/launcherfile.vala:819
+#: src/launcherfile.vala:842
 #, c-format
 msgid "Uploading %s"
 msgstr "Laddar upp %s"
 
-#: src/launcherfile.vala:864
+#: src/launcherfile.vala:887
 #, c-format
 msgid "Unable to upload file: %s"
 msgstr "Kunde inte ladda upp fil: %s"
 
-#: src/launcherfile.vala:867
+#: src/launcherfile.vala:890
 msgid "Upload failed"
 msgstr "Uppladdningen misslyckades"
 
-#: src/launcherfile.vala:868
+#: src/launcherfile.vala:891
 #, c-format
 msgid "%s was not uploaded OK to %s"
 msgstr "%s laddades inte upp OK till %s"
 
-#: src/launcherfile.vala:890
+#: src/launcherfile.vala:913
 #, c-format
 msgid ""
 "%s generated a timeout when it was uploaded to %s. Most likely you have a "
@@ -417,54 +427,54 @@ msgstr ""
 "%s genererade en timeout när den laddades upp till %s. Du har sannolikt ett "
 "syntaxfel i filen!"
 
-#: src/launcherfile.vala:894
+#: src/launcherfile.vala:917
 msgid "Upload warning"
 msgstr "Uppladdningsvarning"
 
-#: src/launcherfile.vala:904
+#: src/launcherfile.vala:927
 #, c-format
 msgid "Max redirect limit reached for %s."
 msgstr "Gränsen för omdirigeringar nådd för %s"
 
-#: src/launcherfile.vala:907 src/launcherfile.vala:936
-#: src/launcherfile.vala:946 src/launcherfile.vala:965
+#: src/launcherfile.vala:930 src/launcherfile.vala:959
+#: src/launcherfile.vala:969 src/launcherfile.vala:988
 msgid "Upload error"
 msgstr "Uppladdningsfel"
 
-#: src/launcherfile.vala:932
+#: src/launcherfile.vala:955
 #, c-format
 msgid "%s was not uploaded to %s due to an untrusted certificate being used"
 msgstr ""
 "%s laddades inte upp till %s på grund av att ett opålitligt certifikat "
 "används "
 
-#: src/launcherfile.vala:942
+#: src/launcherfile.vala:965
 #, c-format
 msgid "%s generated an Internal Server Error when it was uploaded to %s"
 msgstr "%s orsakade ett Internt Serverfel när den laddades upp till %s"
 
-#: src/launcherfile.vala:954
+#: src/launcherfile.vala:977
 msgid "Upload OK"
 msgstr "Uppladdningen lyckades"
 
-#: src/launcherfile.vala:955
+#: src/launcherfile.vala:978
 #, c-format
 msgid "%s was uploaded OK to %s"
 msgstr "%s laddades upp OK till %s"
 
-#: src/launcherfile.vala:961
+#: src/launcherfile.vala:984
 #, c-format
 msgid ""
 "%s was not uploaded to %s. Got unexpected HTTP status (%ld) from server."
 msgstr ""
 "%s laddades inte upp till %s. Fick en oväntad HTTP-status (%ld) från servern."
 
-#: src/launcherfile.vala:1042
+#: src/launcherfile.vala:1065
 #, c-format
 msgid "Failed to write stub file to local directory: %s"
 msgstr "Misslyckades att skriva  stump-fil till lokal mapp: %s"
 
-#: src/launcherfile.vala:1081
+#: src/launcherfile.vala:1104
 msgid "Unable to create directory for launcher file!"
 msgstr "Kunde inte skapa katalog för fil"
 
