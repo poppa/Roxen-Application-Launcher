@@ -21,15 +21,15 @@
 
 public class Roxenlauncher.LauncherFile : Object
 {
-	private static List<LauncherFile> _files =
-		new List<LauncherFile> ();
+  private static List<LauncherFile> _files =
+    new List<LauncherFile> ();
 
   /**
    * Storage for all current files
    */
   public static List<LauncherFile> files {
     get {
-  		return _files;
+      return _files;
     }
   }
 
@@ -831,7 +831,7 @@ public class Roxenlauncher.LauncherFile : Object
       s.close ();
       s = null;
 
-			var sess = new Soup.Session ();
+      var sess = new Soup.Session ();
 
       if (App.allow_all_certs) {
         wdebug ("Allow any certificate");
@@ -937,7 +937,7 @@ public class Roxenlauncher.LauncherFile : Object
                                 errmsg);
         break;
 
-			case Soup.Status.INTERNAL_SERVER_ERROR:
+      case Soup.Status.INTERNAL_SERVER_ERROR:
         wdebug ("Internal server error");
         errmsg = _("%s generated an Internal Server Error when it was " +
                    "uploaded to %s")
