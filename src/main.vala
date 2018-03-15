@@ -43,8 +43,7 @@ class Roxenlauncher.Main : Gtk.Application
 
   public void on_app_activate ()
   {
-    if (App.do_debug)
-      message ("On app activate");
+    debug ("On app activate");
 
     if (get_windows () == null) {
       init ();
@@ -70,15 +69,14 @@ class Roxenlauncher.Main : Gtk.Application
       }
     }
     else {
-      if (App.do_debug)
-        message ("Window started");
+      debug ("Window started");
     }
   }
 
   void handle_files (string[] args)
   {
     if (App.do_debug && args.length > 1)
-      message ("handle_files(%s)", string.joinv (",", args));
+      debug ("handle_files(%s)", string.joinv (",", args));
 
     if (args.length > 1) {
       for (int i = 1; i < args.length; i++) {
@@ -89,21 +87,17 @@ class Roxenlauncher.Main : Gtk.Application
 
           try {
             if (LauncherFile.handle_file (d, out lf)) {
-              if (App.do_debug)
-                message ("Incomming file is new...%s", lf.get_uri ());
-
+              debug ("Incomming file is new...%s", lf.get_uri ());
               lf.download.begin ();
             }
             else {
-              if (App.do_debug)
-                message ("Incomming file exists locally!");
+              debug ("Incomming file exists locally!");
 
               window.set_file_selection (lf);
               lf.download.begin ();
             }
 
-            if (App.do_debug)
-              message ("Delete incomming file \"%s\"", args[i]);
+            debug ("Delete incomming file \"%s\"", args[i]);
 
             try {
               File.new_for_path (args[i]).delete (null);
@@ -125,8 +119,7 @@ class Roxenlauncher.Main : Gtk.Application
   {
     string[] argv = cl.get_arguments ();
 
-    if (App.do_debug)
-      message ("on_command_line(%s)", string.joinv (",", argv));
+    debug ("on_command_line(%s)", string.joinv (",", argv));
 
     if (!get_is_remote ()) {
       handle_files (argv);
@@ -141,9 +134,6 @@ class Roxenlauncher.Main : Gtk.Application
                                            ref unowned string[] arguments,
                                            out int exit_status)
   {
-    if (App.do_debug)
-      message ("Local command line");
-
     exit_status = 0;
     bool return_value = true;
 
@@ -183,6 +173,11 @@ class Roxenlauncher.Main : Gtk.Application
 
     App.do_debug = opt_debug;
 
+    GLib.Log.set_handler (null,
+                          LogLevelFlags.LEVEL_DEBUG |
+                            LogLevelFlags.LEVEL_MESSAGE,
+                          Roxenlauncher.debug_logger);
+
     if (get_is_remote ()) {
       stdout.printf (_("Antoher instance of Roxen Application Launcher is " +
                        "already running") + "\n");
@@ -214,14 +209,6 @@ class Roxenlauncher.Main : Gtk.Application
     app.activate.connect (app.on_app_activate);
     app.command_line.connect (app.on_command_line);
 
-    int retval;
-
-    try { retval = app.run (argv); }
-    catch (Error e) {
-      message ("Critical error: " + e.message);
-      log_error ("Critical error: " + e.message);
-    }
-
-    return retval;
+    return app.run (argv);
   }
 }

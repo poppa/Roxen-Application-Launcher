@@ -179,14 +179,11 @@ public class Roxenlauncher.MainWindow : Gtk.Window
     cb_minimize.toggled.connect (on_cb_minimize_toggled);
 
     // HTTP query timeout
-    if (App.do_debug)
-      message ("HTTP query timeout: %d", App.query_timeout);
+    debug ("HTTP query timeout: %d", App.query_timeout);
 
     sp_timeout.adjustment.value = App.query_timeout;
     sp_timeout.adjustment.value_changed.connect (() => {
-      if (App.do_debug)
-        message ("HTTP query timeout changed: %d", (int) sp_timeout.value);
-
+      debug ("HTTP query timeout changed: %d", (int) sp_timeout.value);
       App.query_timeout = (int) sp_timeout.value;
     });
 
@@ -441,9 +438,7 @@ public class Roxenlauncher.MainWindow : Gtk.Window
    */
   public void on_cb_notify_toggled (Object cb)
   {
-    if (App.do_debug)
-      message ("notify toggled");
-
+    debug ("notify toggled");
     App.do_notifications = !App.do_notifications;
   }
 
@@ -454,9 +449,7 @@ public class Roxenlauncher.MainWindow : Gtk.Window
    */
   public void on_cb_minimize_toggled (Object cb)
   {
-    if (App.do_debug)
-      message ("notify toggled");
-
+    debug ("notify toggled");
     App.do_minimize = !App.do_minimize;
   }
 
@@ -858,10 +851,8 @@ public class Roxenlauncher.MainWindow : Gtk.Window
       ContentType cto = new ContentType (nct, ed);
 
       if (ContentType.add_content_type (cto)) {
-        if (App.do_debug) {
-          message ("Content type added: %s (%s, %s, %s)",
-                   nct, ed.name, ed.command, ed.icon);
-        }
+        debug ("Content type added: %s (%s, %s, %s)",
+               nct, ed.name, ed.command, ed.icon);
 
         append_ct (cto);
       }
@@ -881,13 +872,11 @@ public class Roxenlauncher.MainWindow : Gtk.Window
    */
   public void ct_edit ()
   {
-    if (App.do_debug)
-      message ("Launching Content Type Form");
+    debug ("Launching Content Type Form");
 
     var cf = new ContentTypeForm (_("Edit content type"));
 
-    if (App.do_debug)
-      message ("Content Type Form initialized");
+    debug ("Content Type Form initialized");
 
     Gtk.TreeModel model;
     Gtk.TreeIter iter;
@@ -897,9 +886,7 @@ public class Roxenlauncher.MainWindow : Gtk.Window
       if (cf.content_type != ct.mimetype &&
           (ContentType.get_by_ct (cf.content_type) != null))
       {
-        if (App.do_debug)
-          message ("Content type %s already exist", cf.content_type);
-
+        debug ("Content type %s already exist", cf.content_type);
         return;
       }
 
@@ -981,8 +968,7 @@ public class Roxenlauncher.MainWindow : Gtk.Window
   {
     if (cb_notify.active) {
 
-      if (App.do_debug)
-        message ("Show notification: %s".printf (summary));
+      debug ("Show notification: %s".printf (summary));
 
       string icon = null;
 
@@ -1167,7 +1153,7 @@ class Roxenlauncher.About : GLib.Object
 
     var d = (Gtk.AboutDialog) builder.get_object ("aboutdialog");
     d.set_transient_for (window);
-    
+
     string about_logo = get_ui_path ("pixmap/roxen-logo.png");
 
     if (about_logo != null) {

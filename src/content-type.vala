@@ -41,9 +41,7 @@ public class Roxenlauncher.ContentType : Object
   {
     foreach (ContentType c in _content_types) {
       if (ct.mimetype == c.mimetype) {
-        if (App.do_debug)
-          message ("Content type %s already in list", c.mimetype);
-
+        debug ("Content type %s already in list", c.mimetype);
         return false;
       }
     }

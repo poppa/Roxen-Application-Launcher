@@ -42,8 +42,7 @@ public class Roxenlauncher.Editor : Object
   {
     foreach (Editor e in _editors) {
       if (e.name.down () == editor.name.down ()) {
-        if (App.do_debug)
-          message ("Editor %s already in list", editor.name);
+        debug ("Editor %s already in list", editor.name);
         return;
       }
     }

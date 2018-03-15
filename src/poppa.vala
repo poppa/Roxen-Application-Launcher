@@ -34,7 +34,7 @@ namespace Poppa
   public string? file_get_contents (string file)
   {
     if (!FileUtils.test (file, FileTest.EXISTS)) {
-      warning ("No such file: %s", file);
+      debug ("No such file: %s", file);
       return null;
     }
 

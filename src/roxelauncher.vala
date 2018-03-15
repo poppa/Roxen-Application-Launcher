@@ -71,6 +71,17 @@ namespace Roxenlauncher
   }
 
   /**
+   * Log handler callback
+   */
+  public void debug_logger (string? log_domain, LogLevelFlags flags,
+                            string message)
+  {
+    if ((flags & LogLevelFlags.LEVEL_DEBUG) == flags && App.do_debug) {
+      print ("[DEBUG] %s\n", message);
+    }
+  }
+
+  /**
    * Write a message to the logfile
    *
    * @param m
@@ -104,18 +115,6 @@ namespace Roxenlauncher
   }
 
   /**
-   * Write a message to stdout if in debug mode
-   *
-   * @param s
-   */
-  void wdebug (string s)
-  {
-    if (App.do_debug) {
-      message (s);
-    }
-  }
-
-  /**
    * Write a warning to stdout if in debug mode
    *
    * @param s
@@ -140,26 +139,11 @@ namespace Roxenlauncher
 
     foreach (string s in Environment.list_variables ()) {
       if ("KDE" in s) {
-        if (App.do_debug)
-          message ("Running in KDE (I guess)");
-
+        debug ("Running in KDE (I guess)");
         App.is_kde = true;
         break;
       }
     }
-
-    /*
-    if (!Poppa.file_exists (App.logfile)) {
-      try {
-        var fs = File.new_for_path (App.logfile)
-                     .create_readwrite (FileCreateFlags.PRIVATE);
-        fs.close ();
-      }
-      catch (GLib.Error e) {
-        warning ("Unable to create log file \"%s\"", App.logfile);
-      }
-    }
-    */
 
     gc_logs ();
 
@@ -175,7 +159,7 @@ namespace Roxenlauncher
   /**
    * Garbage collect old log files
    */
-  void gc_logs () 
+  void gc_logs ()
   {
     var d = new DateTime.now_local ();
     d = d.add_months (-3);
@@ -197,7 +181,7 @@ namespace Roxenlauncher
       warning ("Unable to create FileEnumerator in log file GC");
       return;
     }
-    
+
     FileInfo fi;
 
     try {
@@ -215,7 +199,7 @@ namespace Roxenlauncher
                 File.new_for_path (fp).delete (null);
               }
               catch (GLib.Error e) {
-                warning ("Unable to remove old log file %s.", 
+                warning ("Unable to remove old log file %s.",
                          fi.get_display_name ());
               }
             }
@@ -227,7 +211,7 @@ namespace Roxenlauncher
       warning ("Error enumerating log files: %s", e.message);
     }
   }
-   
+
   /**
    * Set up the exitors and content types
    */
@@ -350,12 +334,12 @@ namespace Roxenlauncher
   }
 
 
-  string get_logfile_name () 
+  string get_logfile_name ()
   {
     string prefix = (new DateTime.now_local ()).format ("%Y-%m");
     return "ral-" + prefix + ".log";
   }
-   
+
   /**
    * Static class for runtime variables
    */
@@ -410,7 +394,7 @@ namespace Roxenlauncher
     public static string logfile {
       get {
         if (_logfile == null) {
-          _logfile = Path.build_filename (getdir ("APPLICATION"), 
+          _logfile = Path.build_filename (getdir ("APPLICATION"),
                                           get_logfile_name ());
         }
 

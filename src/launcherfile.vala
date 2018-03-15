@@ -83,8 +83,7 @@ public class Roxenlauncher.LauncherFile : Object
       warning ("Failed to load launcher files: %s", e.message);
     }
 
-    if (App.do_debug)
-      message ("Num files: %ld", _files.length ());
+    debug ("Num files: %ld", _files.length ());
   }
 
   /**
@@ -107,7 +106,7 @@ public class Roxenlauncher.LauncherFile : Object
 
     string hash = LauncherFile.make_hash (data);
 
-    wdebug (".xrl2 data: %s".printf (data));
+    debug (".xrl2 data:\n%s".printf (data));
 
     foreach (LauncherFile file in _files) {
       if (file.rawdata != null) {
@@ -115,9 +114,9 @@ public class Roxenlauncher.LauncherFile : Object
 
         // File exists locally
         if (tmp == hash) {
-          if (App.do_debug) message ("File exists");
+          debug ("File exists");
 
-          file.set_ac_cookie (lines[3]);
+          file.update_from_xrl2 (lines);
 
           lf = file;
           return false;
@@ -139,9 +138,7 @@ public class Roxenlauncher.LauncherFile : Object
   {
     foreach (LauncherFile l in _files) {
       if (l.get_uri () == lf.get_uri ()) {
-        if (App.do_debug)
-          message ("Launcher file exists. Skip adding!");
-
+        debug ("Launcher file exists. Skip adding!");
         return;
       }
     }
@@ -362,11 +359,14 @@ public class Roxenlauncher.LauncherFile : Object
   }
 
   /**
-   * Update the auth cookie
+   * Update some values from a new xrl2 file.
    */
-  public void set_ac_cookie (string cookie)
+  public void update_from_xrl2 (string[] xrl2)
   {
-    auth_cookie = cookie;
+    assert (xrl2.length > 6);
+
+    auth_cookie = xrl2[3];
+    sb_params = xrl2[6];
   }
 
   /**
@@ -377,7 +377,7 @@ public class Roxenlauncher.LauncherFile : Object
   public string get_uri (string? _path=null)
   {
     if (redirect_uri != null) {
-      wdebug ("Is redirect uri: %s".printf (redirect_uri));
+      debug ("Is redirect uri: %s".printf (redirect_uri));
       return redirect_uri;
     }
 
@@ -506,11 +506,11 @@ public class Roxenlauncher.LauncherFile : Object
 
   void check_modification ()
   {
-    wdebug ("Check modified for %s".printf (get_uri ()));
+    debug ("Check modified for %s".printf (get_uri ()));
 
     if (last_upload != null && last_modified != null) {
       if (last_modified.compare (last_upload) == 1) {
-        wdebug ("File's been modified outside RAL");
+        debug ("File's been modified outside RAL");
       }
     }
   }
@@ -520,9 +520,7 @@ public class Roxenlauncher.LauncherFile : Object
    */
   void init ()
   {
-    if (App.do_debug) {
-      message ("Raw launcher file: %s\n".printf (rawdata));
-    }
+    debug ("Raw launcher file: %s\n".printf (rawdata));
 
     string _id   = id;
     string[] a   = rawdata.split ("\r\n");
@@ -573,7 +571,7 @@ public class Roxenlauncher.LauncherFile : Object
       }
     }
 
-    wdebug ("LauncherFile.init (%s): Done!".printf (get_uri ()));
+    debug ("LauncherFile.init (%s): Done!".printf (get_uri ()));
   }
 
   /**
@@ -637,7 +635,7 @@ public class Roxenlauncher.LauncherFile : Object
    */
   public void launch_editor ()
   {
-    wdebug ("Launch editor for ct %s".printf (content_type));
+    debug ("Launch editor for ct %s".printf (content_type));
 
     if (application == null) {
       var app = ContentType.get_by_ct (content_type);
@@ -703,16 +701,18 @@ public class Roxenlauncher.LauncherFile : Object
     var sess = new Soup.Session ();
 
     if (App.allow_all_certs) {
-      wdebug ("Allow any certificate");
+      debug ("Allow any certificate");
       sess.ssl_strict = false;
     }
 
     if (App.do_debug) {
-      message ("Adding logger to SOUP Session");
+      debug ("Adding logger to SOUP Session");
       sess.add_feature (new Soup.Logger (Soup.LoggerLogLevel.HEADERS, -1));
     }
 
-    wdebug ("> %s\n".printf (get_uri ()));
+    if (App.do_debug) {
+      print ("> %s\n".printf (get_uri ()));
+    }
 
     var mess = get_http_message ("GET", get_uri ());
 
@@ -732,7 +732,7 @@ public class Roxenlauncher.LauncherFile : Object
    */
   void low_download (Soup.Session sess, Soup.Message mess)
   {
-    wdebug ("Status code from download: %ld".printf (mess.status_code));
+    debug ("Status code from download: %ld".printf (mess.status_code));
 
     if (mess.status_code == Soup.Status.OK) {
       if (save_downloaded_file (mess.response_body.data)) {
@@ -762,7 +762,7 @@ public class Roxenlauncher.LauncherFile : Object
         case Soup.Status.SSL_FAILED:
           s= _("The requested file %s on %s was not downloaded due to an " +
                "untrusted certificate being used").printf (path, host);
-          wdebug ("Untrusted...");
+          debug ("Untrusted...");
           break;
 
         default:
@@ -781,7 +781,7 @@ public class Roxenlauncher.LauncherFile : Object
           break;
       }
 
-      wdebug ("Download failed: %s". printf(s));
+      debug ("Download failed: %s". printf(s));
 
       log_error (s);
       win_set_status (Statuses.NOT_DOWNLOADED);
@@ -857,7 +857,7 @@ public class Roxenlauncher.LauncherFile : Object
       var sess = new Soup.Session ();
 
       if (App.allow_all_certs) {
-        wdebug ("Allow any certificate");
+        debug ("Allow any certificate");
         sess.ssl_strict = false;
       }
 
@@ -868,7 +868,7 @@ public class Roxenlauncher.LauncherFile : Object
         sess.timeout = qt;
 
       if (App.do_debug) {
-        message ("Query timeout is: %d\n", qt);
+        debug ("Query timeout is: %d\n", qt);
         sess.add_feature (new Soup.Logger (Soup.LoggerLogLevel.HEADERS, -1));
       }
 
@@ -895,10 +895,8 @@ public class Roxenlauncher.LauncherFile : Object
 
   void on_upload (Soup.Session sess, Soup.Message mess)
   {
-    if (App.do_debug) {
-      message ("> on_upload");
-      message ("Status: %ld", mess.status_code);
-    }
+    debug ("> on_upload");
+    debug ("Status: %ld", mess.status_code);
 
     string errmsg = null;
 
@@ -909,7 +907,7 @@ public class Roxenlauncher.LauncherFile : Object
     switch (mess.status_code)
     {
       case 7:
-        wdebug ("Request was aborted");
+        debug ("Request was aborted");
         errmsg = _("%s generated a timeout when it was uploaded to %s. " +
                    "Most likely you have a syntax error in the file!")
                   .printf (path, host);
@@ -931,17 +929,13 @@ public class Roxenlauncher.LauncherFile : Object
                                     errmsg);
           log_error (errmsg);
 
-          if (App.do_debug) {
-            message (errmsg);
-          }
+          debug (errmsg);
 
           break;
         }
 
-        if (App.do_debug) {
-          message ("Got redirect: %s\n",
-                   mess.response_headers.get_one ("Location"));
-        }
+        debug ("Got redirect: %s\n",
+               mess.response_headers.get_one ("Location"));
 
         status = Statuses.REDIRECTING;
         redirect_uri = mess.response_headers.get_one ("Location");
@@ -951,7 +945,7 @@ public class Roxenlauncher.LauncherFile : Object
         return;
 
       case Soup.Status.SSL_FAILED:
-        wdebug ("Untrusted certificate!");
+        debug ("Untrusted certificate!");
         errmsg = _("%s was not uploaded to %s due to an untrusted certificate" +
                    " being used").printf (path, host);
         log_error (errmsg);
@@ -961,7 +955,7 @@ public class Roxenlauncher.LauncherFile : Object
         break;
 
       case Soup.Status.INTERNAL_SERVER_ERROR:
-        wdebug ("Internal server error");
+        debug ("Internal server error");
         errmsg = _("%s generated an Internal Server Error when it was " +
                    "uploaded to %s")
                   .printf (path, host);
@@ -1145,13 +1139,13 @@ public class Roxenlauncher.LauncherFile : Object
         previous_event == FileMonitorEvent.CHANGED)
     {
       upload.begin ();
-      wdebug ("After upload.begin()");
+      debug ("After upload.begin()");
     }
   }
 
   ~LauncherFile ()
   {
-    wdebug ("LauncherFile destroyed: %s".printf (get_uri ()));
+    debug ("LauncherFile destroyed: %s".printf (get_uri ()));
 
     if (monitor != null)
       monitor.cancel ();
